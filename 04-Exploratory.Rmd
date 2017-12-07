@@ -1,4 +1,4 @@
-# EXPLORATORY ANALYSIS {#exploratory}
+# Exploratory Analysis {#exploratory}
 
 *What visualizations did you use to look at your data in different ways? What are the different statistical methods you considered? Justify the decisions you made, and show any major changes to your ideas. How did you reach these conclusions?*
 

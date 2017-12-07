@@ -1,5 +1,5 @@
 --- 
-title: "BST 260 Final Project"
+title: "BST 260 Final Project: EHR"
 author: "Eunice Yeh, Lauren Yoo, Katherine Wang"
 date: "`r Sys.Date()`"
 site: "bookdown::bookdown_site"
@@ -12,7 +12,7 @@ github-repo: euniceyeh/EHR-Project
 description: "This is the final project report for BST 260 on the relationships between the use of Electronic Health Records (EHR) and provider demographics, separately among the eligible professionals (EPs) and eligible hospitals participating in the Medicare & Medicaid EHR Incentive Program in 2016."
 ---
 
-# Overview and Motivation
+# Overview and Motivation {#index}
 
 *Provide an overview of the project goals and the motivation for it. Consider that this will be read by people who did not see your project proposal.*
 
@@ -22,6 +22,6 @@ description: "This is the final project report for BST 260 on the relationships 
 ```{r include=FALSE}
 # automatically create a bib database for R packages
 knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+  .packages(), 'bookdown', 'knitr', 'rmarkdown', 'readr', 'tidyverse'
 ), 'packages.bib')
 ```

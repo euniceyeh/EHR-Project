@@ -1,4 +1,11 @@
-# Initial Questions
+# Initial Questions {#questions}
 
 *What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?*
 
+1. What are the demographics of eligible professionals (EPs) in the incentive program who have been using EHR?
+
+2. What are the demographics of eligible hospitals in the incentive program who have been using EHR?
+
+3. What are the demographics of both types of providers by the specific EHR vendors or products used?
+
+4. Answer all of the above questions again, but stratify geographically (city, state, or zip code).

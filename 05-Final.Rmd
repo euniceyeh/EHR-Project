@@ -1,9 +1,9 @@
-# FINAL ANALYSIS {#final}
+# Final Analysis {#final}
 
 *What did you learn about the data? How did you answer the questions? How can you justify your answers?*
 
 
-## Practitioner Demographics
+## EP Demographics
 
 1. Describe the analysis population
 
