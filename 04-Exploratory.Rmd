@@ -1,6 +1,9 @@
-# EXPLORATORY ANALYSIS
+# EXPLORATORY ANALYSIS {#exploratory}
 
-## Practitioner Demographics & Vendor Types
+*What visualizations did you use to look at your data in different ways? What are the different statistical methods you considered? Justify the decisions you made, and show any major changes to your ideas. How did you reach these conclusions?*
+
+
+## EHR Vendor Types
 
 1. Merging of the vendor and practitioner datasets
 
@@ -12,7 +15,7 @@
 
 
 
-## State-level explorations
+## U.S. Maps Visualizations
 
 1. practitioner demographics across the US
 

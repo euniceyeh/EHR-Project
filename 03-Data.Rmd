@@ -1,0 +1,68 @@
+# DATA
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+```
+
+Note that the reason why our data are based on the 2016 incentive program is because the adoption of EHR is an ongoing basis, someone who adopted EHR during the 2014 program is likely to still be in the program the following years. As discussed in the __ section, the use of EHR has been increasingly rising over the years across the U.S. so there is no reason to look at the use over time when we can just look at the latest collection of data. Since 2017 isn't quite over yet, it wouldn't be fair to look at the usage of EHR within 2017, so the most recent complete data would be on the 2016 program.
+
+## Eligible Professionals (EPs) Demographics
+
+To answer the question as to whether or not a practitioner's age, education, environment, etc may be related to his or her use of EHR in the incentive program, we must be able to find demographics data at the practitioner level.
+
+1. Data Source
+
+Readily available on [Data.Medicare.gov](https://data.medicare.gov/Physician-Compare/Physician-Compare-National-Downloadable-File/mj5m-pzi6) are the demographics of professionals enrolled in Medicare at the individual-level.
+
+```{r load-phys-data, cache=TRUE}
+
+```
+
+
+2. Metadata
+
+3. Exploring & Understanding the Data
+
+4. Cleaning
+
+5. Purpose (why/how is this data useful?)
+
+
+
+## Hospital Demographics
+
+1. Data Source
+
+2. Metadata
+
+3. Exploring & Understanding the Data
+
+4. Cleaning
+
+5. Purpose (why/how is this data useful?)
+
+
+
+## EHR Vendors & Products
+
+Since so many professionals and hospitals participating in the incentive program have already adopted EHR, we realized that simplying looking at the binary outcome of EHR use would be too boring of a project. Thus, we were curious to further explore the demographics of those who do use EHR by the specific type of EHR vendor or product. Fortunately, we were able to find data to support this additional secondary/exploratory analysis.
+
+1. Data Source & Metadata
+
+The [Health IT Dashboard](https://dashboard.healthit.gov/datadashboard/documentation/ehr-products-mu-attestation-data-documentation.php) provides certified health IT product data from the ONC Certified Health IT Product List (CHPL) such as the unique vendors, products, and product types of each certified health IT product used as part of the Medicare EHR Incentive Program. We downloaded only the 2016 dataset, which also includes unique provider identifiers (NPI), in order to match the practitioner demographics data (collected in 2016) discussed further in the next section of this chapter. As the [metadata](https://dashboard.healthit.gov/api/open-api.php?source=onc-data-documentation.csv&data=ehr-products-mu-attestation-data-documentation) explains, a provider in this dataset can be either an eligible professional (EP) and eligible hospital (Hospital), as distinguished by the `Provider_Type` column. Thus, the `Provider_Type == 'EP'` records will be merged with the professional demographics data and the `Provider_Type == 'Hospital'` records will be merged with the hospital demographics data, which will be further discussed in their respective sections below.
+
+```{r load-EHR-data, cache=TRUE}
+EHR <- read.csv("https://dashboard.healthit.gov/datadashboard/data/MU_REPORT_2016.csv")
+```
+
+
+3. Exploring & Understanding the Data
+
+  - specific product types are too dirty and not meaningful
+  
+4. Cleaning
+
+5. Purpose (why/how is this data useful?)
+
+Although the specific product types are too granular and not meaningful enough to clean, we believe that exploring the professional and hospital demographics across vendor types may still be interesting, especially if we focus on the top 10 most popular vendors or classify the smaller local vendors as one group.

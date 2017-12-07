@@ -1,6 +1,9 @@
-# FINAL ANALYSIS
+# FINAL ANALYSIS {#final}
 
-## Effects of Practitioner Demographics on EHR Use
+*What did you learn about the data? How did you answer the questions? How can you justify your answers?*
+
+
+## Practitioner Demographics
 
 1. Describe the analysis population
 
@@ -14,7 +17,7 @@
 
 
 
-## Effects of Hospital Demographics on EHR Use
+## Hospital Demographics
 
 
 1. Describe the analysis population
