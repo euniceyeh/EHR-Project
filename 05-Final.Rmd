@@ -1,0 +1,29 @@
+# FINAL ANALYSIS
+
+## Effects of Practitioner Demographics on EHR Use
+
+1. Describe the analysis population
+
+2. Show some correlations
+
+3. State the model
+
+4. Run the model & describe the results
+
+5. Conclusion/discussion
+
+
+
+## Effects of Hospital Demographics on EHR Use
+
+
+1. Describe the analysis population
+
+2. Show some correlations
+
+3. State the model
+
+4. Run the model & describe the results
+
+5. Conclusion/discussion
+

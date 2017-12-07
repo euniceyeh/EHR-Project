@@ -1,0 +1,12 @@
+
+## Hospital Demographics
+
+1. Data Source
+
+2. Metadata
+
+3. Exploring & Understanding the Data
+
+4. Cleaning
+
+5. Purpose (why/how is this data useful?)

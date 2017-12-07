@@ -1,0 +1,20 @@
+# EXPLORATORY ANALYSIS
+
+## Practitioner Demographics & Vendor Types
+
+1. Merging of the vendor and practitioner datasets
+
+2. more clean up
+
+3. exploratory results
+
+4. conclusions - how do these inform our final analyses?
+
+
+
+## State-level explorations
+
+1. practitioner demographics across the US
+
+2. hospital demographics across the US
+
