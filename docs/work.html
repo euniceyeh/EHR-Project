@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>BST 260 Final Project</title>
+  <title>BST 260 Final Project: EHR</title>
   <meta name="description" content="This is the final project report for BST 260 on the relationships between the use of Electronic Health Records (EHR) and provider demographics, separately among the eligible professionals (EPs) and eligible hospitals participating in the Medicare &amp; Medicaid EHR Incentive Program in 2016.">
   <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
 
-  <meta property="og:title" content="BST 260 Final Project" />
+  <meta property="og:title" content="BST 260 Final Project: EHR" />
   <meta property="og:type" content="book" />
   
   
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="euniceyeh/EHR-Project" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="BST 260 Final Project" />
+  <meta name="twitter:title" content="BST 260 Final Project: EHR" />
   
   <meta name="twitter:description" content="This is the final project report for BST 260 on the relationships between the use of Electronic Health Records (EHR) and provider demographics, separately among the eligible professionals (EPs) and eligible hospitals participating in the Medicare &amp; Medicaid EHR Incentive Program in 2016." />
   
@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="related-work.html">
-<link rel="next" href="data.html">
+<link rel="prev" href="index.html">
+<link rel="next" href="questions.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -87,6 +87,7 @@ code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Com
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -99,22 +100,28 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <nav role="navigation">
 
 <ul class="summary">
+<li><a href="./">BST 260 Final Project: EHR</a></li>
+
+<li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Overview and Motivation</a></li>
-<li class="chapter" data-level="2" data-path="related-work.html"><a href="related-work.html"><i class="fa fa-check"></i><b>2</b> Related Work</a></li>
-<li class="chapter" data-level="3" data-path="initial-questions.html"><a href="initial-questions.html"><i class="fa fa-check"></i><b>3</b> Initial Questions</a></li>
-<li class="chapter" data-level="4" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i><b>4</b> DATA</a><ul>
-<li class="chapter" data-level="4.1" data-path="data.html"><a href="data.html#eligible-professionals-eps-demographics"><i class="fa fa-check"></i><b>4.1</b> Eligible Professionals (EPs) Demographics</a></li>
-<li class="chapter" data-level="4.2" data-path="data.html"><a href="data.html#hospital-demographics"><i class="fa fa-check"></i><b>4.2</b> Hospital Demographics</a></li>
-<li class="chapter" data-level="4.3" data-path="data.html"><a href="data.html#ehr-vendors-products"><i class="fa fa-check"></i><b>4.3</b> EHR Vendors &amp; Products</a></li>
+<li class="chapter" data-level="2" data-path="work.html"><a href="work.html"><i class="fa fa-check"></i><b>2</b> Related Work</a></li>
+<li class="chapter" data-level="3" data-path="questions.html"><a href="questions.html"><i class="fa fa-check"></i><b>3</b> Initial Questions</a></li>
+<li class="chapter" data-level="4" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i><b>4</b> Data</a><ul>
+<li class="chapter" data-level="4.1" data-path="data.html"><a href="data.html#eligible-professionals-eps"><i class="fa fa-check"></i><b>4.1</b> Eligible Professionals (EPs)</a></li>
+<li class="chapter" data-level="4.2" data-path="data.html"><a href="data.html#eligible-hospitals-hosp"><i class="fa fa-check"></i><b>4.2</b> Eligible Hospitals (Hosp)</a></li>
+<li class="chapter" data-level="4.3" data-path="data.html"><a href="data.html#vendors-products-ehr"><i class="fa fa-check"></i><b>4.3</b> Vendors &amp; Products (EHR)</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="exploratory.html"><a href="exploratory.html"><i class="fa fa-check"></i><b>5</b> EXPLORATORY ANALYSIS</a><ul>
+<li class="chapter" data-level="5" data-path="exploratory.html"><a href="exploratory.html"><i class="fa fa-check"></i><b>5</b> Exploratory Analysis</a><ul>
 <li class="chapter" data-level="5.1" data-path="exploratory.html"><a href="exploratory.html#ehr-vendor-types"><i class="fa fa-check"></i><b>5.1</b> EHR Vendor Types</a></li>
 <li class="chapter" data-level="5.2" data-path="exploratory.html"><a href="exploratory.html#u.s.-maps-visualizations"><i class="fa fa-check"></i><b>5.2</b> U.S. Maps Visualizations</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="final.html"><a href="final.html"><i class="fa fa-check"></i><b>6</b> FINAL ANALYSIS</a><ul>
-<li class="chapter" data-level="6.1" data-path="final.html"><a href="final.html#practitioner-demographics"><i class="fa fa-check"></i><b>6.1</b> Practitioner Demographics</a></li>
-<li class="chapter" data-level="6.2" data-path="final.html"><a href="final.html#hospital-demographics-1"><i class="fa fa-check"></i><b>6.2</b> Hospital Demographics</a></li>
+<li class="chapter" data-level="6" data-path="final.html"><a href="final.html"><i class="fa fa-check"></i><b>6</b> Final Analysis</a><ul>
+<li class="chapter" data-level="6.1" data-path="final.html"><a href="final.html#ep-demographics"><i class="fa fa-check"></i><b>6.1</b> EP Demographics</a></li>
+<li class="chapter" data-level="6.2" data-path="final.html"><a href="final.html#hospital-demographics"><i class="fa fa-check"></i><b>6.2</b> Hospital Demographics</a></li>
 </ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
 </ul>
 
       </nav>
@@ -124,7 +131,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">BST 260 Final Project</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">BST 260 Final Project: EHR</a>
           </h1>
         </div>
 
@@ -132,9 +139,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="initial-questions" class="section level1">
-<h1><span class="header-section-number">Chapter 3</span> Initial Questions</h1>
-<p><em>What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?</em></p>
+<div id="work" class="section level1">
+<h1><span class="header-section-number">Chapter 2</span> Related Work</h1>
+<p><em>Anything that inspired you, such as a paper, a web site, or something we discussed in class.</em></p>
 
 </div>
             </section>
@@ -142,8 +149,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           </div>
         </div>
       </div>
-<a href="related-work.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="questions.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -172,10 +179,10 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": null,
-"text": null
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/01-Work.Rmd",
+"text": "Edit"
 },
-"download": null,
+"download": ["EHR-Project.pdf"],
 "toc": {
 "collapse": "subsection"
 }

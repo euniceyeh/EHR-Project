@@ -12,7 +12,7 @@ github-repo: euniceyeh/EHR-Project
 description: "This is the final project report for BST 260 on the relationships between the use of Electronic Health Records (EHR) and provider demographics, separately among the eligible professionals (EPs) and eligible hospitals participating in the Medicare & Medicaid EHR Incentive Program in 2016."
 ---
 
-# Overview and Motivation {#index}
+# Overview and Motivation
 
 *Provide an overview of the project goals and the motivation for it. Consider that this will be read by people who did not see your project proposal.*
 

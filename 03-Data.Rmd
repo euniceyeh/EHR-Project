@@ -5,11 +5,11 @@ knitr::opts_chunk$set(echo = TRUE)
 library(readr)
 ```
 
-All of our data are based on the 2016 Medicare & Medicaid EHR Incentive Program since the adoption of EHR is an ongoing basis: a provider who adopted and used EHR during the 2014 program, for example, is likely to still be in the program the following years. So theorethically, the 2016 program would be the most cumulative source of providers adopting EHR. As mentioned in [Related Work][work], the adoption of EHR has been consistently rising over the years across the U.S., so there is also no interest in looking at the use over time when we can just look at the latest collection of data. And since 2017 isn't quite over yet, it wouldn't be fair to start looking at the usage of EHR within the 2017 program, so the most recent completed data would be on the 2016 program.
+All of our data are based on the 2016 Medicare & Medicaid EHR Incentive Program since the adoption of EHR is an ongoing basis: a provider who adopted and used EHR during the 2014 program, for example, is likely to still be in the program the following years. So theorethically, the 2016 program would be the most cumulative source of providers adopting EHR. As mentioned in [Related Work](https://euniceyeh.github.io/EHR-Project/work.html), the adoption of EHR has been consistently rising over the years across the U.S., so there is also no interest in looking at the use over time when we can just look at the latest collection of data. And since 2017 isn't quite over yet, it wouldn't be fair to start looking at the usage of EHR within the 2017 program, so the most recent completed data would be on the 2016 program.
 
 ## Eligible Professionals (EPs)
 
-To answer the first of our [Initial Questions][questions] as to whether or not an EP's age, education, practice location, etc. may be related to their use of EHR in the incentive program, we must be able to find demographics data at the practitioner level.
+To answer the first of our [Initial Questions](https://euniceyeh.github.io/EHR-Project/questions.html) as to whether or not an EP's age, education, practice location, etc. may be related to their use of EHR in the incentive program, we must be able to find demographics data at the practitioner level.
 
 1. Data Source & Metadata
 

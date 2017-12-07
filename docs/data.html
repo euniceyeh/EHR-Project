@@ -5,11 +5,11 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>BST 260 Final Project</title>
+  <title>BST 260 Final Project: EHR</title>
   <meta name="description" content="This is the final project report for BST 260 on the relationships between the use of Electronic Health Records (EHR) and provider demographics, separately among the eligible professionals (EPs) and eligible hospitals participating in the Medicare &amp; Medicaid EHR Incentive Program in 2016.">
   <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
 
-  <meta property="og:title" content="BST 260 Final Project" />
+  <meta property="og:title" content="BST 260 Final Project: EHR" />
   <meta property="og:type" content="book" />
   
   
@@ -17,7 +17,7 @@
   <meta name="github-repo" content="euniceyeh/EHR-Project" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="BST 260 Final Project" />
+  <meta name="twitter:title" content="BST 260 Final Project: EHR" />
   
   <meta name="twitter:description" content="This is the final project report for BST 260 on the relationships between the use of Electronic Health Records (EHR) and provider demographics, separately among the eligible professionals (EPs) and eligible hospitals participating in the Medicare &amp; Medicaid EHR Incentive Program in 2016." />
   
@@ -32,7 +32,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="initial-questions.html">
+<link rel="prev" href="questions.html">
 <link rel="next" href="exploratory.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -87,6 +87,7 @@ code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Com
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -99,22 +100,28 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <nav role="navigation">
 
 <ul class="summary">
+<li><a href="./">BST 260 Final Project: EHR</a></li>
+
+<li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Overview and Motivation</a></li>
-<li class="chapter" data-level="2" data-path="related-work.html"><a href="related-work.html"><i class="fa fa-check"></i><b>2</b> Related Work</a></li>
-<li class="chapter" data-level="3" data-path="initial-questions.html"><a href="initial-questions.html"><i class="fa fa-check"></i><b>3</b> Initial Questions</a></li>
-<li class="chapter" data-level="4" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i><b>4</b> DATA</a><ul>
-<li class="chapter" data-level="4.1" data-path="data.html"><a href="data.html#eligible-professionals-eps-demographics"><i class="fa fa-check"></i><b>4.1</b> Eligible Professionals (EPs) Demographics</a></li>
-<li class="chapter" data-level="4.2" data-path="data.html"><a href="data.html#hospital-demographics"><i class="fa fa-check"></i><b>4.2</b> Hospital Demographics</a></li>
-<li class="chapter" data-level="4.3" data-path="data.html"><a href="data.html#ehr-vendors-products"><i class="fa fa-check"></i><b>4.3</b> EHR Vendors &amp; Products</a></li>
+<li class="chapter" data-level="2" data-path="work.html"><a href="work.html"><i class="fa fa-check"></i><b>2</b> Related Work</a></li>
+<li class="chapter" data-level="3" data-path="questions.html"><a href="questions.html"><i class="fa fa-check"></i><b>3</b> Initial Questions</a></li>
+<li class="chapter" data-level="4" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i><b>4</b> Data</a><ul>
+<li class="chapter" data-level="4.1" data-path="data.html"><a href="data.html#eligible-professionals-eps"><i class="fa fa-check"></i><b>4.1</b> Eligible Professionals (EPs)</a></li>
+<li class="chapter" data-level="4.2" data-path="data.html"><a href="data.html#eligible-hospitals-hosp"><i class="fa fa-check"></i><b>4.2</b> Eligible Hospitals (Hosp)</a></li>
+<li class="chapter" data-level="4.3" data-path="data.html"><a href="data.html#vendors-products-ehr"><i class="fa fa-check"></i><b>4.3</b> Vendors &amp; Products (EHR)</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="exploratory.html"><a href="exploratory.html"><i class="fa fa-check"></i><b>5</b> EXPLORATORY ANALYSIS</a><ul>
+<li class="chapter" data-level="5" data-path="exploratory.html"><a href="exploratory.html"><i class="fa fa-check"></i><b>5</b> Exploratory Analysis</a><ul>
 <li class="chapter" data-level="5.1" data-path="exploratory.html"><a href="exploratory.html#ehr-vendor-types"><i class="fa fa-check"></i><b>5.1</b> EHR Vendor Types</a></li>
 <li class="chapter" data-level="5.2" data-path="exploratory.html"><a href="exploratory.html#u.s.-maps-visualizations"><i class="fa fa-check"></i><b>5.2</b> U.S. Maps Visualizations</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="final.html"><a href="final.html"><i class="fa fa-check"></i><b>6</b> FINAL ANALYSIS</a><ul>
-<li class="chapter" data-level="6.1" data-path="final.html"><a href="final.html#practitioner-demographics"><i class="fa fa-check"></i><b>6.1</b> Practitioner Demographics</a></li>
-<li class="chapter" data-level="6.2" data-path="final.html"><a href="final.html#hospital-demographics-1"><i class="fa fa-check"></i><b>6.2</b> Hospital Demographics</a></li>
+<li class="chapter" data-level="6" data-path="final.html"><a href="final.html"><i class="fa fa-check"></i><b>6</b> Final Analysis</a><ul>
+<li class="chapter" data-level="6.1" data-path="final.html"><a href="final.html#ep-demographics"><i class="fa fa-check"></i><b>6.1</b> EP Demographics</a></li>
+<li class="chapter" data-level="6.2" data-path="final.html"><a href="final.html#hospital-demographics"><i class="fa fa-check"></i><b>6.2</b> Hospital Demographics</a></li>
 </ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
 </ul>
 
       </nav>
@@ -124,7 +131,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">BST 260 Final Project</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">BST 260 Final Project: EHR</a>
           </h1>
         </div>
 
@@ -133,48 +140,92 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
             <section class="normal" id="section-">
 <div id="data" class="section level1">
-<h1><span class="header-section-number">Chapter 4</span> DATA</h1>
-<p>Note that the reason why our data are based on the 2016 incentive program is because the adoption of EHR is an ongoing basis, someone who adopted EHR during the 2014 program is likely to still be in the program the following years. As discussed in the __ section, the use of EHR has been increasingly rising over the years across the U.S. so there is no reason to look at the use over time when we can just look at the latest collection of data. Since 2017 isn’t quite over yet, it wouldn’t be fair to look at the usage of EHR within 2017, so the most recent complete data would be on the 2016 program.</p>
-<div id="eligible-professionals-eps-demographics" class="section level2">
-<h2><span class="header-section-number">4.1</span> Eligible Professionals (EPs) Demographics</h2>
-<p>To answer the question as to whether or not a practitioner’s age, education, environment, etc may be related to his or her use of EHR in the incentive program, we must be able to find demographics data at the practitioner level.</p>
+<h1><span class="header-section-number">Chapter 4</span> Data</h1>
+<p>All of our data are based on the 2016 Medicare &amp; Medicaid EHR Incentive Program since the adoption of EHR is an ongoing basis: a provider who adopted and used EHR during the 2014 program, for example, is likely to still be in the program the following years. So theorethically, the 2016 program would be the most cumulative source of providers adopting EHR. As mentioned in [Related Work][work], the adoption of EHR has been consistently rising over the years across the U.S., so there is also no interest in looking at the use over time when we can just look at the latest collection of data. And since 2017 isn’t quite over yet, it wouldn’t be fair to start looking at the usage of EHR within the 2017 program, so the most recent completed data would be on the 2016 program.</p>
+<div id="eligible-professionals-eps" class="section level2">
+<h2><span class="header-section-number">4.1</span> Eligible Professionals (EPs)</h2>
+<p>To answer the first of our [Initial Questions][questions] as to whether or not an EP’s age, education, practice location, etc. may be related to their use of EHR in the incentive program, we must be able to find demographics data at the practitioner level.</p>
 <ol style="list-style-type: decimal">
-<li>Data Source</li>
+<li>Data Source &amp; Metadata</li>
 </ol>
-<p>Readily available on <a href="https://data.medicare.gov/Physician-Compare/Physician-Compare-National-Downloadable-File/mj5m-pzi6">Data.Medicare.gov</a> are the demographics of professionals enrolled in Medicare at the individual-level.</p>
+<p>And here we are: readily available on <a href="https://data.medicare.gov/Physician-Compare/Physician-Compare-National-Downloadable-File/mj5m-pzi6">Data.Medicare.gov</a> are the demographics of professionals enrolled in Medicare at the practitioner level.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># EPs &lt;- read.cvs(&quot;https://data.medicare.gov/api/views/mj5m-pzi6/rows.csv?accessType=DOWNLOAD&quot;)</span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
-<li><p>Metadata</p></li>
-<li><p>Exploring &amp; Understanding the Data</p></li>
-<li><p>Cleaning</p></li>
-<li><p>Purpose (why/how is this data useful?)</p></li>
+<li>Exploring &amp; Understanding the Data</li>
 </ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># str(EPs)</span></code></pre></div>
+<ol start="4" style="list-style-type: decimal">
+<li>Cleaning Decisions</li>
+</ol>
+<ul>
+<li>mention separating out the practitioners who are affiliated with any hospital because then the choice of EHR use is no longer at the practitioner-level rather at the hospital-level. Their demographics would no longer be informative as to whether or not they use EHR, it would then have to be the demographics of the hospitals that could inform the use of EHR at the hospital-level. Thus, we were able to find hospital demographics such as ___ on hospitals across the U.S. in general, which will be discussed in the next section within this chapter, but there’s no indication of participation in the incentive program nor EHR use, so we will have to merge that hospital demographic data with the practitioners in this dataset who are affiliated with any one hospital. (note that only first set of many <code>hosp_afl_</code> columns is relevant).</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># separate out EPs to those not affiliated with any hospital = EPs --&gt; will be used for </span>
+EPs_cleaned &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="dv">1</span>, <span class="dt">y =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)
+<span class="kw">saveRDS</span>(EPs_cleaned, <span class="dt">file =</span> <span class="st">&quot;./data/EPs.rds&quot;</span>)
+
+<span class="co"># remember don&#39;t need to save the hosp_afl subset of the data because it will be merged soon within the chapter (will save the merged version for analysis)</span></code></pre></div>
+<ol start="5" style="list-style-type: decimal">
+<li>Purpose (why/how is this data useful?)</li>
+</ol>
+<ul>
+<li><code>EPs</code> data will be used to analyze the potential effects of practitioner demographics on the use of EHR</li>
+<li><code>hosp_afl</code> is to be merged with the hospital demographics data discussed in the next section</li>
+<li>both are to be merged with the EHR vendor and product information to explore these demographics by specific types of EHR used.</li>
+</ul>
 </div>
-<div id="hospital-demographics" class="section level2">
-<h2><span class="header-section-number">4.2</span> Hospital Demographics</h2>
+<div id="eligible-hospitals-hosp" class="section level2">
+<h2><span class="header-section-number">4.2</span> Eligible Hospitals (Hosp)</h2>
+<p>General hospital demographics such as the number of staffed beds, average <em>(?)</em> number of discharges, average <em>(?)</em> number of days patients stay, and gross patient revenue are all publicly accessible on the <a href="https://www.ahd.com/states/">American Hospital Directory</a> organized by U.S. states. Since there is not a <code>.csv</code> file ready for us to download and the hospital demographics are already neatly summarized in a table for each state, we decided that we could do some web scraping for this.</p>
+<p>Since we have separated</p>
 <ol style="list-style-type: decimal">
-<li><p>Data Source</p></li>
-<li><p>Metadata</p></li>
-<li><p>Exploring &amp; Understanding the Data</p></li>
-<li><p>Cleaning</p></li>
-<li><p>Purpose (why/how is this data useful?)</p></li>
+<li>Data Source &amp; Metadata</li>
 </ol>
-</div>
-<div id="ehr-vendors-products" class="section level2">
-<h2><span class="header-section-number">4.3</span> EHR Vendors &amp; Products</h2>
-<p>Since so many professionals and hospitals participating in the incentive program have already adopted EHR, we realized that simplying looking at the binary outcome of EHR use would be too boring of a project. Thus, we were curious to further explore the demographics of those who do use EHR by the specific type of EHR vendor or product. Fortunately, we were able to find data to support this additional secondary/exploratory analysis.</p>
-<ol style="list-style-type: decimal">
-<li>Data Source &amp; Metadata The <a href="https://dashboard.healthit.gov/datadashboard/documentation/ehr-products-mu-attestation-data-documentation.php">Health IT Dashboard</a> provides certified health IT product data from the ONC Certified Health IT Product List (CHPL) such as the unique vendors, products, and product types of each certified health IT product used as part of the Medicare EHR Incentive Program. We downloaded only the 2016 dataset, which also includes unique provider identifiers (NPI), in order to match the practitioner demographics data (collected in 2016) discussed further in the next section of this chapter. As the <a href="https://dashboard.healthit.gov/api/open-api.php?source=onc-data-documentation.csv&amp;data=ehr-products-mu-attestation-data-documentation">metadata</a> explains, a provider in this dataset can be either an eligible professional (EP) and eligible hospital (Hospital), as distinguished by the <code>Provider_Type</code> column. Thus, the <code>Provider_Type == 'EP'</code> records will be merged with the professional demographics data and the <code>Provider_Type == 'Hospital'</code> records will be merged with the hospital demographics data, which will be further discussed in their respective sections below.</li>
-</ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EHR &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://dashboard.healthit.gov/datadashboard/data/MU_REPORT_2016.csv&quot;</span>)</code></pre></div>
-<ol start="3" style="list-style-type: decimal">
+<p>The link to each U.S. state’s summary table of hospital demographics by hospital name in that state begins with the same URL: <code>https://www.ahd.com/states/hospital_</code> and ends with the state’s abbreviation plus a <code>.html</code>. For example, a table of hospital demographics for each hospital in Massachusetts can be directly scraped from the link, <a href="https://www.ahd.com/states/hospital_MA.html" class="uri">https://www.ahd.com/states/hospital_MA.html</a>.</p>
+<ol start="2" style="list-style-type: decimal">
 <li>Exploring &amp; Understanding the Data</li>
 </ol>
 <ul>
-<li>specific product types are too dirty and not meaningful</li>
+<li>looks like there are some hospitals with really low values - turns out they indicate missing data with zeroes.</li>
+</ul>
+<ol start="3" style="list-style-type: decimal">
+<li>Cleaning Decisions</li>
+</ol>
+<ul>
+<li>convert all zeroes to missing so that the zero values do not misinform summary statistics, and we highly doubt that the zeros are actually meaningfully zeros…<em>right?</em></li>
+<li>merge in with <code>hosp_afl</code>, which is subset of <code>EPs</code> dataset who are affiliated with a hospital, on the hospital name and city (since different hospitals in different locations can have the same name).</li>
 </ul>
 <ol start="4" style="list-style-type: decimal">
-<li><p>Cleaning</p></li>
-<li><p>Purpose (why/how is this data useful?)</p></li>
+<li>Purpose (why/how is this data useful?)</li>
+</ol>
+<ul>
+<li>to analyze the potential effects of hospital demographics on the use of EHR</li>
+<li>and to subsequently merge with the EHR vendor and product information to explore these demographics by specific types of EHR used.</li>
+</ul>
+</div>
+<div id="vendors-products-ehr" class="section level2">
+<h2><span class="header-section-number">4.3</span> Vendors &amp; Products (EHR)</h2>
+<p>Since so many professionals and hospitals across the U.S. have already adopted EHR, we realized that simplying looking at the binary outcome of EHR use would be too boring of a project. Thus, we were curious to further explore the demographics of those who do use EHR by the specific types of EHR vendor or product. Fortunately, we were able to find data to support this additional secondary/exploratory analysis.</p>
+<ol style="list-style-type: decimal">
+<li>Data Source &amp; Metadata</li>
+</ol>
+<p>The <a href="https://dashboard.healthit.gov/datadashboard/documentation/ehr-products-mu-attestation-data-documentation.php">Health IT Dashboard</a> provides certified health IT product data from the ONC Certified Health IT Product List (CHPL) such as the unique vendors, products, and product types of each certified health IT product used as part of the Medicare EHR Incentive Program. We downloaded only the 2016 dataset, which also includes unique provider identifiers (NPI), in order to match the <code>EPs</code> dataset discussed in the first section of this chapter. As the <a href="https://dashboard.healthit.gov/api/open-api.php?source=onc-data-documentation.csv&amp;data=ehr-products-mu-attestation-data-documentation">metadata</a> explains, a provider in this dataset can be either an eligible professional (EP) and eligible hospital (Hospital), as distinguished by the <code>Provider_Type</code> column. Thus, only the <code>Provider_Type == 'EP'</code> records is merged with the subset of <code>EPs</code> who are not affiliated with any hospital, and the <code>Provider_Type == 'Hospital'</code> records is merged with the subset of <code>EPs</code> who are affiliated with a hospital, and therefore directly merged with the combined and cleaned version of the <code>hosp</code> dataset discussed in the previous section of this chapter.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EHR &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://dashboard.healthit.gov/datadashboard/data/MU_REPORT_2016.csv&quot;</span>)</code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>Exploring &amp; Understanding the Data</li>
+</ol>
+<ul>
+<li>specific product types are too dirty and not meaningful, will focus on vendor types.</li>
+</ul>
+<ol start="3" style="list-style-type: decimal">
+<li>Cleaning Decisions</li>
+</ol>
+<ul>
+<li>merge with the subset of EPs who are not affiliated with any hospital, basically just the cleaned <code>EPs</code></li>
+<li>merge with the cleaned hosp data</li>
+</ul>
+<ol start="4" style="list-style-type: decimal">
+<li>Purpose (why/how is this data useful?)</li>
 </ol>
 <p>Although the specific product types are too granular and not meaningful enough to clean, we believe that exploring the professional and hospital demographics across vendor types may still be interesting, especially if we focus on the top 10 most popular vendors or classify the smaller local vendors as one group.</p>
 
@@ -185,7 +236,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           </div>
         </div>
       </div>
-<a href="initial-questions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="questions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="exploratory.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
@@ -215,10 +266,10 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": null,
-"text": null
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/03-Data.Rmd",
+"text": "Edit"
 },
-"download": null,
+"download": ["EHR-Project.pdf"],
 "toc": {
 "collapse": "subsection"
 }
