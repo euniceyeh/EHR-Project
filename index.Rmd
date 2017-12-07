@@ -1,10 +1,13 @@
 --- 
 title: "BST 260 Final Project"
-date: "`r Sys.Date()`"
 author: "Eunice Yeh, Lauren Yoo, Katherine Wang"
+date: "`r Sys.Date()`"
 site: "bookdown::bookdown_site"
 output: bookdown::gitbook
 documentclass: book
+bibliography: [packages.bib]
+biblio-style: apalike
+link-citations: yes
 github-repo: euniceyeh/EHR-Project
 description: "This is the final project report for BST 260 on the Effects of Pracitioner/Hospital Demographics on the Usage of Electronic Health Records (EHR) in Those Participating in the Medicare & Medicaid EHR Incentive Program in the United States by 2016."
 ---
@@ -38,7 +41,7 @@ description: "This is the final project report for BST 260 on the Effects of Pra
 <!-- practitioner and hospital effect models -->
 
 
-```{r include=FALSE, eval=FALSE}
+```{r include=FALSE}
 # automatically create a bib database for R packages
 knitr::write_bib(c(
   .packages(), 'bookdown', 'knitr', 'rmarkdown'

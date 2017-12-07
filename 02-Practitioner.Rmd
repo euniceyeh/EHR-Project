@@ -3,6 +3,13 @@
 
 1. Data Source
 
+Readily available on [Data.Medicare.gov](https://data.medicare.gov/Physician-Compare/Physician-Compare-National-Downloadable-File/mj5m-pzi6) are the demographics of professionals enrolled in Medicare at the individual-level.
+
+```{r load-phys-data, cache=TRUE}
+library(readr)
+```
+
+
 2. Metadata
 
 3. Exploring & Understanding the Data
