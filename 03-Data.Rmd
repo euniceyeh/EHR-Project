@@ -3,6 +3,7 @@
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(readr)
+library(tidyverse)
 ```
 
 All of our data are based on the 2016 Medicare & Medicaid EHR Incentive Program since the adoption of EHR is an ongoing basis: a provider who adopted and used EHR during the 2014 program, for example, is likely to still be in the program the following years. So theorethically, the 2016 program would be the most cumulative source of providers adopting EHR. As mentioned in [Related Work](https://euniceyeh.github.io/EHR-Project/work.html), the adoption of EHR has been consistently rising over the years across the U.S., so there is also no interest in looking at the use over time when we can just look at the latest collection of data. And since 2017 isn't quite over yet, it wouldn't be fair to start looking at the usage of EHR within the 2017 program, so the most recent completed data would be on the 2016 program.
@@ -13,10 +14,11 @@ To answer the first of our [Initial Questions](https://euniceyeh.github.io/EHR-P
 
 1. Data Source & Metadata
 
-And here we are: readily available on [Data.Medicare.gov](https://data.medicare.gov/Physician-Compare/Physician-Compare-National-Downloadable-File/mj5m-pzi6) are the demographics of professionals enrolled in Medicare at the practitioner level.
+And here we are: readily available on [Data.Medicare.gov](https://data.medicare.gov/Physician-Compare/Physician-Compare-National-Downloadable-File/mj5m-pzi6) are the demographics of professionals eligible for the Medicare & Medicaid EHR incentive program at the practitioner level.
 
 ```{r load-EPs-data, cache=TRUE}
 # EPs <- read.cvs("https://data.medicare.gov/api/views/mj5m-pzi6/rows.csv?accessType=DOWNLOAD")
+EPs <- read.cvs("https://data.medicare.gov/api/views/mj5m-pzi6/rows.csv", nrows = 10)
 ```
 
 2. Exploring & Understanding the Data
@@ -32,8 +34,8 @@ And here we are: readily available on [Data.Medicare.gov](https://data.medicare.
   
 ```{r save-EPs-data}
 # separate out EPs to those not affiliated with any hospital = EPs --> will be used for 
-EPs_cleaned <- data.frame(x = 1, y = 1:10)
-saveRDS(EPs_cleaned, file = "./data/EPs.rds")
+# EPs_cleaned <- data.frame(x = 1, y = 1:10)
+# saveRDS(EPs_cleaned, file = "./data/EPs.rds")
 
 # remember don't need to save the hosp_afl subset of the data because it will be merged soon within the chapter (will save the merged version for analysis)
 ```

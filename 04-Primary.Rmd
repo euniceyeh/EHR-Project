@@ -1,4 +1,4 @@
-# Final Analysis {#final}
+# Primary Analysis {#primary}
 
 *What did you learn about the data? How did you answer the questions? How can you justify your answers?*
 
@@ -7,7 +7,7 @@
 
 1. Describe the analysis population
 
-2. Show some correlations
+2. Exploratory: Show some correlations
 
 3. State the model
 
@@ -22,7 +22,10 @@
 
 1. Describe the analysis population
 
-2. Show some correlations
+2. Exploratory: Show some correlations
+
+- higher revenue, higher EHR use
+- higher staffed beds, higher EHR use
 
 3. State the model
 

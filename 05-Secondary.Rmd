@@ -1,4 +1,4 @@
-# Exploratory Analysis {#exploratory}
+# Secondary Analysis {#secondary}
 
 *What visualizations did you use to look at your data in different ways? What are the different statistical methods you considered? Justify the decisions you made, and show any major changes to your ideas. How did you reach these conclusions?*
 
@@ -15,7 +15,7 @@
 
 
 
-## U.S. Maps Visualizations
+## Regional
 
 1. practitioner demographics across the US
 
