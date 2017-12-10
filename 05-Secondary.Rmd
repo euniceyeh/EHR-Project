@@ -1,7 +1,5 @@
 # Secondary Analysis {#secondary}
 
-*What visualizations did you use to look at your data in different ways? What are the different statistical methods you considered? Justify the decisions you made, and show any major changes to your ideas. How did you reach these conclusions?*
-
 
 ## EHR Vendor Types
 
@@ -11,13 +9,112 @@
 
 3. exploratory results
 
+
+
+## Exploring the Characteristics of Non-hospital-affiliated Practitioners Who Use EHR
+
+1. Check the distributions of number of practice locations, states, products, and vendors among practitioners whom we have EHR usage information on. Counts of these distributions are the number of practitioners.
+
+
+2. Explore practitioner demographics: gender, graduation year, medical school attended, primary specialty.
+
+
+
+```{r, eval=FALSE}
+merged_EPs_vendor %>% group_by(Graduation.year) %>% select(products) %>% table()
+```
+
+** ADD LATER: show N's at each point of the x-axis **
+
+```{r, eval=FALSE}
+phys_EHR %>%
+  ggplot(aes(factor(products), Graduation.year)) +
+  geom_boxplot() + 
+  facet_grid(.~Gender) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.25)) +
+  xlab("Number of EHR Products") +
+  ylab("Graduation Year") +
+  ggtitle("Dist of Grad Year by Number of EHR Products Used by Gender")
+```
+
+
+3. Perform Association Rule Learning on all variables from the first two sections. **check the validity of using this method if my variables are not independent from one another.**
+Here, each "transaction" is a practitioner who adapted EHR as part of the Medicare EHR Incentive Program in the U.S.
+***used becuse we have variables with a lot of variables
+
+
+```{r, eval=FALSE}
+library("arulesViz")
+
+# need to keep certain associational variables of interest and discretize them
+assoc <- phys_EHR %>% ungroup() %>% 
+  select(-NPI, -First.Name, -Last.Name, -Used.electronic.health.records, -EHRuse) %>% 
+  mutate(Gradyr = as.factor(Graduation.year),
+         State = as.factor(state_abb),
+         locations = as.factor(locations),
+         products = as.factor(products),
+         vendors = as.factor(vendors)
+         ) %>% 
+  select(-Graduation.year, -state_abb)
+View(assoc)
+
+# convert from a data frame to a transaction dataset
+assoctrans <- as(assoc, "transactions")
+
+# create rules using the apriori
+rules <- apriori(assoctrans, parameter=list(support=0.01, confidence=0.5))
+plot(rules)
+```
+
+The result is a set of 4152 association rules with generally high confidence and low support (proportion of transactions in the dataset which contain the itemset). Let's first trim this down a bit to show only important rules (confidence > 0.85). We'll pick the top 30 rules so we have a smaller subset to find meaningful relationships.
+
+The top 30 rules are chosen with respect to the lift measure (a measure of rule strength) - the deviation of the support of the whole rule from the support expected under independence given the supports of both sides of the rule.
+
+```{r, eval=FALSE}
+subrules <- rules[quality(rules)$confidence > 0.85]
+inspect(head(sort(subrules, by ="lift"),30))
+plot(subrules, method="grouped", control=list(k=50))
+```
+
+
+* The top 18 rules show that the strongest associations are among practitioners who use 5 EHR products across 2 different vendors in the state of Minnesota within a single practice. 
+* The second highest set of rules shows a strong association among practitioners who use 7 EHR products across 2 different vendors in the state of California within a single practice.
+
+To explore the top rules, we created a couple visualizations.
+
+We can visualize these top 18 rules using a directed network graph where the items are vertices and the directed edges are the rules in the direction of the antecedent (IF) to the consequent (THEN). (check this?)
+
+```{r, eval=FALSE}
+top18 <- head(sort(subrules, by ="lift"),18)
+plot(top18, method="graph") # uses items and rules as vertices connecting them with directed edges 
+plot(top18, method="graph", control=list(type="itemsets")) # uses itemsets as vertices and rules are represented by directed edges
+```
+
+In a parallel coordinates plot, the width of the arrows represents support and the intensity of the color represent confidence. We plotted the top 18 rules.
+
+```{r, eval=FALSE}
+plot(top18, method="paracoord", control=list(reorder=TRUE))
+```
+
+
+Using Associative Rule Learning, we found the following factors were important:
+
+* number of EHR products used
+* number of vendors used
+* region (states)
+
+The results from the physician-vendor data was not that helpful, so we decided not to use it in our final model.
+
+
+
+
 4. conclusions - how do these inform our final analyses?
 
 
 
 ## Regional
 
-1. practitioner demographics across the US
+1. physician demographics across the US
 
 2. hospital demographics across the US
 

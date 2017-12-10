@@ -2,7 +2,7 @@
 
 *What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?*
 
-1. What are the demographics of eligible professionals (EPs) in the incentive program who have been using EHR?
+1. What are the demographics of eligible physicians in the incentive program who have been using EHR?
 
 2. What are the demographics of eligible hospitals in the incentive program who have been using EHR?
 

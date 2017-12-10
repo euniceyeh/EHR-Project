@@ -24,4 +24,5 @@ description: "This is the final project report for BST 260 on the relationships 
 knitr::write_bib(c(
   .packages(), 'bookdown', 'knitr', 'rmarkdown', 'readr', 'tidyverse'
 ), 'packages.bib')
+
 ```

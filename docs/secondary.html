@@ -32,8 +32,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
+<link rel="prev" href="primary.html">
 
-<link rel="next" href="work.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -155,23 +155,98 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">BST 260 Final Project: EHR</h1>
-<h4 class="author"><em>Eunice Yeh, Lauren Yoo, Katherine Wang</em></h4>
-<h4 class="date"><em>2017-12-09</em></h4>
+<div id="secondary" class="section level1">
+<h1><span class="header-section-number">Chapter 6</span> Secondary Analysis</h1>
+<div id="ehr-vendor-types" class="section level2">
+<h2><span class="header-section-number">6.1</span> EHR Vendor Types</h2>
+<ol style="list-style-type: decimal">
+<li><p>Merging of the vendor and practitioner datasets</p></li>
+<li><p>more clean up</p></li>
+<li><p>exploratory results</p></li>
+</ol>
 </div>
-<div id="overview-and-motivation" class="section level1">
-<h1><span class="header-section-number">Chapter 1</span> Overview and Motivation</h1>
-<p><em>Provide an overview of the project goals and the motivation for it. Consider that this will be read by people who did not see your project proposal.</em></p>
+<div id="exploring-the-characteristics-of-non-hospital-affiliated-practitioners-who-use-ehr" class="section level2">
+<h2><span class="header-section-number">6.2</span> Exploring the Characteristics of Non-hospital-affiliated Practitioners Who Use EHR</h2>
+<ol style="list-style-type: decimal">
+<li><p>Check the distributions of number of practice locations, states, products, and vendors among practitioners whom we have EHR usage information on. Counts of these distributions are the number of practitioners.</p></li>
+<li><p>Explore practitioner demographics: gender, graduation year, medical school attended, primary specialty.</p></li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">merged_EPs_vendor <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(Graduation.year) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(products) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">table</span>()</code></pre></div>
+<p>** ADD LATER: show N’s at each point of the x-axis **</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">phys_EHR <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="kw">factor</span>(products), Graduation.year)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">facet_grid</span>(.<span class="op">~</span>Gender) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> <span class="fl">0.25</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Number of EHR Products&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Graduation Year&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Dist of Grad Year by Number of EHR Products Used by Gender&quot;</span>)</code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>Perform Association Rule Learning on all variables from the first two sections. <strong>check the validity of using this method if my variables are not independent from one another.</strong> Here, each “transaction” is a practitioner who adapted EHR as part of the Medicare EHR Incentive Program in the U.S. ***used becuse we have variables with a lot of variables</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;arulesViz&quot;</span>)
 
+<span class="co"># need to keep certain associational variables of interest and discretize them</span>
+assoc &lt;-<span class="st"> </span>phys_EHR <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>NPI, <span class="op">-</span>First.Name, <span class="op">-</span>Last.Name, <span class="op">-</span>Used.electronic.health.records, <span class="op">-</span>EHRuse) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Gradyr =</span> <span class="kw">as.factor</span>(Graduation.year),
+         <span class="dt">State =</span> <span class="kw">as.factor</span>(state_abb),
+         <span class="dt">locations =</span> <span class="kw">as.factor</span>(locations),
+         <span class="dt">products =</span> <span class="kw">as.factor</span>(products),
+         <span class="dt">vendors =</span> <span class="kw">as.factor</span>(vendors)
+         ) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>Graduation.year, <span class="op">-</span>state_abb)
+<span class="kw">View</span>(assoc)
+
+<span class="co"># convert from a data frame to a transaction dataset</span>
+assoctrans &lt;-<span class="st"> </span><span class="kw">as</span>(assoc, <span class="st">&quot;transactions&quot;</span>)
+
+<span class="co"># create rules using the apriori</span>
+rules &lt;-<span class="st"> </span><span class="kw">apriori</span>(assoctrans, <span class="dt">parameter=</span><span class="kw">list</span>(<span class="dt">support=</span><span class="fl">0.01</span>, <span class="dt">confidence=</span><span class="fl">0.5</span>))
+<span class="kw">plot</span>(rules)</code></pre></div>
+<p>The result is a set of 4152 association rules with generally high confidence and low support (proportion of transactions in the dataset which contain the itemset). Let’s first trim this down a bit to show only important rules (confidence &gt; 0.85). We’ll pick the top 30 rules so we have a smaller subset to find meaningful relationships.</p>
+<p>The top 30 rules are chosen with respect to the lift measure (a measure of rule strength) - the deviation of the support of the whole rule from the support expected under independence given the supports of both sides of the rule.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">subrules &lt;-<span class="st"> </span>rules[<span class="kw">quality</span>(rules)<span class="op">$</span>confidence <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.85</span>]
+<span class="kw">inspect</span>(<span class="kw">head</span>(<span class="kw">sort</span>(subrules, <span class="dt">by =</span><span class="st">&quot;lift&quot;</span>),<span class="dv">30</span>))
+<span class="kw">plot</span>(subrules, <span class="dt">method=</span><span class="st">&quot;grouped&quot;</span>, <span class="dt">control=</span><span class="kw">list</span>(<span class="dt">k=</span><span class="dv">50</span>))</code></pre></div>
+<ul>
+<li>The top 18 rules show that the strongest associations are among practitioners who use 5 EHR products across 2 different vendors in the state of Minnesota within a single practice.</li>
+<li>The second highest set of rules shows a strong association among practitioners who use 7 EHR products across 2 different vendors in the state of California within a single practice.</li>
+</ul>
+<p>To explore the top rules, we created a couple visualizations.</p>
+<p>We can visualize these top 18 rules using a directed network graph where the items are vertices and the directed edges are the rules in the direction of the antecedent (IF) to the consequent (THEN). (check this?)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">top18 &lt;-<span class="st"> </span><span class="kw">head</span>(<span class="kw">sort</span>(subrules, <span class="dt">by =</span><span class="st">&quot;lift&quot;</span>),<span class="dv">18</span>)
+<span class="kw">plot</span>(top18, <span class="dt">method=</span><span class="st">&quot;graph&quot;</span>) <span class="co"># uses items and rules as vertices connecting them with directed edges </span>
+<span class="kw">plot</span>(top18, <span class="dt">method=</span><span class="st">&quot;graph&quot;</span>, <span class="dt">control=</span><span class="kw">list</span>(<span class="dt">type=</span><span class="st">&quot;itemsets&quot;</span>)) <span class="co"># uses itemsets as vertices and rules are represented by directed edges</span></code></pre></div>
+<p>In a parallel coordinates plot, the width of the arrows represents support and the intensity of the color represent confidence. We plotted the top 18 rules.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(top18, <span class="dt">method=</span><span class="st">&quot;paracoord&quot;</span>, <span class="dt">control=</span><span class="kw">list</span>(<span class="dt">reorder=</span><span class="ot">TRUE</span>))</code></pre></div>
+<p>Using Associative Rule Learning, we found the following factors were important:</p>
+<ul>
+<li>number of EHR products used</li>
+<li>number of vendors used</li>
+<li>region (states)</li>
+</ul>
+<p>The results from the physician-vendor data was not that helpful, so we decided not to use it in our final model.</p>
+<ol start="4" style="list-style-type: decimal">
+<li>conclusions - how do these inform our final analyses?</li>
+</ol>
+</div>
+<div id="regional" class="section level2">
+<h2><span class="header-section-number">6.3</span> Regional</h2>
+<ol style="list-style-type: decimal">
+<li><p>physician demographics across the US</p></li>
+<li><p>hospital demographics across the US</p></li>
+</ol>
+
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
+<a href="primary.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
-<a href="work.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -200,7 +275,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/euniceyeh/EHR-Project/edit/master/index.Rmd",
+"link": "https://github.com/euniceyeh/EHR-Project/edit/master/05-Secondary.Rmd",
 "text": "Edit"
 },
 "download": ["EHR-Project.pdf"],
