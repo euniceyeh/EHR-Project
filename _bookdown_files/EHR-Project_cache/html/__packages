@@ -17,3 +17,5 @@ boot
 bindrcpp
 bookdown
 zipcode
+RColorBrewer
+car

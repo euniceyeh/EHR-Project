@@ -25,7 +25,7 @@
 <meta name="author" content="Eunice Yeh, Lauren Yoo, Katherine Wang">
 
 
-<meta name="date" content="2017-12-09">
+<meta name="date" content="2017-12-10">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -128,12 +128,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="5.1.1" data-path="primary.html"><a href="primary.html#exploratory"><i class="fa fa-check"></i><b>5.1.1</b> Exploratory</a></li>
 <li class="chapter" data-level="5.1.2" data-path="primary.html"><a href="primary.html#final-analysis"><i class="fa fa-check"></i><b>5.1.2</b> Final Analysis</a></li>
 </ul></li>
-<li class="chapter" data-level="5.2" data-path="primary.html"><a href="primary.html#hospital-demographics"><i class="fa fa-check"></i><b>5.2</b> Hospital Demographics</a></li>
+<li class="chapter" data-level="5.2" data-path="primary.html"><a href="primary.html#hospital-demographics"><i class="fa fa-check"></i><b>5.2</b> Hospital Demographics</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="primary.html"><a href="primary.html#exploratory-1"><i class="fa fa-check"></i><b>5.2.1</b> Exploratory</a></li>
+<li class="chapter" data-level="5.2.2" data-path="primary.html"><a href="primary.html#final-analysis-1"><i class="fa fa-check"></i><b>5.2.2</b> Final Analysis</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="secondary.html"><a href="secondary.html"><i class="fa fa-check"></i><b>6</b> Secondary Analysis</a><ul>
-<li class="chapter" data-level="6.1" data-path="secondary.html"><a href="secondary.html#ehr-vendor-types"><i class="fa fa-check"></i><b>6.1</b> EHR Vendor Types</a></li>
-<li class="chapter" data-level="6.2" data-path="secondary.html"><a href="secondary.html#exploring-the-characteristics-of-non-hospital-affiliated-practitioners-who-use-ehr"><i class="fa fa-check"></i><b>6.2</b> Exploring the Characteristics of Non-hospital-affiliated Practitioners Who Use EHR</a></li>
-<li class="chapter" data-level="6.3" data-path="secondary.html"><a href="secondary.html#regional"><i class="fa fa-check"></i><b>6.3</b> Regional</a></li>
+<li class="chapter" data-level="6.1" data-path="secondary.html"><a href="secondary.html#by-geographical-regions"><i class="fa fa-check"></i><b>6.1</b> By Geographical Regions</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="secondary.html"><a href="secondary.html#physician-demographics-1"><i class="fa fa-check"></i><b>6.1.1</b> Physician Demographics</a></li>
+<li class="chapter" data-level="6.1.2" data-path="secondary.html"><a href="secondary.html#hospital-demographics-1"><i class="fa fa-check"></i><b>6.1.2</b> Hospital Demographics</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="secondary.html"><a href="secondary.html#by-ehr-vendors"><i class="fa fa-check"></i><b>6.2</b> By EHR Vendors</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="secondary.html"><a href="secondary.html#physician-demographics-2"><i class="fa fa-check"></i><b>6.2.1</b> Physician Demographics</a></li>
+<li class="chapter" data-level="6.2.2" data-path="secondary.html"><a href="secondary.html#hospital-demographics-2"><i class="fa fa-check"></i><b>6.2.2</b> Hospital Demographics</a></li>
+</ul></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -157,8 +165,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
             <section class="normal" id="section-">
 <div id="primary" class="section level1">
 <h1><span class="header-section-number">Chapter 5</span> Primary Analysis</h1>
-<p>For the exploratory sections, we aim to answer the following objectives: <em>What visualizations did you use to look at your data in different ways? What are the different statistical methods you considered? Justify the decisions you made, and show any major changes to your ideas. How did you reach these conclusions?</em></p>
-<p>For the final analysis sections, we focuses on: <em>What did you learn about the data? How did you answer the questions? How can you justify your answers?</em></p>
+<p><strong>[resate our primary objectives here and explain why we split the primary analysis into the following sections]</strong></p>
 <div id="physician-demographics" class="section level2">
 <h2><span class="header-section-number">5.1</span> Physician Demographics</h2>
 <p>Since practitioners who are affiliated with a hospital may not have a choice in using EHR or not, we will exclude these from our analysis population, which is now just the practitioners who enrolled in the Medicare Incentive Program who are not affiliated with any hospital, which come from the data set <code>EPs</code> that we cleaned in section <a href="https://euniceyeh.github.io/EHR-Project/data.html#eligible-professionals-eps">4.1</a>.</p>
@@ -215,7 +222,7 @@ rules &lt;-<span class="st"> </span><span class="kw">apriori</span>(corrt, <span
 ## writing ... [85 rule(s)] done [0.00s].
 ## creating S4 object  ... done [0.00s].</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(rules)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>The result is a a set of ______________ association rules with generally high confidence and low support (proportion of transactions in the data set which contain the item set). Let’s first trim this down a bit to show only important rules (confidence &gt; 0.85). We’ll pick the top 30 rules so we have a smaller subset to find meaningful relationships.</p>
 <p>The top 30 rules are chosen with respect to the lift measure (a measure of rule strength) - the deviation of the support of the whole rule from the support expected under independence given the supports of both sides of the rule.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">subrules &lt;-<span class="st"> </span>rules[<span class="kw">quality</span>(rules)<span class="op">$</span>confidence <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.85</span>]
@@ -232,7 +239,7 @@ rules &lt;-<span class="st"> </span><span class="kw">apriori</span>(corrt, <span
 ## [6] {pri_spec=NURSE PRACTITIONER}   =&gt; {gndr=F} 0.05555556  0.9629630 1.767320    26
 ## [7] {pri_spec=PEDIATRIC MEDICINE}   =&gt; {gndr=F} 0.01709402  0.8888889 1.631373     8</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(subrules, <span class="dt">method=</span><span class="st">&quot;grouped&quot;</span>, <span class="dt">control=</span><span class="kw">list</span>(<span class="dt">k=</span><span class="dv">50</span>))</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <p>We concluded the following:</p>
 <ul>
 <li>Practitioner graduation year is not very interesting</li>
@@ -251,7 +258,7 @@ rules &lt;-<span class="st"> </span><span class="kw">apriori</span>(corrt, <span
 <span class="st">  </span><span class="kw">geom_violin</span>(<span class="dt">alpha =</span> <span class="fl">0.75</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">facet_grid</span>(variable <span class="op">~</span><span class="st"> </span>.) <span class="op">+</span>
 <span class="st">  </span><span class="kw">scale_y_sqrt</span>()</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <p>Gender seems to be pretty independent of the number of years since graduation so we should be able to add both to the model without influencing each other’s effects. The distribution of years since graduation is skewed, so we used a square root scale to make the kernel density curves look more symmetric in the plots than it otherwise would have been. The actual values of the years since graduation were left alone so we could intuitively interpret the results from our model.</p>
 <ol start="2" style="list-style-type: decimal">
 <li>Number of locations by gender using jittered violin plots</li>
@@ -262,7 +269,7 @@ rules &lt;-<span class="st"> </span><span class="kw">apriori</span>(corrt, <span
 <span class="st">  </span><span class="kw">geom_violin</span>(<span class="dt">alpha =</span> <span class="fl">0.75</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">facet_grid</span>(variable <span class="op">~</span><span class="st"> </span>.) <span class="op">+</span>
 <span class="st">  </span><span class="kw">scale_y_log10</span>()</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <p>While practice locations seem to be distributed evenly between males and females, note that the large majority of physicians in our data set have only one location. There are a few outliers who have over 300 unique zip codes associated with their practices.</p>
 <ol start="3" style="list-style-type: decimal">
 <li>Years since graduation by credentials using bubble plots</li>
@@ -271,7 +278,7 @@ rules &lt;-<span class="st"> </span><span class="kw">apriori</span>(corrt, <span
 <span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(cred, yrs_grd)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">stat_sum</span>(<span class="kw">aes</span>(<span class="dt">size =</span> ..n.., <span class="dt">group =</span> <span class="dv">1</span>)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">scale_size_area</span>(<span class="dt">max_size =</span> <span class="dv">10</span>)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <p>Credentials (physician degrees) had one of the fewest number of levels, so we wanted to see if it was a good candidate for our model. The distribution of years since graduation looked pretty consistent across different credentials. Unfortunately, there were disproportionally high numbers of physicians with credentials listed as N/A (~75%), meaning their credential was unknown, so we could not use this variable in our model.</p>
 <ol start="4" style="list-style-type: decimal">
 <li>Gender, years since graduation, and number of locations by EHR use</li>
@@ -283,12 +290,12 @@ my_colors &lt;-<span class="st"> </span><span class="kw">brewer.pal</span>(<span
 <span class="st">  </span><span class="kw">scatterplotMatrix</span>(<span class="op">~</span>gender<span class="op">+</span>yrs_grd<span class="op">+</span>locations<span class="op">|</span>ehr, <span class="dt">data=</span>., 
                     <span class="dt">col=</span>my_colors, <span class="dt">smoother.args=</span><span class="kw">list</span>(<span class="dt">col=</span><span class="st">&quot;grey&quot;</span>), 
                     <span class="dt">cex=</span><span class="fl">1.5</span> , <span class="dt">pch=</span><span class="kw">c</span>(<span class="dv">15</span>,<span class="dv">16</span>), <span class="dt">legend.plot=</span><span class="ot">FALSE</span>)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># bubble plot of years since graduation by EHR use</span>
 EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(ehr, yrs_grd)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">stat_sum</span>(<span class="kw">aes</span>(<span class="dt">size =</span> ..n.., <span class="dt">group =</span> <span class="dv">1</span>)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">scale_size_area</span>(<span class="dt">max_size =</span> <span class="dv">10</span>)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-22-2.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># jittered violin plot of years since graduation by EHR use</span>
 EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">melt</span>(<span class="dt">id.vars=</span><span class="st">&quot;ehr&quot;</span>, <span class="dt">measure.vars=</span><span class="st">&quot;yrs_grd&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(ehr, value)) <span class="op">+</span>
@@ -296,7 +303,7 @@ EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">melt
 <span class="st">  </span><span class="kw">geom_violin</span>(<span class="dt">alpha =</span> <span class="fl">0.75</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">facet_grid</span>(variable <span class="op">~</span><span class="st"> </span>.) <span class="op">+</span>
 <span class="st">  </span><span class="kw">scale_y_sqrt</span>()</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-15-3.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-22-3.png" width="672" /></p>
 <ul>
 <li>Note that we forced gender, which is binary, into the scatter plot matrix so just ignore any noise between the values 1 and 2 on the scale for gender.</li>
 <li>From the this scatter plot matrix, it is apparent that the distribution of gender and years since graduation differ by EHR use (as indicated by the red and blue colors, blinded here because we want to give you some suspense dun dun dun - but actually, we just couldn’t get the legend to not completely cover the density curves).</li>
@@ -344,10 +351,12 @@ model &lt;-<span class="st"> </span><span class="kw">glm</span>(ehr <span class=
 ## gndrM       2.35056990 1.44398896 3.84687839
 ## yrs_grd     1.01798938 0.99676093 1.03804917
 ## locations   1.01262573 0.79323722 1.15495640</code></pre>
+<p>[copy the interpretation from katherine’s website]</p>
+<p>We did not find a statistically significant effect in the number of practice locations on the use of EHR, so this makes me feel better about collapsing the records by unique physicians and losing the specific location information like city, state, and zip code. If owning practices in various different locations had an effect on EHR use, then we would have needed to consider fitting a mixed effects model that takes into account the random effects of the different locations these physicians practice in, or consider a repeated measures analysis on the non-collapsed data where a physician can have repeated records for each unique location of their practice, etc. But since we lack statistical evidence for the number of practice locations to show an effect on EHR use, we have no reason to seek a better model to fit.</p>
 </div>
 <div id="predicted-probabilities" class="section level4">
 <h4><span class="header-section-number">5.1.2.2</span> Predicted Probabilities</h4>
-<p>We can look at the effects of varying years since graduation by gender while holding the number of practice locations constant at the mean on the outcome of EHR use with a ribbon plot of the predicted probabilities.</p>
+<p>We can look at the effects of varying years since graduation by gender while holding the number of practice locations constant at its sample mean on the outcome of EHR use with a ribbon plot of the predicted probabilities.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create a table of predicted probabilities varying the value of years since graduation and gender</span>
 varyvals &lt;-<span class="st"> </span><span class="kw">with</span>(EPs, <span class="kw">data.frame</span>(<span class="dt">yrs_grd =</span> <span class="kw">rep</span>(<span class="kw">seq</span>(<span class="dt">from =</span> <span class="kw">min</span>(yrs_grd), <span class="dt">to =</span> <span class="kw">max</span>(yrs_grd), <span class="dt">length.out =</span> <span class="dv">100</span>),
     <span class="dv">2</span>), <span class="dt">locations =</span> <span class="kw">mean</span>(locations), <span class="dt">gndr =</span> <span class="kw">factor</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&#39;M&#39;</span>,<span class="st">&#39;F&#39;</span>), <span class="dt">each =</span> <span class="dv">100</span>))))
@@ -363,29 +372,35 @@ pred &lt;-<span class="st"> </span><span class="kw">within</span>(pred, {
 <span class="kw">ggplot</span>(pred, <span class="kw">aes</span>(<span class="dt">x =</span> yrs_grd, <span class="dt">y =</span> PredictedProb)) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_ribbon</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> LL, <span class="dt">ymax =</span> UL, <span class="dt">fill =</span> gndr), <span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">colour =</span> gndr), <span class="dt">size =</span> <span class="dv">1</span>)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 <p>Well, how well does the model with these predictors fit compared to a null model? Let’s perform the likelihood ratio test using a chi-square test of <code>{r} with(model, null.deviance - deviance)</code> (the difference in deviance for the two models) with <code>{r} with(model, df.null - df.residual)</code> degrees of freedom on our observed data, which gives us the following p-value:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">with</span>(model, <span class="kw">pchisq</span>(null.deviance <span class="op">-</span><span class="st"> </span>deviance, df.null <span class="op">-</span><span class="st"> </span>df.residual, <span class="dt">lower.tail =</span> <span class="ot">FALSE</span>))</code></pre></div>
 <pre><code>## [1] 0.0009280001</code></pre>
+<p>Looks like our model did pretty well!</p>
 </div>
 </div>
 </div>
 <div id="hospital-demographics" class="section level2">
 <h2><span class="header-section-number">5.2</span> Hospital Demographics</h2>
-<ol style="list-style-type: decimal">
-<li><p>Describe the analysis population</p></li>
-<li><p>Exploratory: Show some correlations</p></li>
-</ol>
+<div id="exploratory-1" class="section level3">
+<h3><span class="header-section-number">5.2.1</span> Exploratory</h3>
 <ul>
-<li>higher revenue, higher EHR use</li>
-<li>higher staffed beds, higher EHR use</li>
+<li>Describe the analysis population</li>
+<li>outline a model we want to fit, talk some math</li>
+<li>what are our aims?</li>
+<li>correlations</li>
 </ul>
-<ol start="3" style="list-style-type: decimal">
-<li><p>State the model</p></li>
-<li><p>Run the model &amp; describe the results</p></li>
-<li><p>Conclusion/discussion</p></li>
-</ol>
+</div>
+<div id="final-analysis-1" class="section level3">
+<h3><span class="header-section-number">5.2.2</span> Final Analysis</h3>
+<ul>
+<li>state our final model based on correlation results</li>
+<li>Run the model</li>
+<li>describe the results</li>
+<li>Conclusion/discussion</li>
+</ul>
 
+</div>
 </div>
 </div>
             </section>

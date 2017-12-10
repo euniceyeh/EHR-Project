@@ -1,9 +1,6 @@
 # Primary Analysis {#primary}
 
-For the exploratory sections, we aim to answer the following objectives: *What visualizations did you use to look at your data in different ways? What are the different statistical methods you considered? Justify the decisions you made, and show any major changes to your ideas. How did you reach these conclusions?*
-
-For the final analysis sections, we focuses on: *What did you learn about the data? How did you answer the questions? How can you justify your answers?*
-
+**[resate our primary objectives here and explain why we split the primary analysis into the following sections]**
 
 ## Physician Demographics
 
@@ -134,9 +131,14 @@ summary(model)
 exp(cbind(OR = coef(model), confint(model)))
 ```
 
+[copy the interpretation from katherine's website]
+
+We did not find a statistically significant effect in the number of practice locations on the use of EHR, so this makes me feel better about collapsing the records by unique physicians and losing the specific location information like city, state, and zip code. If owning practices in various different locations had an effect on EHR use, then we would have needed to consider fitting a mixed effects model that takes into account the random effects of the different locations these physicians practice in, or consider a repeated measures analysis on the non-collapsed data where a physician can have repeated records for each unique location of their practice, etc. But since we lack statistical evidence for the number of practice locations to show an effect on EHR use, we have no reason to seek a better model to fit.
+
+
 #### Predicted Probabilities
 
-We can look at the effects of varying years since graduation by gender while holding the number of practice locations constant at the mean on the outcome of EHR use with a ribbon plot of the predicted probabilities.
+We can look at the effects of varying years since graduation by gender while holding the number of practice locations constant at its sample mean on the outcome of EHR use with a ribbon plot of the predicted probabilities.
 
 ```{r}
 # create a table of predicted probabilities varying the value of years since graduation and gender
@@ -162,21 +164,22 @@ Well, how well does the model with these predictors fit compared to a null model
 with(model, pchisq(null.deviance - deviance, df.null - df.residual, lower.tail = FALSE))
 ```
 
+Looks like our model did pretty well!
 
 
 ## Hospital Demographics
 
+### Exploratory
 
-1. Describe the analysis population
+- Describe the analysis population
+- outline a model we want to fit, talk some math
+  - what are our aims?
+- correlations
 
-2. Exploratory: Show some correlations
+### Final Analysis
 
-- higher revenue, higher EHR use
-- higher staffed beds, higher EHR use
-
-3. State the model
-
-4. Run the model & describe the results
-
-5. Conclusion/discussion
+- state our final model based on correlation results
+- Run the model
+- describe the results
+- Conclusion/discussion
 

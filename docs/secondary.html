@@ -25,7 +25,7 @@
 <meta name="author" content="Eunice Yeh, Lauren Yoo, Katherine Wang">
 
 
-<meta name="date" content="2017-12-09">
+<meta name="date" content="2017-12-10">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -128,12 +128,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="5.1.1" data-path="primary.html"><a href="primary.html#exploratory"><i class="fa fa-check"></i><b>5.1.1</b> Exploratory</a></li>
 <li class="chapter" data-level="5.1.2" data-path="primary.html"><a href="primary.html#final-analysis"><i class="fa fa-check"></i><b>5.1.2</b> Final Analysis</a></li>
 </ul></li>
-<li class="chapter" data-level="5.2" data-path="primary.html"><a href="primary.html#hospital-demographics"><i class="fa fa-check"></i><b>5.2</b> Hospital Demographics</a></li>
+<li class="chapter" data-level="5.2" data-path="primary.html"><a href="primary.html#hospital-demographics"><i class="fa fa-check"></i><b>5.2</b> Hospital Demographics</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="primary.html"><a href="primary.html#exploratory-1"><i class="fa fa-check"></i><b>5.2.1</b> Exploratory</a></li>
+<li class="chapter" data-level="5.2.2" data-path="primary.html"><a href="primary.html#final-analysis-1"><i class="fa fa-check"></i><b>5.2.2</b> Final Analysis</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="secondary.html"><a href="secondary.html"><i class="fa fa-check"></i><b>6</b> Secondary Analysis</a><ul>
-<li class="chapter" data-level="6.1" data-path="secondary.html"><a href="secondary.html#ehr-vendor-types"><i class="fa fa-check"></i><b>6.1</b> EHR Vendor Types</a></li>
-<li class="chapter" data-level="6.2" data-path="secondary.html"><a href="secondary.html#exploring-the-characteristics-of-non-hospital-affiliated-practitioners-who-use-ehr"><i class="fa fa-check"></i><b>6.2</b> Exploring the Characteristics of Non-hospital-affiliated Practitioners Who Use EHR</a></li>
-<li class="chapter" data-level="6.3" data-path="secondary.html"><a href="secondary.html#regional"><i class="fa fa-check"></i><b>6.3</b> Regional</a></li>
+<li class="chapter" data-level="6.1" data-path="secondary.html"><a href="secondary.html#by-geographical-regions"><i class="fa fa-check"></i><b>6.1</b> By Geographical Regions</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="secondary.html"><a href="secondary.html#physician-demographics-1"><i class="fa fa-check"></i><b>6.1.1</b> Physician Demographics</a></li>
+<li class="chapter" data-level="6.1.2" data-path="secondary.html"><a href="secondary.html#hospital-demographics-1"><i class="fa fa-check"></i><b>6.1.2</b> Hospital Demographics</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="secondary.html"><a href="secondary.html#by-ehr-vendors"><i class="fa fa-check"></i><b>6.2</b> By EHR Vendors</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="secondary.html"><a href="secondary.html#physician-demographics-2"><i class="fa fa-check"></i><b>6.2.1</b> Physician Demographics</a></li>
+<li class="chapter" data-level="6.2.2" data-path="secondary.html"><a href="secondary.html#hospital-demographics-2"><i class="fa fa-check"></i><b>6.2.2</b> Hospital Demographics</a></li>
+</ul></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -157,16 +165,19 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
             <section class="normal" id="section-">
 <div id="secondary" class="section level1">
 <h1><span class="header-section-number">Chapter 6</span> Secondary Analysis</h1>
-<div id="ehr-vendor-types" class="section level2">
-<h2><span class="header-section-number">6.1</span> EHR Vendor Types</h2>
-<ol style="list-style-type: decimal">
-<li><p>Merging of the vendor and practitioner datasets</p></li>
-<li><p>more clean up</p></li>
-<li><p>exploratory results</p></li>
-</ol>
+<div id="by-geographical-regions" class="section level2">
+<h2><span class="header-section-number">6.1</span> By Geographical Regions</h2>
+<div id="physician-demographics-1" class="section level3">
+<h3><span class="header-section-number">6.1.1</span> Physician Demographics</h3>
 </div>
-<div id="exploring-the-characteristics-of-non-hospital-affiliated-practitioners-who-use-ehr" class="section level2">
-<h2><span class="header-section-number">6.2</span> Exploring the Characteristics of Non-hospital-affiliated Practitioners Who Use EHR</h2>
+<div id="hospital-demographics-1" class="section level3">
+<h3><span class="header-section-number">6.1.2</span> Hospital Demographics</h3>
+</div>
+</div>
+<div id="by-ehr-vendors" class="section level2">
+<h2><span class="header-section-number">6.2</span> By EHR Vendors</h2>
+<div id="physician-demographics-2" class="section level3">
+<h3><span class="header-section-number">6.2.1</span> Physician Demographics</h3>
 <ol style="list-style-type: decimal">
 <li><p>Check the distributions of number of practice locations, states, products, and vendors among practitioners whom we have EHR usage information on. Counts of these distributions are the number of practitioners.</p></li>
 <li><p>Explore practitioner demographics: gender, graduation year, medical school attended, primary specialty.</p></li>
@@ -231,13 +242,10 @@ rules &lt;-<span class="st"> </span><span class="kw">apriori</span>(assoctrans, 
 <li>conclusions - how do these inform our final analyses?</li>
 </ol>
 </div>
-<div id="regional" class="section level2">
-<h2><span class="header-section-number">6.3</span> Regional</h2>
-<ol style="list-style-type: decimal">
-<li><p>physician demographics across the US</p></li>
-<li><p>hospital demographics across the US</p></li>
-</ol>
+<div id="hospital-demographics-2" class="section level3">
+<h3><span class="header-section-number">6.2.2</span> Hospital Demographics</h3>
 
+</div>
 </div>
 </div>
             </section>

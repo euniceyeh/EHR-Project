@@ -2,10 +2,17 @@
 
 *What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?*
 
-1. What are the demographics of eligible physicians in the incentive program who have been using EHR?
+------
 
-2. What are the demographics of eligible hospitals in the incentive program who have been using EHR?
+Since the Medicare & Medicaid EHR Incentive Program accepts two types of providers in two different ways, our primary objective of looking at provider demographics on the use of EHR is split into two separate parts:
 
-3. What are the demographics of both types of providers by the specific EHR vendors or products used?
+1. What are the demographics of eligible **physicians** in the incentive program who have been using EHR; are these different from those who have yet to use EHR?
 
-4. Answer all of the above questions again, but stratify geographically (city, state, or zip code).
+2. What are the demographics of eligible **hospitals** in the incentive program who have been using EHR; are these different from those who have yet to use EHR?
+
+
+Our secondary objectives are then:
+
+1. Are all of these demographics and effects on EHR use different geographically?
+
+2. What are the demographics of both types of providers who use EHR by the specific EHR vendor or product types?

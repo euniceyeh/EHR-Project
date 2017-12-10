@@ -25,7 +25,7 @@
 <meta name="author" content="Eunice Yeh, Lauren Yoo, Katherine Wang">
 
 
-<meta name="date" content="2017-12-09">
+<meta name="date" content="2017-12-10">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -128,12 +128,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="5.1.1" data-path="primary.html"><a href="primary.html#exploratory"><i class="fa fa-check"></i><b>5.1.1</b> Exploratory</a></li>
 <li class="chapter" data-level="5.1.2" data-path="primary.html"><a href="primary.html#final-analysis"><i class="fa fa-check"></i><b>5.1.2</b> Final Analysis</a></li>
 </ul></li>
-<li class="chapter" data-level="5.2" data-path="primary.html"><a href="primary.html#hospital-demographics"><i class="fa fa-check"></i><b>5.2</b> Hospital Demographics</a></li>
+<li class="chapter" data-level="5.2" data-path="primary.html"><a href="primary.html#hospital-demographics"><i class="fa fa-check"></i><b>5.2</b> Hospital Demographics</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="primary.html"><a href="primary.html#exploratory-1"><i class="fa fa-check"></i><b>5.2.1</b> Exploratory</a></li>
+<li class="chapter" data-level="5.2.2" data-path="primary.html"><a href="primary.html#final-analysis-1"><i class="fa fa-check"></i><b>5.2.2</b> Final Analysis</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="secondary.html"><a href="secondary.html"><i class="fa fa-check"></i><b>6</b> Secondary Analysis</a><ul>
-<li class="chapter" data-level="6.1" data-path="secondary.html"><a href="secondary.html#ehr-vendor-types"><i class="fa fa-check"></i><b>6.1</b> EHR Vendor Types</a></li>
-<li class="chapter" data-level="6.2" data-path="secondary.html"><a href="secondary.html#exploring-the-characteristics-of-non-hospital-affiliated-practitioners-who-use-ehr"><i class="fa fa-check"></i><b>6.2</b> Exploring the Characteristics of Non-hospital-affiliated Practitioners Who Use EHR</a></li>
-<li class="chapter" data-level="6.3" data-path="secondary.html"><a href="secondary.html#regional"><i class="fa fa-check"></i><b>6.3</b> Regional</a></li>
+<li class="chapter" data-level="6.1" data-path="secondary.html"><a href="secondary.html#by-geographical-regions"><i class="fa fa-check"></i><b>6.1</b> By Geographical Regions</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="secondary.html"><a href="secondary.html#physician-demographics-1"><i class="fa fa-check"></i><b>6.1.1</b> Physician Demographics</a></li>
+<li class="chapter" data-level="6.1.2" data-path="secondary.html"><a href="secondary.html#hospital-demographics-1"><i class="fa fa-check"></i><b>6.1.2</b> Hospital Demographics</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="secondary.html"><a href="secondary.html#by-ehr-vendors"><i class="fa fa-check"></i><b>6.2</b> By EHR Vendors</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="secondary.html"><a href="secondary.html#physician-demographics-2"><i class="fa fa-check"></i><b>6.2.1</b> Physician Demographics</a></li>
+<li class="chapter" data-level="6.2.2" data-path="secondary.html"><a href="secondary.html#hospital-demographics-2"><i class="fa fa-check"></i><b>6.2.2</b> Hospital Demographics</a></li>
+</ul></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -158,11 +166,16 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="questions" class="section level1">
 <h1><span class="header-section-number">Chapter 3</span> Initial Questions</h1>
 <p><em>What questions are you trying to answer? How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?</em></p>
+<hr />
+<p>Since the Medicare &amp; Medicaid EHR Incentive Program accepts two types of providers in two different ways, our primary objective of looking at provider demographics on the use of EHR is split into two separate parts:</p>
 <ol style="list-style-type: decimal">
-<li><p>What are the demographics of eligible physicians in the incentive program who have been using EHR?</p></li>
-<li><p>What are the demographics of eligible hospitals in the incentive program who have been using EHR?</p></li>
-<li><p>What are the demographics of both types of providers by the specific EHR vendors or products used?</p></li>
-<li><p>Answer all of the above questions again, but stratify geographically (city, state, or zip code).</p></li>
+<li><p>What are the demographics of eligible <strong>physicians</strong> in the incentive program who have been using EHR; are these different from those who have yet to use EHR?</p></li>
+<li><p>What are the demographics of eligible <strong>hospitals</strong> in the incentive program who have been using EHR; are these different from those who have yet to use EHR?</p></li>
+</ol>
+<p>Our secondary objectives are then:</p>
+<ol style="list-style-type: decimal">
+<li><p>Are all of these demographics and effects on EHR use different geographically?</p></li>
+<li><p>What are the demographics of both types of providers who use EHR by the specific EHR vendor or product types?</p></li>
 </ol>
 
 </div>

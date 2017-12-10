@@ -1,17 +1,22 @@
 # Secondary Analysis {#secondary}
 
 
-## EHR Vendor Types
 
-1. Merging of the vendor and practitioner datasets
 
-2. more clean up
+## By Geographical Regions
 
-3. exploratory results
+### Physician Demographics
 
 
 
-## Exploring the Characteristics of Non-hospital-affiliated Practitioners Who Use EHR
+### Hospital Demographics
+
+
+
+
+## By EHR Vendors
+
+### Physician Demographics
 
 1. Check the distributions of number of practice locations, states, products, and vendors among practitioners whom we have EHR usage information on. Counts of these distributions are the number of practitioners.
 
@@ -112,9 +117,13 @@ The results from the physician-vendor data was not that helpful, so we decided n
 
 
 
-## Regional
 
-1. physician demographics across the US
 
-2. hospital demographics across the US
+
+
+
+
+### Hospital Demographics
+
+
 

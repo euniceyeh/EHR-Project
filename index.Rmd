@@ -14,10 +14,11 @@ description: "This is the final project report for BST 260 on the relationships 
 
 # Overview and Motivation
 
-*Provide an overview of the project goals and the motivation for it. Consider that this will be read by people who did not see your project proposal.*
+*"Insert an inspirational quote here."*
 
+------
 
-
+![tehe doge](https://thesciencedog.files.wordpress.com/2013/09/golden-retriever-and-science1.jpg)
 
 ```{r include=FALSE}
 # automatically create a bib database for R packages
