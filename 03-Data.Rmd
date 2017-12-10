@@ -13,6 +13,12 @@ library(parallel)
 library(compiler)
 library(RColorBrewer)
 library(car)
+library(broom)
+library(caret)
+library(fiftystater)
+library(zipcode)
+library(gridExtra)
+library(knitr)
 ```
 
 All of our data are based on the 2016 Medicare & Medicaid EHR Incentive Program since the adoption of EHR is an ongoing basis: a provider who adopted and used EHR during the 2014 program, for example, is likely to still be in the program the following years. So theorethically, the 2016 program would be the most cumulative source of providers adopting EHR. As mentioned in [Related Work](https://euniceyeh.github.io/EHR-Project/work.html), the adoption of EHR has been consistently rising over the years across the U.S., so there is also no interest in looking at the use over time when we can just look at the latest collection of data. And since 2017 isn't quite over yet, it wouldn't be fair to start looking at the usage of EHR within the 2017 program, so the most recent completed data would be on the 2016 program.
@@ -170,9 +176,12 @@ saveRDS(EPs, file = "./data/EPs.rds")
 # for the rest of practitioners who are affiliated with a hospital
 hosp_afl <- clean %>% # filter on the clean version
   filter(!is.na(as.integer(hosp_afl_1))) %>% 
-  mutate(hosp_afl_lbn_1 = as.character(hosp_afl_lbn_1), st = as.character(st)) %>% 
-  # only keep relevant or potentially interesting variables
-  select(hosp_afl_lbn_1, st, cty, zip, ehr, hosp_afl_1, pri_spec, gndr, grd_yr)
+  mutate(hosp_afl_lbn_1 = as.character(hosp_afl_lbn_1), 
+         cty = str_trim(as.character(cty)),
+         st = as.character(st),
+         ehr = ifelse(ehr == "Y", 1, 0)) %>% 
+  # only keep relevant or potentially interesting variables (keeping npi to count number of physicians)
+  distinct(npi, hosp_afl_lbn_1, st, cty, ehr, hosp_afl_1, pri_spec, gndr, grd_yr)
 
 # clean up intermediate data sets
 rm(dat, clean, zipcode, zip_dat, zip_fix, zip_mismatch, mismatch_tokeep, top5_mismatch)
@@ -236,7 +245,8 @@ hosp_clean <- transform(hosp_web,
                        Total_discharges = as.numeric(gsub(",", "", Total_discharges)),
                        Patient_days = as.numeric(gsub(",","", Patient_days)),
                        Gross_patient_revenue = as.numeric(gsub("\\$|,", "", Gross_patient_revenue)),
-                       Hospital_name = toupper(Hospital_name), City = toupper(City)
+                       Hospital_name = toupper(Hospital_name),
+                       City = toupper(str_trim(as.character(City)))
                        )
 summary(hosp_clean)
 ```
@@ -250,19 +260,28 @@ hosp_clean <- hosp_clean[rowSums(is.na(hosp_clean)) < 4,] # only delete hosp wit
 summary(hosp_clean)
 ```
 
-Now the minimum value is 1...still questionable and potentially causing the skew in their distributions. But we did take a look at these specific hospitals with any one demographic characteristic of value 1 and they seem to also have low values of the other characteristics as well (not necessarily exactly of 1, that would've been even more suspicious), so these may very well be valid who knows. Anyway, we need to move on with our lives, I mean, to merging with `hosp_afl` (which is a subset of practitioners who are affiliated with a hospital from the previous section) on the hospital name and state since different hospitals in different states can have the same name.
+Now the minimum value is 1...still questionable and potentially causing the skew in their distributions. But we did take a look at these specific hospitals with any one demographic characteristic of value 1 and they seem to also have low values of the other characteristics as well (not necessarily exactly of 1, that would've been even more suspicious), so these may very well be valid who knows. Anyway, we need to move on with our lives, I mean, to merging with `hosp_afl` (which is a subset of practitioners who are affiliated with a hospital from the previous section) on the hospital name and state since different hospitals in different locations can have the same name. Since `hosp_afl` can have multiple rows per hospital if more than one physician in the data is affiliated with it, so we will aggregate the data back to hospital-level after the merge by summarizing physician-level information.
 
 ```{r}
-hosps <- inner_join(hosp_afl, hosp_clean, by=c("hosp_afl_lbn_1"="Hospital_name", "st"="State"))
+hosps <- inner_join(hosp_clean, hosp_afl, by=c("Hospital_name"="hosp_afl_lbn_1", "State"="st"))
+hosps <- hosps %>% 
+  group_by(hosp_afl_1, Hospital_name, State, Staffed_beds, Total_discharges, Patient_days, Gross_patient_revenue) %>% 
+  summarize(num_phys = n_distinct(npi),
+            female_prop = round(mean(ifelse(gndr == "F", 1, 0)),2), 
+            avg_grad_year = round(mean(grd_yr),2),
+            n_specialty =n_distinct(pri_spec),
+            EHR_use = as.factor(max(ehr)))
 summary(hosps)
+table(hosps[which(hosps$num_phys <= 10),]$EHR_use)
 ```
 
-We managed to get a `{r} (nrow(hosps)/nrow(hosp_clean))*100`% match on the hospitals between the two data sets! And the summary statistics on those hospital demographics look a lot nicer and less skewed! _**<------actually check this again on final run!!!!**_
+Well, we managed to get about `{r} (nrow(hosps)/nrow(hosp_clean))*100`% match on the hospitals between the two data sets and the summary statistics on those hospital demographics look a lot nicer and less skewed! _**<------actually check this again on final run!!!!**_ Even though we aggregated the physicial-level demographics because we didn't want to just throw away data, we do acknowledge that these physician-level demographics are not really meaningful because they are not representative of the demographics of the hospital. It is unlikely that we had all the physicians information from our `hosp_afl` for each hospital that matched. (i.e. the 10 physicians we have data on for a hospital may not accurately represent the all practitioners in that hospital) We thought of excluding hospitals with less than 10 practitioners in the data to obtain accurate physician demographics for the hospital, but it would mean cutting down way to much of our limite data. We decided to just focus on the main hospital demographics scraped from the website, and keep the aggregated physician demographics at the exploratory level. Merging with `hosp_afl` still provided us the main outcome of interest, "EHR_use (the hospital uses the electronic health system)", calculated as 1 if at least one practitioner in the hopstial uses EHR and 0 if none of the practitioners in the hospital uses EHR - that's why we took the maximum in our code above. Reminder that for practitioners affiliated with hospitals, we assumed that EHR use is the hospital-level adoption and not individual's. Thus it makes sense that if at least one of the practitioners is recorded in the data as using EHR, we will assume the hospital uses EHR.  
 
 ### Output
 ```{r}
 # clean up intermediate data sets
-rm(hosp_web, hosp_clean, hosp_afl)
+rm(hosp_web, hosp_afl)
+# hosp_clean will be used later in secondary regional analysis
 
 # permanently save hospital-level analysis dataset to repo
 saveRDS(hosps, file = "./data/hosps.rds")
@@ -305,33 +324,26 @@ Observations:
 * There are exactly 20073 records of missing zip codes and blank specialty (specifically *not* NA's), and this number matches up with the number of `Provider_Type == 'Hospital'`.
 * It sounds like the first step we may need to do is to split the data into EPs and hospitals since there are enough distinct variables relevant for each type. Then we can merge each split with their corresponding demographic data from the previous sections.
 
-  + We want to left join with the `EPs` data set on `NPI`, which has one row per physician by their unique NPI (one-to-many merge)
-  + We want to left join with the `hosps` data set on `CCN`, which has one row per hospital by their unique CCN (one-to-many merge)
+  + We want to inner join with the `EPs` data set on `NPI`, which has one row per physician by their unique NPI (one-to-many merge)
+  + We want to inner join with the `hosps` data set on `CCN`, which has one row per hospital by their unique CCN (one-to-many merge)
   
-* Then separately check on their summaries again?
 
 ```{r}
 # split for EPs
 EHR_EPs <- EHR_clean %>% filter(Provider_Type == 'EP') %>% 
   select(-CCN, -Hospital_Type, -Provider_Type)
 # merge with EPs data
-EHR_EPs <- left_join(EHR_EPs, EPs, by=c('NPI'='npi'))
+EHR_EPs <- inner_join(EHR_EPs, EPs, by=c('NPI'='npi'))
 
 # split for hospitals
 EHR_hosps <- EHR_clean %>% filter(Provider_Type == 'Hospital') %>% 
   select(-ZIP, -Specialty, -Provider_Type)
 # merge with hosps data
-EHR_hosps <- left_join(EHR_hosps, hosps, by=c('CCN'='hosp_afl_1'))
+EHR_hosps <- inner_join(EHR_hosps, hosps, by=c('CCN'='hosp_afl_1'))
 ```
 
 
-why are there so many duplicate rows of the same thing?
-
-
-Later: 
-
   - specific product types are too dirty and not meaningful, will focus on vendor types.
-
   - notice that the `ehr` column is not all `y` when we expect them to be. this explains why we had so many physicians who fell in the `ehr=''` category. the physicians whom we have EHR product usage information on did not answer "yes" to EHR use in the original `EPs` data.
   - again the top primary specialties overall are `r summary(EPs$pri_spec, maxsum=6)[1:5]`, compare that to the top specialities among physicians whom we have vendor information: `r summary(EHR_EPs$pri_spec, maxsum=6)[1:5]`.
   - merge with the cleaned hosp data

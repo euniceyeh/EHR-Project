@@ -137,10 +137,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.1" data-path="secondary.html"><a href="secondary.html#by-geographical-regions"><i class="fa fa-check"></i><b>6.1</b> By Geographical Regions</a><ul>
 <li class="chapter" data-level="6.1.1" data-path="secondary.html"><a href="secondary.html#physician-demographics-1"><i class="fa fa-check"></i><b>6.1.1</b> Physician Demographics</a></li>
 <li class="chapter" data-level="6.1.2" data-path="secondary.html"><a href="secondary.html#hospital-demographics-1"><i class="fa fa-check"></i><b>6.1.2</b> Hospital Demographics</a></li>
+<li class="chapter" data-level="6.1.3" data-path="secondary.html"><a href="secondary.html#regional-conclusions"><i class="fa fa-check"></i><b>6.1.3</b> Regional Conclusions</a></li>
 </ul></li>
 <li class="chapter" data-level="6.2" data-path="secondary.html"><a href="secondary.html#by-ehr-vendors"><i class="fa fa-check"></i><b>6.2</b> By EHR Vendors</a><ul>
 <li class="chapter" data-level="6.2.1" data-path="secondary.html"><a href="secondary.html#physician-demographics-2"><i class="fa fa-check"></i><b>6.2.1</b> Physician Demographics</a></li>
-<li class="chapter" data-level="6.2.2" data-path="secondary.html"><a href="secondary.html#hospital-demographics-2"><i class="fa fa-check"></i><b>6.2.2</b> Hospital Demographics</a></li>
 </ul></li>
 </ul></li>
 <li class="divider"></li>
@@ -169,9 +169,440 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h2><span class="header-section-number">6.1</span> By Geographical Regions</h2>
 <div id="physician-demographics-1" class="section level3">
 <h3><span class="header-section-number">6.1.1</span> Physician Demographics</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;zipcode&quot;</span>)
+<span class="kw">data</span>(<span class="st">&quot;fifty_states&quot;</span>)
+states_map &lt;-<span class="st"> </span><span class="kw">map_data</span>(<span class="st">&quot;state&quot;</span>)</code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;maps&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     map</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(Business_State_Territory) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarize</span>(<span class="dt">count =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> id), <span class="dt">data =</span> fifty_states, <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;grey90&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> <span class="kw">tolower</span>(Business_State_Territory), <span class="dt">fill =</span> count), <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_map</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colors =</span> <span class="kw">brewer.pal</span>(<span class="dv">6</span>, <span class="st">&quot;RdYlBu&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">x=</span>states_map<span class="op">$</span>long, <span class="dt">y=</span>states_map<span class="op">$</span>lat) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_grey</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.line =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.ticks =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.border =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.grid =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Number of Physicians in Dataset&quot;</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># gender distribution</span>
+EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(Business_State_Territory) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarize</span>(<span class="dt">fem =</span> <span class="kw">mean</span>(gndr <span class="op">==</span><span class="st"> &quot;F&quot;</span>), <span class="dt">male =</span> <span class="kw">mean</span>(gndr <span class="op">==</span><span class="st"> &quot;M&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> id), <span class="dt">data =</span> fifty_states, <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;grey90&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> <span class="kw">tolower</span>(Business_State_Territory), <span class="dt">fill =</span> male), <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_map</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colors =</span> <span class="kw">brewer.pal</span>(<span class="dv">6</span>, <span class="st">&quot;RdYlBu&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">x=</span>states_map<span class="op">$</span>long, <span class="dt">y=</span>states_map<span class="op">$</span>lat) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_grey</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.line =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.ticks =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.border =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.grid =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Distribution of Male Physicians&quot;</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">age &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(grd_yr)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(Business_State_Territory) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarize</span>(<span class="dt">yrsgrad =</span> <span class="kw">mean</span>(<span class="dv">2016</span> <span class="op">-</span><span class="st"> </span>grd_yr))
+
+age <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> id), <span class="dt">data =</span> fifty_states, <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;grey90&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> <span class="kw">tolower</span>(Business_State_Territory), <span class="dt">fill =</span> yrsgrad), <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_map</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colors =</span> <span class="kw">brewer.pal</span>(<span class="dv">6</span>, <span class="st">&quot;RdYlBu&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">x=</span>states_map<span class="op">$</span>long, <span class="dt">y=</span>states_map<span class="op">$</span>lat) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_grey</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.line =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.ticks =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.border =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.grid =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Years Since Graduation&quot;</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+<p>Among those Physicians in our Vendor data set, there were many more freshly graduated practitioners in Minnesota compared to the rest of the country. We interpreted this as being similar to an ‘age’ variable, since people who have 15 years since graduating &amp; getting their degrees are more likely to be younger than those who have been graduated for 26 years.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mn &lt;-<span class="st"> </span><span class="kw">subset</span>(states_map, region <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;minnesota&quot;</span>))
+
+zip_mapdata &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(grd_yr) <span class="op">&amp;</span><span class="st"> </span>Business_State_Territory <span class="op">==</span><span class="st"> &quot;Minnesota&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(ZIP) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">yrsgrad =</span> <span class="kw">mean</span>(<span class="dv">2016</span> <span class="op">-</span><span class="st"> </span>grd_yr)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">left_join</span>(zipcode, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;ZIP&quot;</span> =<span class="st"> &quot;zip&quot;</span>))</code></pre></div>
+<pre><code>## Warning: Column `ZIP`/`zip` joining factor and character vector, coercing
+## into character vector</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#minnesota only</span>
+<span class="co"># zip_mapdata %&gt;% </span>
+<span class="co">#   ggplot() +</span>
+<span class="co">#   geom_polygon(data=mn, aes(x=long, y=lat, group = group),colour=&quot;white&quot;, fill=&quot;grey70&quot; ) +</span>
+<span class="co">#   geom_point(aes(x=longitude, y=latitude, color = yrsgrad),size=2,alpha=.5) +</span>
+<span class="co">#   coord_fixed(1.5) +</span>
+<span class="co">#   theme_void()</span>
+
+<span class="co">#zoomed in on minnesota</span>
+zip_mapdata <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_polygon</span>(<span class="dt">data=</span>states_map, <span class="kw">aes</span>(<span class="dt">x=</span>long, <span class="dt">y=</span>lat, <span class="dt">group =</span> group),<span class="dt">colour=</span><span class="st">&quot;grey50&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;white&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x=</span>longitude, <span class="dt">y=</span>latitude, <span class="dt">color =</span> yrsgrad),<span class="dt">size=</span><span class="dv">2</span>,<span class="dt">alpha=</span>.<span class="dv">8</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colors=</span><span class="kw">brewer.pal</span>(<span class="dv">8</span>, <span class="st">&quot;Reds&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_fixed</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">88</span>, <span class="op">-</span><span class="dv">98</span>),  <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">42</span>, <span class="dv">50</span>), <span class="dt">ratio =</span> <span class="fl">1.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_void</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.title =</span> <span class="kw">element_blank</span>())</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
+<p>Here we can see that most of the Physicians we have are clustered near Minneapolis.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">useehr &lt;-<span class="st"> </span>EPs <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(st) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">num =</span> <span class="kw">n</span>(), <span class="dt">used =</span> <span class="kw">sum</span>(ehr <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pct =</span> used<span class="op">/</span>num)
+
+state_name &lt;-<span class="st"> </span><span class="kw">c</span>(state.name,<span class="st">&quot;District Of Columbia&quot;</span>)
+states &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">state_name =</span> state_name, <span class="dt">state_abb =</span> <span class="kw">c</span>(state.abb, <span class="st">&quot;DC&quot;</span>))
+
+useehr &lt;-<span class="st"> </span>useehr <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">left_join</span>(states, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;st&quot;</span> =<span class="st"> &quot;state_abb&quot;</span>))</code></pre></div>
+<pre><code>## Warning: Column `st`/`state_abb` joining character vector and factor,
+## coercing into character vector</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">useehr <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> id), <span class="dt">data =</span> fifty_states, <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;grey90&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> <span class="kw">tolower</span>(state_name), <span class="dt">fill =</span> pct), <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_map</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colors =</span> <span class="kw">brewer.pal</span>(<span class="dv">6</span>, <span class="st">&quot;RdYlBu&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">x=</span>states_map<span class="op">$</span>long, <span class="dt">y=</span>states_map<span class="op">$</span>lat) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_gray</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.line =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.ticks =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.border =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.grid =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Percent EHR Usage&quot;</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
+<p>In our dataset overall, we had more blank information on EHR usage than we did on confirmed EHR usage, which is why the percentages are low overall. However, it is interesting to note that Alaska and Vermont had extremely low EHR usage, while the Midwest tended to have relatively more adoption. Perhaps Alaksa and Vermont have more rural environments, while many of the EHR vendors are based in the Midwest.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#find what types of product settings exist</span>
+<span class="kw">levels</span>(EHR_EPs<span class="op">$</span>Product_Setting)</code></pre></div>
+<pre><code>## [1] &quot;&quot;           &quot;Ambulatory&quot; &quot;Inpatient&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#ambulatory vs inpatient numbers</span>
+EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(Product_Setting <span class="op">!=</span><span class="st"> &quot;&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">amb =</span> <span class="kw">sum</span>(Product_Setting <span class="op">==</span><span class="st"> &quot;Ambulatory&quot;</span>), 
+                      <span class="dt">inp =</span> <span class="kw">sum</span>(Product_Setting <span class="op">==</span><span class="st"> &quot;Inpatient&quot;</span>)) </code></pre></div>
+<pre><code>##   amb inp
+## 1 130   9</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">prod_setting &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(Product_Setting <span class="op">!=</span><span class="st"> &quot;&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(Business_State_Territory) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">num =</span> <span class="kw">n</span>(), 
+            <span class="dt">amb =</span> <span class="kw">sum</span>(Product_Setting <span class="op">==</span><span class="st"> &quot;Ambulatory&quot;</span>), 
+            <span class="dt">inpat =</span> <span class="kw">sum</span>(Product_Setting <span class="op">==</span><span class="st"> &quot;Inpatient&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">p_amb =</span> amb<span class="op">/</span>num, <span class="dt">p_inpp =</span> inpat<span class="op">/</span>num)
+
+<span class="co"># table for overall percentages in merge dataset</span>
+prod_setting_overall &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">total =</span> <span class="kw">n</span>(), 
+            <span class="dt">amb =</span> <span class="kw">sum</span>(Product_Setting <span class="op">==</span><span class="st"> &quot;Ambulatory&quot;</span>), 
+            <span class="dt">inpat =</span> <span class="kw">sum</span>(Product_Setting <span class="op">==</span><span class="st"> &quot;Inpatient&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="st">&quot;Ambulatory (Outpatient)&quot;</span> =<span class="st"> </span>amb<span class="op">/</span>total, <span class="dt">Inpatient=</span> inpat<span class="op">/</span>total) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">st =</span> <span class="st">&quot;Overall&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(st, <span class="st">&quot;Ambulatory (Outpatient)&quot;</span>, Inpatient)
+prod_setting_overall <span class="op">%&gt;%</span><span class="st"> </span>kable</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">st</th>
+<th align="right">Ambulatory (Outpatient)</th>
+<th align="right">Inpatient</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Overall</td>
+<td align="right">0.9285714</td>
+<td align="right">0.0642857</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ambulatory &lt;-<span class="st"> </span>prod_setting <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> id), <span class="dt">data =</span> fifty_states, <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;grey90&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> <span class="kw">tolower</span>(Business_State_Territory), <span class="dt">fill =</span> p_amb), <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_map</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colors =</span> <span class="kw">brewer.pal</span>(<span class="dv">6</span>, <span class="st">&quot;RdYlBu&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">x=</span>states_map<span class="op">$</span>long, <span class="dt">y=</span>states_map<span class="op">$</span>lat) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_gray</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.line =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.ticks =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.border =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.grid =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Product Setting = Ambulatory&quot;</span>)
+
+inpatient &lt;-<span class="st"> </span>prod_setting <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> id), <span class="dt">data =</span> fifty_states, <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;grey90&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> <span class="kw">tolower</span>(Business_State_Territory), <span class="dt">fill =</span> p_inpp), <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_map</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colors =</span> <span class="kw">brewer.pal</span>(<span class="dv">6</span>, <span class="st">&quot;RdYlBu&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">x=</span>states_map<span class="op">$</span>long, <span class="dt">y=</span>states_map<span class="op">$</span>lat) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_gray</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.line =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.ticks =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.border =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.grid =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Product Setting = Inpatient&quot;</span>)
+
+<span class="kw">grid.arrange</span>(ambulatory, inpatient, <span class="dt">nrow =</span> <span class="dv">1</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># california = outlier</span>
+cali &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(Business_State_Territory <span class="op">==</span><span class="st"> &quot;California&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">total =</span> <span class="kw">n</span>(), 
+            <span class="dt">amb =</span> <span class="kw">sum</span>(Product_Setting <span class="op">==</span><span class="st"> &quot;Ambulatory&quot;</span>), 
+            <span class="dt">inpat =</span> <span class="kw">sum</span>(Product_Setting <span class="op">==</span><span class="st"> &quot;Inpatient&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="st">&quot;Ambulatory (Outpatient)&quot;</span> =<span class="st"> </span>amb<span class="op">/</span>total, <span class="dt">Inpatient =</span> inpat<span class="op">/</span>total) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(<span class="st">&quot;Ambulatory (Outpatient)&quot;</span>, Inpatient)
+
+prod_setting_overall &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(prod_setting_overall,
+                                  <span class="kw">data_frame</span>(<span class="dt">State =</span> <span class="st">&quot;California&quot;</span>,
+                                             <span class="st">&quot;Ambulatory (Outpatient)&quot;</span> =<span class="st"> </span>cali<span class="op">$</span><span class="st">`</span><span class="dt">Ambulatory (Outpatient)</span><span class="st">`</span>,
+                                             <span class="dt">Inpatient =</span> cali<span class="op">$</span>Inpatient
+                                  ))
+prod_setting_overall <span class="op">%&gt;%</span><span class="st"> </span>kable</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">st</th>
+<th align="right">Ambulatory (Outpatient)</th>
+<th align="right">Inpatient</th>
+<th align="left">State</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Overall</td>
+<td align="right">0.9285714</td>
+<td align="right">0.0642857</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="right">0.6428571</td>
+<td align="right">0.3571429</td>
+<td align="left">California</td>
+</tr>
+</tbody>
+</table>
+<p>Product Setting refers to the type of practice setting that the EHR product is certified for. The possible settings are:</p>
+<ul>
+<li>Ambulatory: doctor’s offices, clinics, and other outpatient facilities</li>
+<li>Inpatient: hospitals and other long-term care facilities</li>
+</ul>
+<p>We found that most EHR products were certified for ambulatory settings, by far. This extreme preference in ambulatory EHR products is consistent across the country, except in California where there is still a slight preference for ambulatory EHR products (among those adopting EHR’s in the incentive program), but it is less than the rest of the country.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># how many unique vendors</span>
+<span class="kw">length</span>(<span class="kw">unique</span>(<span class="kw">factor</span>(EHR_EPs<span class="op">$</span>Vendor_Name)))</code></pre></div>
+<pre><code>## [1] 43</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># find top 10 vendors</span>
+top10 &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Vendor_Name)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(Vendor_Name) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">num =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(num)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">top_n</span>(<span class="dv">10</span>)</code></pre></div>
+<pre><code>## Selecting by num</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#unique vendors</span>
+vendors &lt;-<span class="st"> </span><span class="kw">as.vector</span>(top10<span class="op">$</span>Vendor_Name)
+
+<span class="co"># distribution of top 10 vendors </span>
+EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Vendor_Name <span class="op">%in%</span><span class="st"> </span>vendors) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(Vendor_Name) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">num =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(Vendor_Name, num), <span class="dt">y =</span> num)) <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">geom_bar</span>(<span class="dt">stat=</span><span class="st">&#39;identity&#39;</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">45</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># percent usage of top 10</span>
+<span class="kw">sum</span>(top10<span class="op">$</span>num)<span class="op">/</span><span class="kw">nrow</span>(EHR_EPs)</code></pre></div>
+<pre><code>## [1] 0.7142857</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pct_popvendors &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(Business_State_Territory) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">num =</span> <span class="kw">n</span>(), 
+            <span class="dt">total_v =</span> <span class="kw">sum</span>(Vendor_Name <span class="op">%in%</span><span class="st"> </span>vendors),
+            <span class="dt">opp =</span> num <span class="op">-</span><span class="st"> </span>total_v) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">p_vend =</span> total_v<span class="op">/</span>num, <span class="dt">u_vend =</span> opp<span class="op">/</span>num)
+
+pct_popvendors <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> id), <span class="dt">data =</span> fifty_states, <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;grey90&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> <span class="kw">tolower</span>(Business_State_Territory), <span class="dt">fill =</span> p_vend), <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_map</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colors =</span> <span class="kw">brewer.pal</span>(<span class="dv">6</span>, <span class="st">&quot;RdYlBu&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">x=</span>states_map<span class="op">$</span>long, <span class="dt">y=</span>states_map<span class="op">$</span>lat) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_gray</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.line =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.ticks =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.border =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.grid =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Usage of Top 10 Vendors&quot;</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-41-2.png" width="672" /></p>
+<p>We found that the majority of EHR products used were from the top 10 vendors. Interestingly, though, Minnesota had almost 100% usage of the top 10 vendors. This could potentially be because many of the big vendors are based in the Midwest (ie Epic, Mayo Clinic, Cerner, etc).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#most common specialties in general</span>
+EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(pri_spec) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarize</span>(<span class="dt">num =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="kw">desc</span>(num))</code></pre></div>
+<pre><code>## # A tibble: 20 x 2
+##                                pri_spec   num
+##                                  &lt;fctr&gt; &lt;int&gt;
+##  1                            OPTOMETRY    30
+##  2                          DERMATOLOGY    25
+##  3                      FAMILY PRACTICE    15
+##  4                         CHIROPRACTIC    13
+##  5                        OPHTHALMOLOGY    12
+##  6                        ENDOCRINOLOGY     6
+##  7                            NEUROLOGY     6
+##  8 PHYSICAL MEDICINE AND REHABILITATION     6
+##  9                       ANESTHESIOLOGY     5
+## 10                         ORAL SURGERY     5
+## 11                OBSTETRICS/GYNECOLOGY     3
+## 12                           PSYCHIATRY     3
+## 13                    INTERNAL MEDICINE     2
+## 14    OSTEOPATHIC MANIPULATIVE MEDICINE     2
+## 15                             PODIATRY     2
+## 16                 DIAGNOSTIC RADIOLOGY     1
+## 17                      PAIN MANAGEMENT     1
+## 18                   PEDIATRIC MEDICINE     1
+## 19                  PHYSICIAN ASSISTANT     1
+## 20                    PULMONARY DISEASE     1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># most common state -&gt; specialty</span>
+specialty &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(Business_State_Territory, pri_spec) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarize</span>(<span class="dt">num =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(Business_State_Territory, <span class="kw">desc</span>(num))
+
+<span class="co">#check similar specialties</span>
+<span class="co">#EHR_EPs %&gt;% filter(grepl(&quot;PSYCH&quot;, pri_spec)) %&gt;% distinct(pri_spec)</span>
+
+specialty <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(Business_State_Territory, pri_spec)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_tile</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> num))</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
+<p>When it came to looking at patterns between primary specialty and states, it was nearly impossible to find useful information. There were too many states and too many different specialties to try to find significant correlations between the levels. Additionally, we tried to find group similar specialties but it did not make the results much more interpretable.</p>
 </div>
 <div id="hospital-demographics-1" class="section level3">
 <h3><span class="header-section-number">6.1.2</span> Hospital Demographics</h3>
+<p><strong>GET RID OF THIS IF HOSP DAT ALREADY CLEAN</strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#load hosp_all data &amp; add long state names</span>
+state_name &lt;-<span class="st"> </span><span class="kw">c</span>(state.name,<span class="st">&quot;District Of Columbia&quot;</span>)
+states &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">state_name =</span> state_name, <span class="dt">state_abb =</span> <span class="kw">c</span>(state.abb, <span class="st">&quot;DC&quot;</span>))
+hosp_all &lt;-<span class="st"> </span>hosp_clean <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">left_join</span>(states, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;State&quot;</span> =<span class="st"> &quot;state_abb&quot;</span>))</code></pre></div>
+<pre><code>## Warning: Column `State`/`state_abb` joining character vector and factor,
+## coercing into character vector</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">beds &lt;-<span class="st"> </span>hosp_all <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Staffed_beds)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(state_name) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">avgbed =</span> <span class="kw">mean</span>(Staffed_beds)) 
+
+beds <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> id), <span class="dt">data =</span> fifty_states, <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;grey90&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> <span class="kw">tolower</span>(state_name), <span class="dt">fill =</span> avgbed), <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_map</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colors =</span> <span class="kw">brewer.pal</span>(<span class="dv">6</span>, <span class="st">&quot;RdYlBu&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">x=</span>states_map<span class="op">$</span>long, <span class="dt">y=</span>states_map<span class="op">$</span>lat) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_gray</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.line =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.ticks =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.border =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.grid =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Average hospital Beds per hospital&quot;</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
+<p>Vermont and Rhode Island had the lowest number of average hospital beds per hospital, which makes sense since they are small states. Connecticut and Florida had the highest average, suggesting that hospitals in that state tend to be bigger on average.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># patient days</span>
+hosp_all <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Patient_days)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(state_name) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">patient =</span> <span class="kw">mean</span>(Patient_days)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> id), <span class="dt">data =</span> fifty_states, <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;grey90&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> <span class="kw">tolower</span>(state_name), <span class="dt">fill =</span> patient), <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_map</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colors =</span> <span class="kw">brewer.pal</span>(<span class="dv">6</span>, <span class="st">&quot;RdYlBu&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">x=</span>states_map<span class="op">$</span>long, <span class="dt">y=</span>states_map<span class="op">$</span>lat) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_gray</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.line =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.ticks =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.border =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.grid =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Across states, mean patient days per hospital&quot;</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
+<p>The distribution of average days at the hospital was mostly proportional to the distribution of average hospital beds from the previous map. The differences were:</p>
+<ul>
+<li>Florida had one of the highest averages for hospital beds (biggest hospitals) but did not have one of the highest average patient days (yay!)</li>
+<li>Massachusetts, which was slightly above average in the number of hospital beds, ended up being one of the states with the longest patient days on average.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#total discharges</span>
+hosp_all <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Total_discharges)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(state_name) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">discharges =</span> <span class="kw">mean</span>(Total_discharges)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> id), <span class="dt">data =</span> fifty_states, <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;grey90&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> <span class="kw">tolower</span>(state_name), <span class="dt">fill =</span> discharges), <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_map</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colors =</span> <span class="kw">brewer.pal</span>(<span class="dv">6</span>, <span class="st">&quot;RdYlBu&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">x=</span>states_map<span class="op">$</span>long, <span class="dt">y=</span>states_map<span class="op">$</span>lat) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_gray</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.line =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.ticks =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.border =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.grid =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Across states, mean discharges days per hospital on average&quot;</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
+<p>The distribution of average discharges was not very interesting - it was similar to the previous maps.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#avg revenue per discharge</span>
+revenue &lt;-<span class="st"> </span>hosp_all <span class="op">%&gt;%</span><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Gross_patient_revenue) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(Total_discharges)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">per =</span> Gross_patient_revenue<span class="op">/</span>Total_discharges) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(State) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">rev =</span> <span class="kw">mean</span>(per))
+
+revenue <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> id), <span class="dt">data =</span> fifty_states, <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;grey90&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> <span class="kw">tolower</span>(state_name), <span class="dt">fill =</span> rev), <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_map</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">colors =</span> <span class="kw">brewer.pal</span>(<span class="dv">6</span>, <span class="st">&quot;RdYlBu&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">expand_limits</span>(<span class="dt">x=</span>states_map<span class="op">$</span>long, <span class="dt">y=</span>states_map<span class="op">$</span>lat) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_gray</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.line =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.ticks =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.border =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">panel.grid =</span> <span class="kw">element_blank</span>(), 
+        <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Across states, average revenue per discharge&quot;</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-47-1.png" width="672" /></p>
+<p>Looks like Montana has the highest average gross patient revenue per discharge.</p>
+</div>
+<div id="regional-conclusions" class="section level3">
+<h3><span class="header-section-number">6.1.3</span> Regional Conclusions</h3>
+<p>The regional analyses served mostly exploratory/informational purposes. While we noticed many patterns regarding the Midwest, it is not clear if the patterns are due to association or causation. For example, we saw that the Midwestern states tended to have higher rates of EHR usage compared to the rest of the country. However, we also saw that many of the “Top 10” vendors in our dataset were also based in the Midwest. There could have been confounding effects - our data set may not have been representative of the entire country - Healthit.gov cited over 75% of Physician EHR adoption by 2015, while our data set could only match about 20% EHR usage in 2016. We could have had a skewed sample of Physicians that happened to have more EHR adoptees living in the Midwest. Also, the first plot showed that we did have strong representation in Physician counts in Minnesota and California, but not as much in the rest of the country.</p>
 </div>
 </div>
 <div id="by-ehr-vendors" class="section level2">
@@ -179,34 +610,85 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="physician-demographics-2" class="section level3">
 <h3><span class="header-section-number">6.2.1</span> Physician Demographics</h3>
 <ol style="list-style-type: decimal">
-<li><p>Check the distributions of number of practice locations, states, products, and vendors among practitioners whom we have EHR usage information on. Counts of these distributions are the number of practitioners.</p></li>
-<li><p>Explore practitioner demographics: gender, graduation year, medical school attended, primary specialty.</p></li>
+<li>Check the distributions of number of practice locations, states, products, and vendors among practitioners whom we have EHR usage information on. Counts of these distributions are the number of practitioners.</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">merged_EPs_vendor <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(Graduation.year) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(products) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">table</span>()</code></pre></div>
-<p>** ADD LATER: show N’s at each point of the x-axis **</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">phys_EHR <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="kw">factor</span>(products), Graduation.year)) <span class="op">+</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#specialty vs year since graduation</span>
+top_spec &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(pri_spec)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(pri_spec) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">num =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(num)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">10</span>)
+
+spec_list &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;OPTOMETRY&quot;</span>, <span class="st">&quot;CHIROPRACTIC&quot;</span>, <span class="st">&quot;DERMATOLOGY&quot;</span>, <span class="st">&quot;OPHTHALMOLOGY&quot;</span>, <span class="st">&quot;FAMILY PRACTICE&quot;</span>, <span class="st">&quot;INTERNAL MEDICINE&quot;</span>, <span class="st">&quot;OBSTETRICS/GYNECOLOGY&quot;</span>, <span class="st">&quot;PODIATRY&quot;</span>, <span class="st">&quot;PSYCHIATRY&quot;</span>, <span class="st">&quot;NEUROLOGY&quot;</span>)
+
+EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(pri_spec <span class="op">%in%</span><span class="st"> </span>spec_list) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">yrsgrad =</span> <span class="dv">2016</span> <span class="op">-</span><span class="st"> </span>grd_yr) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pri_spec, <span class="dt">y =</span> yrsgrad)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">45</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#vendors vs year since graduation</span>
+EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(Vendor_Name <span class="op">%in%</span><span class="st"> </span>vendors) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">yrsgrad =</span> <span class="dv">2016</span> <span class="op">-</span><span class="st"> </span>grd_yr) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Vendor_Name, <span class="dt">y =</span> yrsgrad)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">45</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-48-2.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#top vendors vs top specialty</span>
+EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>((pri_spec <span class="op">%in%</span><span class="st"> </span>spec_list) <span class="op">&amp;</span><span class="st"> </span>(Vendor_Name <span class="op">%in%</span><span class="st"> </span>vendors)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(pri_spec, Vendor_Name)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_jitter</span>(<span class="kw">aes</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>), <span class="dt">color =</span> <span class="st">&quot;steelblue4&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">45</span>, <span class="dt">hjust =</span> <span class="dv">1</span>),
+        <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>,
+        <span class="dt">axis.title =</span> <span class="kw">element_blank</span>()) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Top 10 Primary Specialties versus Top 10 Vendors&quot;</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-48-3.png" width="672" /></p>
+<p>Interesting conclusions from the boxplots:</p>
+<ul>
+<li>Opthmalmology had the highest median years since graduation, which makes sense that we found that our EHR users had more years since graduation than non-EHR users</li>
+<li>Mayo Clinic and GE Healthcare were used by the youngest practitioners, both having median years since graduation under 10 years.</li>
+</ul>
+<p>Interesting conclusions from the jitter plot:</p>
+<ul>
+<li>Integrated Practice Solutions, Inc, the second most popular vendor in our data set, is exclusively used by chiropractors. They also dominate the other vendors among the chiropractors.</li>
+<li>Eyefinity, Inc also has a specific audience, with only opthalmologists and optometrists (eye doctors) using their products.</li>
+<li>Compulink Business Systems, Inc, is also very popular among the two eye specialties and their products seem to be targeted for a specific audience.</li>
+<li>While NextGen Healthcare is used by all the top 10 specialties, they are most popular among the opthalmologists and optometrists.</li>
+<li>Modernizing Medicine Inc is very popular among dermatologists.</li>
+<li>Epic Systems, Cerner Corporation, athenahealth, and GE Healthcare are pretty consistently used across all the top 10 disciplines. Epic is the most consistently popular, however.</li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li>Explore practitioner demographics: gender, graduation year, medical school attended, primary specialty.</li>
+</ol>
+<p>The following demographic relationships are among physicians not affiliated with any hospitals whom we have EHR vendor and product information on. So the sub-population here includes only the physicians who do use EHR.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(grd_yr) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(products) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">table</span>()</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EHR_EPs <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="kw">factor</span>(products), grd_yr)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">facet_grid</span>(.<span class="op">~</span>Gender) <span class="op">+</span>
+<span class="st">  </span><span class="kw">facet_grid</span>(.<span class="op">~</span>gndr) <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> <span class="fl">0.25</span>)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Number of EHR Products&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Graduation Year&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Dist of Grad Year by Number of EHR Products Used by Gender&quot;</span>)</code></pre></div>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Dist of Grad Year by Number of EHR Products Used by gndr&quot;</span>)</code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li>Perform Association Rule Learning on all variables from the first two sections. <strong>check the validity of using this method if my variables are not independent from one another.</strong> Here, each “transaction” is a practitioner who adapted EHR as part of the Medicare EHR Incentive Program in the U.S. ***used becuse we have variables with a lot of variables</li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;arulesViz&quot;</span>)
 
 <span class="co"># need to keep certain associational variables of interest and discretize them</span>
-assoc &lt;-<span class="st"> </span>phys_EHR <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+assoc &lt;-<span class="st"> </span>EPs_EHR <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>NPI, <span class="op">-</span>First.Name, <span class="op">-</span>Last.Name, <span class="op">-</span>Used.electronic.health.records, <span class="op">-</span>EHRuse) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Gradyr =</span> <span class="kw">as.factor</span>(Graduation.year),
-         <span class="dt">State =</span> <span class="kw">as.factor</span>(state_abb),
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Gradyr =</span> <span class="kw">as.factor</span>(grd_yr),
+         <span class="dt">State =</span> <span class="kw">as.factor</span>(st),
          <span class="dt">locations =</span> <span class="kw">as.factor</span>(locations),
          <span class="dt">products =</span> <span class="kw">as.factor</span>(products),
          <span class="dt">vendors =</span> <span class="kw">as.factor</span>(vendors)
          ) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>Graduation.year, <span class="op">-</span>state_abb)
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>grd_yr, <span class="op">-</span>st)
 <span class="kw">View</span>(assoc)
 
 <span class="co"># convert from a data frame to a transaction dataset</span>
@@ -237,13 +719,6 @@ rules &lt;-<span class="st"> </span><span class="kw">apriori</span>(assoctrans, 
 <li>number of vendors used</li>
 <li>region (states)</li>
 </ul>
-<p>The results from the physician-vendor data was not that helpful, so we decided not to use it in our final model.</p>
-<ol start="4" style="list-style-type: decimal">
-<li>conclusions - how do these inform our final analyses?</li>
-</ol>
-</div>
-<div id="hospital-demographics-2" class="section level3">
-<h3><span class="header-section-number">6.2.2</span> Hospital Demographics</h3>
 
 </div>
 </div>
@@ -294,6 +769,17 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

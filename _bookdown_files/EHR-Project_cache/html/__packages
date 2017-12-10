@@ -19,3 +19,8 @@ bookdown
 zipcode
 RColorBrewer
 car
+broom
+caret
+fiftystater
+gridExtra
+knitr

@@ -137,10 +137,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="6.1" data-path="secondary.html"><a href="secondary.html#by-geographical-regions"><i class="fa fa-check"></i><b>6.1</b> By Geographical Regions</a><ul>
 <li class="chapter" data-level="6.1.1" data-path="secondary.html"><a href="secondary.html#physician-demographics-1"><i class="fa fa-check"></i><b>6.1.1</b> Physician Demographics</a></li>
 <li class="chapter" data-level="6.1.2" data-path="secondary.html"><a href="secondary.html#hospital-demographics-1"><i class="fa fa-check"></i><b>6.1.2</b> Hospital Demographics</a></li>
+<li class="chapter" data-level="6.1.3" data-path="secondary.html"><a href="secondary.html#regional-conclusions"><i class="fa fa-check"></i><b>6.1.3</b> Regional Conclusions</a></li>
 </ul></li>
 <li class="chapter" data-level="6.2" data-path="secondary.html"><a href="secondary.html#by-ehr-vendors"><i class="fa fa-check"></i><b>6.2</b> By EHR Vendors</a><ul>
 <li class="chapter" data-level="6.2.1" data-path="secondary.html"><a href="secondary.html#physician-demographics-2"><i class="fa fa-check"></i><b>6.2.1</b> Physician Demographics</a></li>
-<li class="chapter" data-level="6.2.2" data-path="secondary.html"><a href="secondary.html#hospital-demographics-2"><i class="fa fa-check"></i><b>6.2.2</b> Hospital Demographics</a></li>
 </ul></li>
 </ul></li>
 <li class="divider"></li>
@@ -406,9 +406,12 @@ EPs &lt;-<span class="st"> </span><span class="kw">left_join</span>(EPs, SL, <sp
 <span class="co"># for the rest of practitioners who are affiliated with a hospital</span>
 hosp_afl &lt;-<span class="st"> </span>clean <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># filter on the clean version</span>
 <span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(<span class="kw">as.integer</span>(hosp_afl_<span class="dv">1</span>))) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">hosp_afl_lbn_1 =</span> <span class="kw">as.character</span>(hosp_afl_lbn_<span class="dv">1</span>), <span class="dt">st =</span> <span class="kw">as.character</span>(st)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="co"># only keep relevant or potentially interesting variables</span>
-<span class="st">  </span><span class="kw">select</span>(hosp_afl_lbn_<span class="dv">1</span>, st, cty, zip, ehr, hosp_afl_<span class="dv">1</span>, pri_spec, gndr, grd_yr)
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">hosp_afl_lbn_1 =</span> <span class="kw">as.character</span>(hosp_afl_lbn_<span class="dv">1</span>), 
+         <span class="dt">cty =</span> <span class="kw">str_trim</span>(<span class="kw">as.character</span>(cty)),
+         <span class="dt">st =</span> <span class="kw">as.character</span>(st),
+         <span class="dt">ehr =</span> <span class="kw">ifelse</span>(ehr <span class="op">==</span><span class="st"> &quot;Y&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="co"># only keep relevant or potentially interesting variables (keeping npi to count number of physicians)</span>
+<span class="st">  </span><span class="kw">distinct</span>(npi, hosp_afl_lbn_<span class="dv">1</span>, st, cty, ehr, hosp_afl_<span class="dv">1</span>, pri_spec, gndr, grd_yr)
 
 <span class="co"># clean up intermediate data sets</span>
 <span class="kw">rm</span>(dat, clean, zipcode, zip_dat, zip_fix, zip_mismatch, mismatch_tokeep, top5_mismatch)</code></pre></div>
@@ -464,7 +467,8 @@ hosp_afl &lt;-<span class="st"> </span>clean <span class="op">%&gt;%</span><span
                        <span class="dt">Total_discharges =</span> <span class="kw">as.numeric</span>(<span class="kw">gsub</span>(<span class="st">&quot;,&quot;</span>, <span class="st">&quot;&quot;</span>, Total_discharges)),
                        <span class="dt">Patient_days =</span> <span class="kw">as.numeric</span>(<span class="kw">gsub</span>(<span class="st">&quot;,&quot;</span>,<span class="st">&quot;&quot;</span>, Patient_days)),
                        <span class="dt">Gross_patient_revenue =</span> <span class="kw">as.numeric</span>(<span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">$|,&quot;</span>, <span class="st">&quot;&quot;</span>, Gross_patient_revenue)),
-                       <span class="dt">Hospital_name =</span> <span class="kw">toupper</span>(Hospital_name), <span class="dt">City =</span> <span class="kw">toupper</span>(City)
+                       <span class="dt">Hospital_name =</span> <span class="kw">toupper</span>(Hospital_name),
+                       <span class="dt">City =</span> <span class="kw">toupper</span>(<span class="kw">str_trim</span>(<span class="kw">as.character</span>(City)))
                        )
 <span class="kw">summary</span>(hosp_clean)</code></pre></div>
 <pre><code>##  Hospital_name          City            Staffed_beds     Total_discharges
@@ -502,55 +506,51 @@ hosp_clean &lt;-<span class="st"> </span>hosp_clean[<span class="kw">rowSums</sp
 ##  3rd Qu.: 57391   3rd Qu.: 1149258                        
 ##  Max.   :695643   Max.   :15618749                        
 ##  NA&#39;s   :9        NA&#39;s   :79</code></pre>
-<p>Now the minimum value is 1…still questionable and potentially causing the skew in their distributions. But we did take a look at these specific hospitals with any one demographic characteristic of value 1 and they seem to also have low values of the other characteristics as well (not necessarily exactly of 1, that would’ve been even more suspicious), so these may very well be valid who knows. Anyway, we need to move on with our lives, I mean, to merging with <code>hosp_afl</code> (which is a subset of practitioners who are affiliated with a hospital from the previous section) on the hospital name and state since different hospitals in different states can have the same name.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hosps &lt;-<span class="st"> </span><span class="kw">inner_join</span>(hosp_afl, hosp_clean, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;hosp_afl_lbn_1&quot;</span>=<span class="st">&quot;Hospital_name&quot;</span>, <span class="st">&quot;st&quot;</span>=<span class="st">&quot;State&quot;</span>))
+<p>Now the minimum value is 1…still questionable and potentially causing the skew in their distributions. But we did take a look at these specific hospitals with any one demographic characteristic of value 1 and they seem to also have low values of the other characteristics as well (not necessarily exactly of 1, that would’ve been even more suspicious), so these may very well be valid who knows. Anyway, we need to move on with our lives, I mean, to merging with <code>hosp_afl</code> (which is a subset of practitioners who are affiliated with a hospital from the previous section) on the hospital name and state since different hospitals in different locations can have the same name. Since <code>hosp_afl</code> can have multiple rows per hospital if more than one physician in the data is affiliated with it, so we will aggregate the data back to hospital-level after the merge by summarizing physician-level information.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hosps &lt;-<span class="st"> </span><span class="kw">inner_join</span>(hosp_clean, hosp_afl, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;Hospital_name&quot;</span>=<span class="st">&quot;hosp_afl_lbn_1&quot;</span>, <span class="st">&quot;State&quot;</span>=<span class="st">&quot;st&quot;</span>))
+hosps &lt;-<span class="st"> </span>hosps <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(hosp_afl_<span class="dv">1</span>, Hospital_name, State, Staffed_beds, Total_discharges, Patient_days, Gross_patient_revenue) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">num_phys =</span> <span class="kw">n_distinct</span>(npi),
+            <span class="dt">female_prop =</span> <span class="kw">round</span>(<span class="kw">mean</span>(<span class="kw">ifelse</span>(gndr <span class="op">==</span><span class="st"> &quot;F&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)),<span class="dv">2</span>), 
+            <span class="dt">avg_grad_year =</span> <span class="kw">round</span>(<span class="kw">mean</span>(grd_yr),<span class="dv">2</span>),
+            <span class="dt">n_specialty =</span><span class="kw">n_distinct</span>(pri_spec),
+            <span class="dt">EHR_use =</span> <span class="kw">as.factor</span>(<span class="kw">max</span>(ehr)))
 <span class="kw">summary</span>(hosps)</code></pre></div>
-<pre><code>##  hosp_afl_lbn_1          st                         cty      
-##  Length:2770        Length:2770        CHARLOTTESVILLE:  64  
-##  Class :character   Class :character   BANGOR         :  46  
-##  Mode  :character   Mode  :character   PHILADELPHIA   :  45  
-##                                        BOSTON         :  44  
-##                                        CHICAGO        :  44  
-##                                        NASHVILLE      :  31  
-##                                        (Other)        :2496  
-##      zip            ehr        hosp_afl_1    
-##  Length:2770         :2216   Min.   : 10001  
-##  Class :character   Y: 554   1st Qu.:110079  
-##  Mode  :character            Median :240207  
-##                              Mean   :257898  
-##                              3rd Qu.:390027  
-##                              Max.   :670073  
-##                                              
-##                                    pri_spec    gndr         grd_yr    
-##  NURSE PRACTITIONER                    : 471   F:1407   Min.   :1964  
-##  INTERNAL MEDICINE                     : 453   M:1363   1st Qu.:2004  
-##  PHYSICIAN ASSISTANT                   : 330            Median :2009  
-##  FAMILY PRACTICE                       : 174            Mean   :2007  
-##  CERTIFIED REGISTERED NURSE ANESTHETIST: 161            3rd Qu.:2012  
-##  ANESTHESIOLOGY                        : 122            Max.   :2016  
-##  (Other)                               :1059                          
-##      City            Staffed_beds    Total_discharges  Patient_days   
-##  Length:2770        Min.   :   7.0   Min.   :   12    Min.   :    37  
-##  Class :character   1st Qu.: 185.0   1st Qu.: 8070    1st Qu.: 34240  
-##  Mode  :character   Median : 321.0   Median :14648    Median : 67620  
-##                     Mean   : 382.5   Mean   :17349    Mean   : 87887  
-##                     3rd Qu.: 505.8   3rd Qu.:23775    3rd Qu.:116524  
-##                     Max.   :1750.0   Max.   :77757    Max.   :425114  
-##                                                                       
-##  Gross_patient_revenue
-##  Min.   :    3736     
-##  1st Qu.:  696861     
-##  Median : 1325449     
-##  Mean   : 1977153     
-##  3rd Qu.: 2466744     
-##  Max.   :14140692     
-##  NA&#39;s   :7</code></pre>
-<p>We managed to get a <code>{r} (nrow(hosps)/nrow(hosp_clean))*100</code>% match on the hospitals between the two data sets! And the summary statistics on those hospital demographics look a lot nicer and less skewed! <em><strong>&lt;——actually check this again on final run!!!!</strong></em></p>
+<pre><code>##    hosp_afl_1     Hospital_name         State            Staffed_beds   
+##  Min.   : 10001   Length:712         Length:712         Min.   :   7.0  
+##  1st Qu.:100311   Class :character   Class :character   1st Qu.: 141.5  
+##  Median :230273   Mode  :character   Mode  :character   Median : 242.5  
+##  Mean   :248324                                         Mean   : 295.2  
+##  3rd Qu.:370018                                         3rd Qu.: 380.5  
+##  Max.   :670073                                         Max.   :1750.0  
+##                                                                         
+##  Total_discharges  Patient_days    Gross_patient_revenue    num_phys     
+##  Min.   :   12    Min.   :    37   Min.   :    3736      Min.   : 1.000  
+##  1st Qu.: 5101    1st Qu.: 20188   1st Qu.:  456340      1st Qu.: 1.000  
+##  Median :10860    Median : 46707   Median :  923908      Median : 1.000  
+##  Mean   :13194    Mean   : 63369   Mean   : 1347802      Mean   : 1.784  
+##  3rd Qu.:17680    3rd Qu.: 85566   3rd Qu.: 1718996      3rd Qu.: 2.000  
+##  Max.   :77757    Max.   :425114   Max.   :14140692      Max.   :12.000  
+##                                    NA&#39;s   :5                             
+##   female_prop    avg_grad_year   n_specialty    EHR_use
+##  Min.   :0.000   Min.   :1965   Min.   :1.000   1:199  
+##  1st Qu.:0.000   1st Qu.:2004   1st Qu.:1.000   0:513  
+##  Median :0.500   Median :2008   Median :1.000          
+##  Mean   :0.512   Mean   :2007   Mean   :1.662          
+##  3rd Qu.:1.000   3rd Qu.:2011   3rd Qu.:2.000          
+##  Max.   :1.000   Max.   :2016   Max.   :8.000          
+## </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(hosps[<span class="kw">which</span>(hosps<span class="op">$</span>num_phys <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>),]<span class="op">$</span>EHR_use)</code></pre></div>
+<pre><code>## 
+##   1   0 
+## 198 513</code></pre>
+<p>Well, we managed to get about <code>{r} (nrow(hosps)/nrow(hosp_clean))*100</code>% match on the hospitals between the two data sets and the summary statistics on those hospital demographics look a lot nicer and less skewed! <em><strong>&lt;——actually check this again on final run!!!!</strong></em> Even though we aggregated the physicial-level demographics because we didn’t want to just throw away data, we do acknowledge that these physician-level demographics are not really meaningful because they are not representative of the demographics of the hospital. It is unlikely that we had all the physicians information from our <code>hosp_afl</code> for each hospital that matched. (i.e. the 10 physicians we have data on for a hospital may not accurately represent the all practitioners in that hospital) We thought of excluding hospitals with less than 10 practitioners in the data to obtain accurate physician demographics for the hospital, but it would mean cutting down way to much of our limite data. We decided to just focus on the main hospital demographics scraped from the website, and keep the aggregated physician demographics at the exploratory level. Merging with <code>hosp_afl</code> still provided us the main outcome of interest, “EHR_use (the hospital uses the electronic health system)”, calculated as 1 if at least one practitioner in the hopstial uses EHR and 0 if none of the practitioners in the hospital uses EHR - that’s why we took the maximum in our code above. Reminder that for practitioners affiliated with hospitals, we assumed that EHR use is the hospital-level adoption and not individual’s. Thus it makes sense that if at least one of the practitioners is recorded in the data as using EHR, we will assume the hospital uses EHR.</p>
 </div>
 <div id="output-1" class="section level3">
 <h3><span class="header-section-number">4.2.3</span> Output</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># clean up intermediate data sets</span>
-<span class="kw">rm</span>(hosp_web, hosp_clean, hosp_afl)
+<span class="kw">rm</span>(hosp_web, hosp_afl)
+<span class="co"># hosp_clean will be used later in secondary regional analysis</span>
 
 <span class="co"># permanently save hospital-level analysis dataset to repo</span>
 <span class="kw">saveRDS</span>(hosps, <span class="dt">file =</span> <span class="st">&quot;./data/hosps.rds&quot;</span>)</code></pre></div>
@@ -652,28 +652,25 @@ hosp_clean &lt;-<span class="st"> </span>hosp_clean[<span class="kw">rowSums</sp
 <li>There are 485841 records of missing CCN (the identifying number for eligible hospitals) and missing hospital type, which matches up with the number of records that are <code>Provider_Type == 'EP'</code>. It makes sense since these variables would not be relevant to an eligible professional (EP), who is not affiliated with any hospital.</li>
 <li>There are exactly 20073 records of missing zip codes and blank specialty (specifically <em>not</em> NA’s), and this number matches up with the number of <code>Provider_Type == 'Hospital'</code>.</li>
 <li><p>It sounds like the first step we may need to do is to split the data into EPs and hospitals since there are enough distinct variables relevant for each type. Then we can merge each split with their corresponding demographic data from the previous sections.</p></li>
-<li>We want to left join with the <code>EPs</code> data set on <code>NPI</code>, which has one row per physician by their unique NPI (one-to-many merge)</li>
-<li><p>We want to left join with the <code>hosps</code> data set on <code>CCN</code>, which has one row per hospital by their unique CCN (one-to-many merge)</p></li>
-<li><p>Then separately check on their summaries again?</p></li>
+<li>We want to inner join with the <code>EPs</code> data set on <code>NPI</code>, which has one row per physician by their unique NPI (one-to-many merge)</li>
+<li><p>We want to inner join with the <code>hosps</code> data set on <code>CCN</code>, which has one row per hospital by their unique CCN (one-to-many merge)</p></li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># split for EPs</span>
 EHR_EPs &lt;-<span class="st"> </span>EHR_clean <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Provider_Type <span class="op">==</span><span class="st"> &#39;EP&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>CCN, <span class="op">-</span>Hospital_Type, <span class="op">-</span>Provider_Type)
 <span class="co"># merge with EPs data</span>
-EHR_EPs &lt;-<span class="st"> </span><span class="kw">left_join</span>(EHR_EPs, EPs, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&#39;NPI&#39;</span>=<span class="st">&#39;npi&#39;</span>))
+EHR_EPs &lt;-<span class="st"> </span><span class="kw">inner_join</span>(EHR_EPs, EPs, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&#39;NPI&#39;</span>=<span class="st">&#39;npi&#39;</span>))
 
 <span class="co"># split for hospitals</span>
 EHR_hosps &lt;-<span class="st"> </span>EHR_clean <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Provider_Type <span class="op">==</span><span class="st"> &#39;Hospital&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>ZIP, <span class="op">-</span>Specialty, <span class="op">-</span>Provider_Type)
 <span class="co"># merge with hosps data</span>
-EHR_hosps &lt;-<span class="st"> </span><span class="kw">left_join</span>(EHR_hosps, hosps, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&#39;CCN&#39;</span>=<span class="st">&#39;hosp_afl_1&#39;</span>))</code></pre></div>
-<p>why are there so many duplicate rows of the same thing?</p>
-<p>Later:</p>
+EHR_hosps &lt;-<span class="st"> </span><span class="kw">inner_join</span>(EHR_hosps, hosps, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&#39;CCN&#39;</span>=<span class="st">&#39;hosp_afl_1&#39;</span>))</code></pre></div>
 <ul>
-<li><p>specific product types are too dirty and not meaningful, will focus on vendor types.</p></li>
+<li>specific product types are too dirty and not meaningful, will focus on vendor types.</li>
 <li>notice that the <code>ehr</code> column is not all <code>y</code> when we expect them to be. this explains why we had so many physicians who fell in the <code>ehr=''</code> category. the physicians whom we have EHR product usage information on did not answer “yes” to EHR use in the original <code>EPs</code> data.</li>
-<li>again the top primary specialties overall are 306, 247, 201, 128, 108, compare that to the top specialities among physicians whom we have vendor information: 30, 25, 15, 13, 57.</li>
-<li><p>merge with the cleaned hosp data</p></li>
+<li>again the top primary specialties overall are 306, 247, 201, 128, 108, compare that to the top specialities among physicians whom we have vendor information: 30, 25, 15, 13, 12.</li>
+<li>merge with the cleaned hosp data</li>
 </ul>
 </div>
 <div id="output-2" class="section level3">
@@ -729,6 +726,17 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>
