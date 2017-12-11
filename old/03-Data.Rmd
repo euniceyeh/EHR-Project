@@ -1,0 +1,409 @@
+# Data
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(tidyverse)
+library(GGally)
+library(reshape2)
+library(lme4)
+library(lattice)
+library(boot)
+library(parallel)
+library(compiler)
+library(RColorBrewer)
+library(car)
+library(broom)
+library(caret)
+library(fiftystater)
+library(zipcode)
+library(gridExtra)
+library(knitr)
+```
+
+All of our data are based on the 2016 Medicare & Medicaid EHR Incentive Program since the adoption of EHR is an ongoing basis: a provider who adopted and used EHR during the 2014 program, for example, is likely to still be in the program the following years. So theoretically, the 2016 program would be the most cumulative source of providers adopting EHR. As mentioned in [Related Work](https://euniceyeh.github.io/EHR-Project/work.html), the adoption of EHR has been consistently rising over the years across the U.S., so there is also no interest in looking at the use over time when we can just look at the latest collection of data. And since 2017 isn't quite over yet, it wouldn't be fair to start looking at the usage of EHR within the 2017 program, so the most recent completed data would be on the 2016 program.
+
+## Eligible Professionals (EPs)
+
+To answer the first of our [Initial Questions](https://euniceyeh.github.io/EHR-Project/questions.html) as to whether or not a physician's age, education, practice location, etc. may be related to their use of EHR in the incentive program, we must be able to find demographics data at the practitioner level.
+
+### Source/Metadata
+
+And here we are: readily available on [Data.Medicare.gov](https://data.medicare.gov/Physician-Compare/Physician-Compare-National-Downloadable-File/mj5m-pzi6) are the demographics of physicians eligible for the Medicare & Medicaid EHR incentive program at the practitioner level. 
+We used the API link to read in the data set and applied SQL filtering options to speed up the download since it is a large file. We specified the limit to be exactly 2254703 because that's the exact number of rows the data contain, if we don't specify this, the default limit of rows that get downloaded is 100. To compensate, we will specify the exact columns of interest to include, which can also be specified in the download link (we looked through the metadata on the website to select the meaningful and interesting variables).
+
+```{r load-EPs-data, cache=TRUE}
+dat <- read.csv("https://data.medicare.gov/resource/c8qv-268j.csv?$limit=2254703&$select=npi,frst_nm,gndr,cred,med_sch,grd_yr,pri_spec,cty,st,zip,hosp_afl_1,hosp_afl_lbn_1,ehr&$order=npi")
+saveRDS(dat, "./data/dat_raw.rds") # saving data for reproducibility
+```
+
+
+### Wrangling
+
+Let's first take a look at the data structure and a summary of all the columns.
+```{r}
+str(dat)
+summary(dat)
+```
+
+
+Observations from the above output:
+
+  - There are `r length(unique(dat$st))` levels of states, which means this data include states outside of the 50 mainland states and DC. Since we don't have sufficient data on the Virgin Islands and Guam, we will have to filter these states out. 
+  - There is one person whose gender is unknown, we will filter this person out since we want to group by gender.
+  - There are `r sum(is.na(EPs$grd_yr))` rows with missing graduation years, will need to filer this out too if graduation years is one of the main demographics of interest (will mess up plotting). Also, one or more physician who graduated in 2017 slipped into our data...we will ignore this by filtering it out too.
+  - It looks like most zip codes in this data are the full 9-digit zip codes, which can be split into the standard 5-digit format and the 4-digit.
+  - There are way too many levels of medical schools and primary specialties, we will probably focus on looking at the most popular ones during exploratory analysis rather than the final primary analysis.
+  
+  
+```{r}
+data("state")
+clean <- dat %>% filter(st %in% c(state.abb, "DC")) %>% 
+  filter(gndr %in% c("F", "M") & !is.na(grd_yr) & grd_yr != 2017)
+```
+
+
+Now we only have `r length(unique(clean$st))` levels of states, `r length(unique(clean$gndr))` levels of gender, and no records with missing graduation year. To make sure we only keep valid zip codes, we can try to use R's zip code package to validate our zip codes. This is important because we want to be able to accurately perform our analyses on the location variables and regional analysis (especially zip code plotting).
+
+```{r}
+# separate out the first five zip codes from the last four extension
+clean <- clean %>% mutate(zip.ext = substr(as.character(zip), 6, 9), 
+                          zip = substr(as.character(zip), 1, 5))
+
+# use R zipcode package and data
+library(zipcode)
+data("zipcode")
+zip_dat <- clean %>% left_join(zipcode,by='zip') 
+
+# check state mismatches
+zip_mismatch <- zip_dat %>% 
+  mutate(st = as.character(st)) %>% 
+  filter(st != state) %>% 
+  select(npi, frst_nm, zip, cty, city, st, state, latitude, longitude)
+
+# check number of records mismatched
+nrow(zip_mismatch)
+
+# look at the top five mismatches
+(top5_mismatch <- zip_mismatch %>% 
+  group_by(zip, cty, st, city, state) %>% 
+  summarize(n = n()) %>% 
+  arrange(desc(n)) %>% 
+  head(5))
+```
+
+
+In order to not just blatantly throw away `r nrow(zip_mismatch)` mismatches, we will look at the top 5 most common mismatches on a case-by-case basis to try to salvage as many records as possible without searching too deeply in our data set. Also, starting from the 6th most common mismatches, the number of records `n` were down to 58 or less, so they would have little effect on the data set.
+
+The results of searching up the top 10 mismatches on Google Maps:
+
+- The zip code 99362 spans across Walla Walla in both WA and OR, so it is likely that the practice is located on the WA side of the zip code coverage. We will ignore the state mismatch from the zip code package for this case.
+- The zip code 52761 does belong to Muscatine, IA, which is right on the border of IL. Again, the practice is most likely located on the IA side. Will ignore the state mismatch for this case as well.
+- The zip code for Granger, IN was most likely mistyped. The correct zip code for Granger is 46530, which is very close to 43530. We will fix the zip code for this particular case only.
+- The zip code 22401 does belong to Frederickburg, VA, and is not near the border of VA and MD at all. There is a "Frederick" city in MD, but none of its zip codes look similar enough to 22401. No clear culprit, will have to let this one go. :(
+- The zip code for Hanover, MD is 21076, which was most likely mistyped as 20176. We will fix this particular case as well.
+
+
+```{r}
+# leave out the 22401 Fredericksburg MD mismatch, fix the zip codes for Granger and Hanover.
+zip_fix <- top5_mismatch %>% ungroup() %>% 
+  filter(cty != 'FREDERICKSBURG') %>% 
+  mutate(zip = replace(zip, zip %in% c(43530, 20176), c(46530, 21076))) %>% 
+  select(-n)
+
+mismatch_tokeep <- zip_dat %>% 
+  select(-zip) %>% # we want to replace the original wrong zip codes with the fixed zip codes
+  inner_join(zip_fix, by = c('cty','st', 'city', 'state'))
+
+clean <- zip_dat %>%
+  mutate(st = as.character(st), state = as.character(state)) %>% 
+  filter(st == state | nchar(zip) == 5) %>% # keeping only the matches
+  bind_rows(mismatch_tokeep) %>% # then add in the mismatches we wanted to keep or have fixed
+  select(-city, -state) # will rely on the original city and state columns
+```
+
+
+Continuing on with our wrangling...
+
+  - About `r (sum(dat$hosp_afl_1=='')/nrow(dat))*100`% of the (original) data are of physicians not affiliated with any hospital, these are the practitioners we will subset on to do our practitioner-level analysis on since these are the only cases when a physician's demographics can have an effect on the choice of using EHR. For physicians who are affiliated with a hospital,  their demographics would no longer be informative as to whether or not they use EHR, it would then have to be the demographics of the hospitals that could inform the use of EHR at the hospital-level. Thus, we were able to find demographics on hospitals across the U.S. in general, which will be discussed in the next section within this chapter, but there's no indication of participation in the incentive program nor EHR use, so we will have to merge that hospital demographic data with the practitioners in this data set who are affiliated with any one hospital.
+  
+
+So for the practitioner-level analysis we want to:
+
+  - Calculate the number of years since graduation
+  - Use 1's and 0's instead of 'Y' and blanks as indicator of EHR use for our binary outcome
+  - Keep only one record per physician, which means we would have to lose the distinct practice locations for physicians who have multiple practices. But since we can't fit our logistic model with either city, state, or zip code, there's no point in keeping this detail. Instead, we can calculate the number of distinct practices these physicians have in order to collapse the data to the practitioner level.
+
+```{r}
+EPs <- clean %>% filter(hosp_afl_1 == '') %>% 
+  mutate(yrs_grd = 2016 - as.integer(grd_yr), # calc the n of years since graduation
+         cred = case_when(cred == '' ~ 'NA', # assign blanks to NA's
+                          TRUE ~ as.character(cred)),
+         cred = as.factor(cred),
+         ehr = case_when(ehr == 'Y' ~ 1, # use numeric indicators
+                         ehr == '' ~ 0),
+         ehr = as.factor(ehr)) %>% 
+  select(-hosp_afl_1, -hosp_afl_lbn_1, -frst_nm) %>% 
+  distinct(npi, .keep_all = TRUE) # keep only one row per physician
+
+# calculate the number of practices for each physician
+SL <- dat %>% group_by(npi) %>% summarise(locations = n_distinct(zip))
+
+EPs <- left_join(EPs, SL, by="npi")
+
+rm(SL)
+summary(EPs)
+```
+
+### Output
+
+```{r save-EPs-data, cache=TRUE}
+# permanently save physician-level analysis dataset to repo
+saveRDS(EPs, file = "./data/EPs.rds")
+
+# for the rest of practitioners who are affiliated with a hospital
+hosp_afl <- clean %>% # filter on the clean version
+  filter(hosp_afl_1 != '') %>% 
+  mutate(hosp_afl_lbn_1 = as.character(hosp_afl_lbn_1), 
+         cty = str_trim(as.character(cty)),
+         st = as.character(st),
+         ehr = ifelse(ehr == "Y", 1, 0)) %>% 
+  # only keep relevant or potentially interesting variables (keeping npi to count number of physicians)
+  distinct(npi, hosp_afl_lbn_1, st, cty, ehr, hosp_afl_1, pri_spec, gndr, grd_yr)
+
+# clean up intermediate data sets
+rm(dat, clean, zipcode, zip_dat, zip_fix, zip_mismatch, mismatch_tokeep, top5_mismatch)
+```
+
+
+  - We are storing the `EPs` data set as a `.rds` file in our repo under the `/data` directory for reproducibility of our analysis since this is the clean analysis-ready data set that will be used to analyze the potential effects of practitioner demographics on EHR use in our [Primary Analysis](https://euniceyeh.github.io/EHR-Project/primary.html).
+  - The `hosp_afl` data set, still containing one row per physician per hospital location, is to be merged with the hospital demographics data discussed in the next section.
+  - Both `EPs` and the merged-to-be data of `hosp_afl` containing the hospital demographics are to be merged with the [`EHR`](https://euniceyeh.github.io/EHR-Project/data.html#vendors-products-ehr) vendor and product information in the last section of this chapter, in order to explore both physician and hospital demographics by specific types of EHR used.
+
+
+## Eligible Hospitals (Hosp)
+
+General hospital demographics such as the total number of staffed beds, total number of discharges, total number of patient days, and total gross patient revenue (inpatient and outpatient) are all publicly accessible on the [American Hospital Directory](https://www.ahd.com/states/) organized by U.S. states. Since there is not a `.csv` file ready for us to download and the hospital demographics are already neatly summarized in a table for each state, we decided that we could do some web scraping for this.
+
+
+### Source/Metadata
+
+The link to each U.S. state's summary table of hospital demographics by hospital name in that state begins with the same URL: `https://www.ahd.com/states/hospital_` and ends with the state's abbreviation plus a `.html`. For example, a table of hospital demographics for each hospital in Massachusetts can be directly scraped from the link, [https://www.ahd.com/states/hospital_MA.html](https://www.ahd.com/states/hospital_MA.html). The details of these hospital statistics are described [here](https://www.ahd.com/definitions/statistics.html).
+
+```{r webscraping, eval=FALSE}
+hosp_web <- data.frame()
+for (st in  c(state.abb, "DC")){
+  url = paste("https://www.ahd.com/states/hospital_", st, ".html", sep='')
+  st_df <- read_html(url) %>%
+    html_nodes("table") %>%
+    .[[2]] %>%
+    html_table()
+  st_df <- as.data.frame.matrix(eval(parse(text=st)))
+  # removing the TOTAL row at the end of each table
+  st_df <- st_df[!(st_df$"Hospital Name"=="T O T A L"),]
+  st_df$State <- st
+  hosp_web <- rbind(hosp_web, st_df)
+}
+saveRDS(hosp_web, "./data/hosp_raw.rds") # saving data for reproducibility
+```
+
+```{r load-hosp-data, include=FALSE}
+# since we've scrapped the tables off from the website too many times from testing our code, we actually got banned from it by the IP address (yes, we've exhausted all of our wifi spots including the starbucks across the street). So instead of actually running the code above, we will secretly load in our previously fully scrapped data here:
+hosp_web <- readRDS("./data/hosp_web.rds") # you can access this from our repo under /data
+```
+
+
+### Wrangling
+
+Let's take a look at the data structure of the raw scrapped hospital demographics.
+```{r}
+str(hosp_web)
+```
+
+To do:
+
+- We need to turn all the demographic information into numeric columns so we can use them as continuous variables.
+- These values are reported with commas, so we need to strip these out.
+- All the gross patient revenues are reported with a dollar sign in addition to the commas, so we need to strip those out too.
+- Proper cases are harder to match on, will convert all letters in city and hospital name to upper case.
+- It looks like some hospital has a gross patient revenue of $0...is this possible? Will explore this after dealing with all of the above first.
+
+```{r}
+hosp_clean <- transform(hosp_web, 
+                       Staffed_beds = as.numeric(gsub(",", "", Staffed_beds)), 
+                       Total_discharges = as.numeric(gsub(",", "", Total_discharges)),
+                       Patient_days = as.numeric(gsub(",","", Patient_days)),
+                       Gross_patient_revenue = as.numeric(gsub("\\$|,", "", Gross_patient_revenue)),
+                       Hospital_name = toupper(Hospital_name),
+                       City = toupper(str_trim(as.character(City)))
+                       )
+summary(hosp_clean)
+```
+
+It looks like the zero value wasn't just for the gross patient revenue. From the summary output, we can see that the minimum values on all hospital demographics (staffed beds, total discharges, patient days, gross patient revenue) are zero, which doesn't seem right. Theoretically, it is impossible for any _functioning_ hospital to have a *total* of zero on any of these characteristics. Would having a total of zero number of staffed beds really make it a hospital? Can a hospital survive on a gross patient revenue of zero dollars? We thought that it might be a web scrapping error, but when we went back and looked on the website, some of their tables definitely have random zero hospital statistics and some even have a whole row of zeros for certain hospitals. The metadata wasn't very clear on this, but it seems like it is their way of representing missing data. Instead of keeping them as zeros, which would affect any computation we want to perform on these continuous variables, we will convert every zero into a true missing value, `NA`. But if a hospital has all missing demographics (the entire row of zeros), then we will just remove that hospital entirely (delete the whole row).
+
+```{r}
+# the demographics are columns 3 to 6 of the data frame
+is.na(hosp_clean[,3:6]) <- !hosp_clean[,3:6] # turn 0's to NAs
+hosp_clean <- hosp_clean[rowSums(is.na(hosp_clean)) < 4,] # only delete hosp with all four NAs
+summary(hosp_clean)
+```
+
+Now the minimum value is 1...still questionable and potentially causing the skew in their distributions. But we did take a look at these specific hospitals with any one demographic characteristic of value 1 and they seem to also have low values of the other characteristics as well (not necessarily exactly of 1, that would've been even more suspicious), so these may very well be valid who knows. Anyway, we need to move on with our lives, I mean, to merging with `hosp_afl` (which is a subset of practitioners who are affiliated with a hospital from the previous section) on the hospital name and state since different hospitals in different locations can have the same name. Since `hosp_afl` can have multiple rows per hospital if more than one physician in the data is affiliated with it, so we will aggregate the data back to hospital-level after the merge by summarizing physician-level information.
+
+```{r}
+hosps <- inner_join(hosp_clean, hosp_afl, by=c("Hospital_name"="hosp_afl_lbn_1", "State"="st"))
+hosps <- hosps %>% 
+  group_by(hosp_afl_1, Hospital_name, State, Staffed_beds, Total_discharges, Patient_days, Gross_patient_revenue) %>% 
+  summarize(num_phys = n_distinct(npi),
+            female_prop = round(mean(ifelse(gndr == "F", 1, 0)),2), 
+            avg_grad_year = round(mean(grd_yr),2),
+            n_specialty =n_distinct(pri_spec),
+            EHR_use = as.factor(max(ehr)))
+summary(hosps)
+table(hosps[which(hosps$num_phys <= 10),]$EHR_use)
+```
+
+Well, we managed to get about `{r} (nrow(hosps)/nrow(hosp_clean))*100`% match on the hospitals between the two data sets and the summary statistics on those hospital demographics look a lot nicer and less skewed! Even though we aggregated the physical-level demographics because we didn't want to just throw away data, we do acknowledge that these physician-level demographics are not really meaningful because they are not representative of the demographics of the hospital. It is unlikely that we had all the physicians information from our `hosp_afl` for each hospital that matched. (i.e. the 10 physicians we have data on for a hospital may not accurately represent the all practitioners in that hospital) We thought of excluding hospitals with less than 10 practitioners in the data to obtain accurate physician demographics for the hospital, but it would mean cutting down way to much of our limited data. We decided to just focus on the main hospital demographics scraped from the website, and keep the aggregated physician demographics at the exploratory level. Merging with `hosp_afl` still provided us the main outcome of interest, "EHR_use (the hospital uses the electronic health system)", calculated as 1 if at least one practitioner in the hospital uses EHR and 0 if none of the practitioners in the hospital uses EHR - that's why we took the maximum in our code above. Reminder that for practitioners affiliated with hospitals, we assumed that EHR use is the hospital-level adoption and not individual's. Thus it makes sense that if at least one of the practitioners is recorded in the data as using EHR, we will assume the hospital uses EHR.  
+
+### Output
+```{r}
+# clean up intermediate data sets
+rm(hosp_web, hosp_afl)
+# hosp_clean will be used later in secondary regional analysis
+
+# permanently save hospital-level analysis dataset to repo
+saveRDS(hosps, file = "./data/hosps.rds")
+```
+
+  - Again, we are storing the `hosps` data set as a `.rds` file in our repo under the `/data` directory for reproducibility of our analysis since it will be used to analyze the potential effects of hospital demographics on the use of EHR, which is another aspect of our [Primary Analysis](https://euniceyeh.github.io/EHR-Project/primary.html).
+  - This data set will also be subsequently merge with the EHR vendor and product information discussed in the next section to explore hospital demographics by specific types of EHR used.
+
+
+## Vendors & Products (EHR)
+
+Since so many professionals and hospitals across the U.S. have already adopted EHR, we realized that simply looking at the binary outcome of EHR use would be too boring of a project. Thus, we were curious to further explore the demographics of those who do use EHR by the specific types of EHR vendor or product. Fortunately, we were able to find data to support this additional secondary/exploratory analysis.
+
+### Source/Metadata
+
+The [Health IT Dashboard](https://dashboard.healthit.gov/datadashboard/documentation/ehr-products-mu-attestation-data-documentation.php) provides certified health IT product data from the ONC Certified Health IT Product List (CHPL) such as the unique vendors, products, and product types of each certified health IT product used as part of the Medicare EHR Incentive Program. We downloaded only the 2016 data set, which also includes unique provider identifiers (NPI), in order to match the `EPs` data set discussed in the first section of this chapter. As the [metadata](https://dashboard.healthit.gov/api/open-api.php?source=onc-data-documentation.csv&data=ehr-products-mu-attestation-data-documentation) explains, a provider in this data set can be either an eligible professional (EP) and eligible hospital (Hospital), as distinguished by the `Provider_Type` column. Thus, only the `Provider_Type == 'EP'` records is merged with the subset of `EPs` who are not affiliated with any hospital, and the `Provider_Type == 'Hospital'` records is merged with the subset of `EPs` who are affiliated with a hospital, and therefore directly merged with the combined and cleaned version of the `hosp` data set discussed in the previous section of this chapter.
+
+```{r load-EHR-data, cache=TRUE}
+EHR <- read.csv("https://dashboard.healthit.gov/datadashboard/data/MU_REPORT_2016.csv")
+saveRDS(EHR, "./data/EHR_raw.rds") # saving data for reproducibility
+```
+
+
+### Wrangling
+
+Data structure, you know the drill.
+```{r}
+str(EHR)
+```
+
+There are actually a lot of variables here that are not informative so we can drop them and just focus on a smaller set, i.e. program year would just be 2016 on every row in the data, EHR certification number or CHP ID is at an unnecessary level of detail. Let's select the important columns and a few potentially interesting variables to summarize by (thus, using `distinct` instead of `select`).
+
+```{r}
+EHR_clean <- EHR %>% distinct(NPI, CCN, Provider_Type, Business_State_Territory, ZIP, Specialty, Hospital_Type, Vendor_Name, EHR_Product_Name, Product_Classification, Product_Setting)
+summary(EHR_clean)
+```
+
+Observations:
+
+* There are `r nrow(is.na(EHR_clean$CCN)) ` records of missing CCN (the identifying number for eligible hospitals) and missing hospital type, which matches up with the number of records that are `Provider_Type == 'EP'`. It makes sense since these variables would not be relevant to an eligible professional (EP), who is not affiliated with any hospital.
+* There are exactly `r sum(EHR_clean$ZIP=="") ` records of missing zip codes and blank specialty (specifically *not* NA's), and this number matches up with the number of `Provider_Type == 'Hospital'`.
+* It sounds like the we just need to split the data into EPs and hospitals since there are enough distinct variables relevant for each type. Then clean each one before merging with their corresponding level of demographics.
+
+Split:
+
+```{r}
+# split for EPs
+EHR_EPs <- EHR_clean %>% filter(Provider_Type == 'EP') %>% 
+  select(-CCN, -Hospital_Type, -Provider_Type)
+summary(EHR_EPs)
+
+# check for valid zip codes
+EHR_EPs %>% filter(nchar(as.character(ZIP)) < 5) %>% 
+  group_by(ZIP) %>% summarize(n())
+
+# split for hospitals
+EHR_hosps <- EHR_clean %>% filter(Provider_Type == 'Hospital') %>% 
+  select(-ZIP, -Specialty, -Provider_Type)
+summary(EHR_hosps)
+```
+
+The summaries much look better separately for the two sets. Now we just have to clean up the zip codes for the physician-level EHR's. Looks like there are only a few records with invalid zip codes. Similar to how we cleaned up the zip codes for `EPs`, we will match the zip codes with R's own zip code package.
+
+```{r}
+# first remove non-US states, appending DC to list
+state_name <- c(state.name,"District Of Columbia")
+states <- data.frame(state_name = state_name, state_abb = c(state.abb, "DC"))
+EHR_EPs <- EHR_EPs %>% filter(Business_State_Territory %in% state_name)
+length(unique(EHR_EPs$Business_State_Territory))
+
+# remove invalid zip codes
+EHR_EPs <- EHR_EPs %>% filter(nchar(as.character(ZIP)) >= 5)
+
+# merge R zip codes
+library(zipcode)
+data("zipcode")
+EHR_EPs <- EHR_EPs %>% left_join(zipcode, by = c("ZIP" = "zip"))
+
+# check state mismatches
+EHR_mismatch <- EHR_EPs %>% 
+  left_join(states, by = c("state" = "state_abb")) %>% # need to add in long state names
+  mutate(Business_State_Territory = as.character(Business_State_Territory)) %>% 
+  filter(state_name != Business_State_Territory)
+
+# percent state mismatch
+nrow(EHR_mismatch)/nrow(EHR_EPs)
+
+# check which zips are mismatching
+EHR_mismatch %>% 
+  group_by(ZIP, Business_State_Territory, state_name) %>% 
+  summarize(num = n()) %>% 
+  arrange(desc(num)) %>% 
+  head(8)
+```
+
+The top 10 mismatches:
+
+* Zip code 51503 is in Iowa (agrees with zip code package)/bordering Nebraska, but reported as Nebraska which is neighboring Iowa. This may be correct, so we'll keep Nebraska as reported
+* Zip code 55905 is in Minnesota, but reported state Florida is not near Minnesota. Since there is likely a typo in either zip or state, we'll remove this mismatched zip all together
+* Zip code 54601 is in Wisconsin/bordering Minnesota, but reported as Minnesota which is neighboring Wisconsin. We'll keep Minnesota as reported
+* Zip code 33331 is in Florida, which is nowhere near Ohio. Since it is unclear which was the typo, we'll delete all these mismatches
+* Zip code 55905 is in Minnesota - found it's actually Mayo Clinic (along with #2). Wisconsin and Minnesota are bordering each other, so we'll keep Wisconsin --> in general, if we look at `test_mismatch %>% filter(ZIP == "55905")` you will notice that this zip code is incorrectly used for multiple states, possibly meaning there were data entry/quality issues, which validates our decision to clean up the zip codes.
+
+```{r}
+EHR_zip <- EHR_EPs %>%
+  left_join(states, by = c("state" = "state_abb")) %>% 
+  mutate(Business_State_Territory = as.character(Business_State_Territory)) %>%
+  filter(
+    (state_name == Business_State_Territory) | 
+    (state_name != Business_State_Territory && ZIP == "51503" && Business_State_Territory == "Nebraska") |
+    (state_name != Business_State_Territory && ZIP == "54601" && Business_State_Territory == "Minnesota") |
+    (state_name != Business_State_Territory && ZIP == "55905" && Business_State_Territory == "Wisconsin")
+    ) %>% 
+  select(NPI, Business_State_Territory, ZIP, Specialty, Vendor_Name, EHR_Product_Name, Product_Classification, Product_Setting)
+```
+
+We want to inner join with the `EPs` data set on `NPI`, which has one row per physician by their unique NPI (one-to-many merge).
+  
+```{r}
+# merge with EPs data
+EHR_EPs <- inner_join(EHR_zip, EPs, by=c('NPI'='npi'))
+summary(EHR_EPs)
+
+# check EHR use (should expect all 1's or "yes")
+table(EHR_EPs$ehr)
+```
+
+Notice that the `ehr` column is not all `1`'s when we expect them to be. This explains why we had so many physicians who fell in the `ehr=''` category. The physicians whom we have EHR product usage information on did not answer "yes" to EHR use in the original `EPs` data.
+
+### Output
+
+```{r}
+saveRDS(EHR_EPs, file = "./data/EHR_EPs.rds")
+```
+
+Although the specific product types are too granular and not meaningful enough to clean, we believe that exploring the professional and hospital demographics across vendor types may still be interesting, especially if we focus on the top 10 most popular vendors or classify the smaller local vendors as one group.

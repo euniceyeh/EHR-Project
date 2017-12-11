@@ -7,7 +7,7 @@
 ### Physician Demographics
 
 
-```{r}
+```{r, message=FALSE}
 data("zipcode")
 data("fifty_states")
 states_map <- map_data("state")
@@ -298,8 +298,6 @@ When it came to looking at patterns between primary specialty and states, it was
 
 ### Hospital Demographics
 
-
-
 ```{r}
 #load hosp_all data & add long state names
 state_name <- c(state.name,"District Of Columbia")
@@ -386,7 +384,7 @@ The distribution of average discharges was not very interesting - it was similar
 
 ```{r}
 #avg revenue per discharge
-revenue <- hosp_all %>%  filter(!is.na(Gross_patient_revenue) & !is.na(Total_discharges)) %>% 
+revenue <- hosp_all %>%  filter((Gross_patient_revenue != 0) & (Total_discharges != 0)) %>% 
   mutate(per = Gross_patient_revenue/Total_discharges) %>% 
   group_by(State) %>%
   summarize(rev = mean(per))
@@ -479,5 +477,6 @@ Interesting conclusions from the jitter plot:
 * While NextGen Healthcare is used by all the top 10 specialties, they are most popular among the ophthalmologists and optometrists.
 * Modernizing Medicine Inc is very popular among dermatologists.
 * Epic Systems, Cerner Corporation, athenahealth, and GE Healthcare are pretty consistently used across all the top 10 disciplines. Epic is the most consistently popular, however.
+
 
 

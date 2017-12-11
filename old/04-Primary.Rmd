@@ -34,7 +34,7 @@ rules <- apriori(corrt, parameter=list(support=0.01, confidence=0.5))
 plot(rules)
 ```
 
-The result is a a set of ______________ association rules with generally high confidence and low support (proportion of transactions in the data set which contain the item set). Let's first trim this down a bit to show only important rules (confidence > 0.85). We'll pick the top 30 rules so we have a smaller subset to find meaningful relationships.
+The result is a a set of 80 association rules with generally high confidence and low support (proportion of transactions in the data set which contain the item set). Let's first trim this down a bit to show only important rules (confidence > 0.85). We'll pick the top 30 rules so we have a smaller subset to find meaningful relationships.
 
 The top 30 rules are chosen with respect to the lift measure (a measure of rule strength) - the deviation of the support of the whole rule from the support expected under independence given the supports of both sides of the rule.
 
@@ -46,7 +46,6 @@ plot(subrules, method="grouped", control=list(k=50))
 
 We concluded the following:
 
-* Practitioner graduation year is not very interesting
 * Medical School, Primary Specialty, and Gender had the most meaningful associations 
     - However, we would choose only one of medical school or primary specialty. They are likely highly correlated because there are specialty-specific schools such as chiropractic schools.
 
@@ -89,12 +88,8 @@ Credentials (physician degrees) had one of the fewest number of levels, so we wa
 
 4. Gender, years since graduation, and number of locations by EHR use
 ```{r}
-# scatter plot matrix of all three effects by EHR use
-my_colors <- brewer.pal(nlevels(as.factor(EPs$ehr)), "Set1")
-EPs %>% mutate(gender = as.factor(as.integer(gndr))) %>% 
-  scatterplotMatrix(~gender+yrs_grd+locations|ehr, data=., 
-                    col=my_colors, smoother.args=list(col="grey"), 
-                    cex=1.5 , pch=c(15,16), legend.pos="center")
+# scatter plot matrix of all three effects plus EHR use
+EPs %>% ggpairs(columns = c("gndr", "yrs_grd", "locations", "ehr"))
 
 # bubble plot of years since graduation by EHR use
 EPs %>% ggplot(aes(ehr, yrs_grd)) +
@@ -110,7 +105,6 @@ EPs %>% melt(id.vars="ehr", measure.vars="yrs_grd") %>%
   scale_y_sqrt()
 ```
 
-- Note that we forced gender, which is binary, into the scatter plot matrix so just ignore any noise between the values 1 and 2 on the scale for gender.
 - Again, we can confirm that all three variables of interest (gender, years since graduation, and number of locations) are not strongly correlated with each other at all. We can safely add them into the final model without interaction terms.
 - From the this scatter plot matrix, it is apparent that the distribution of gender and years since graduation differ by EHR use (as indicated by the red and blue colors, blinded here because we want to give you some suspense dun dun dun - but actually, we just couldn't get the legend to not completely cover the density curves).
 - A general observation from the bubble and violin plots is that there are proportionally more physicians in our data who have not used EHR. so we already have an imbalance in sample size between the two groups. But overall, our sample size is still large enough.
@@ -174,48 +168,100 @@ Looks like our model did pretty well!
 
 Now let's focus on the other type of providers eligible for the Medicaid & Medicare EHR Incentive Program: the hospitals. Recall that in this analysis population, we included only the physicians who are affiliated with any hospital and aggregated their demographics and EHR use at the hospital level. This is because the use of EHR would no longer depend on the physicians themselves, but rather the hospitals who decide to participate in the program. Since the aggregated physician demographics are not reliable demographic representations of the hospitals, as discussed in the [Data](https://euniceyeh.github.io/EHR-Project/data.html#eligible-hospitals-hosp) chapter, we will only perform exploratory analysis on them and focus on the scraped hospital demographics (staffed beds, total discharges, patient days, gross patient revenue) for the final analysis.
 
-### Exploratory
 
+###Exploratory Analysis
+**Number of practitioners in hospital**
+We suspect that if there is less than 10 physicians in our data per hospital, it is not an accurate representation of the hospital. i.e. The 10 practitioners may not accurately represent the entire group of practitioners in the hospital. We thought of excluding the hospitals with less than 10 practitioners in the data, but it would mean removing 108 out of 166 hospitals in the "control group" that does not use EHR.
+
+**Therefore, while we will keep the aggregated variables, we should keep in mind that these variables may not be accurate representation of hospital demographics. e.g. Number of practitioners in the dataset may be only ten, while the hospital actually employees 500 practitioners.**
 ```{r}
-ggplot(hosps, aes(num_phys, colour = EHR_use)) +
-  geom_density() +
-  xlim(0, 500)
+#RECODE Using EHR_use==1 -> Y, 0 -> ""
+hosps$EHR_char <- ifelse(hosps$EHR_use == 1, "Y", "Blank")
+#RECODE Years since medical school graduation
+hosps$yrs_since_grad = 2017 - hosps$avg_grad_year
+
+
+table(hosps$EHR_use)
+less10ind <- which(hosps$num_phys <= 10)
+table(hosps[less10ind,]$EHR_use)
 ```
 
-Again, we wanted to show that our data on the physicians for each hospital are limited, and could affect our final analysis if we only subset to hospitals with sufficient physicians data in order to accurately include the aggregated physician demographics of the hospitals.
+####Box plots
+Each box plot shows an independent variable's distribution grouped by electronic use or not.
+
+```{r}
+boxplot(Staffed_beds~EHR_use,data=hosps,
+        xlab="EHR Use", ylab="Staffed_beds", ylim = c(0,1000))
+boxplot(Total_discharges~EHR_use,data=hosps,
+        xlab="EHR Use", ylab="Total discharge")
+boxplot(Patient_days~EHR_use,data=hosps,
+        xlab="EHR Use", ylab="Patient days")
+boxplot(Gross_patient_revenue~EHR_use,data=hosps,
+        xlab="EHR Use", ylab="Yearly gross patient revenue")
+boxplot(num_phys~EHR_use ,data=hosps,
+        xlab="EHR Use", ylab="Number of Practitioners")
+boxplot(female_prop~EHR_use ,data=hosps,
+        xlab="EHR Use", ylab="Proportion of Female")
+boxplot(yrs_since_grad~EHR_use ,data=hosps,
+        xlab="EHR Use", ylab="Years since graduation")
+boxplot(n_specialty~EHR_use ,data=hosps,
+        xlab="EHR Use", ylab="Number of specialties")
+```
 
 
-```{r, warning = FALSE}
+####Correlations among variables
+```{r}
+#Correlation Matrix
 my_colors <- brewer.pal(nlevels(as.factor(hosps$EHR_use)), "Set1")
-# explore aggregated physician demographics
-scatterplotMatrix(~num_phys+female_prop+avg_grad_year+n_specialty|EHR_use, data=hosps, 
-                  col=my_colors , smoother.args=list(col="grey") , cex=1.5 , pch=c(15,16), legend.plot=FALSE)
-# explore scraped hospital demographics
-scatterplotMatrix(~Staffed_beds+Total_discharges+Patient_days+Gross_patient_revenue|EHR_use, data=hosps, 
-                  col=my_colors , smoother.args=list(col="grey") , cex=1.5 , pch=c(15,16))
+scatterplotMatrix(~num_phys+female_prop+Staffed_beds+Total_discharges+Patient_days+Gross_patient_revenue|EHR_use, data=hosps, col=my_colors , smoother.args=list(col="grey") , cex=1.5 , pch=c(15,16))
 ```
 
-The first correlation matrix of all the aggregated physician demographics at the hospital level is basically garbage. The second correlation matrix shows us that all four hospital demographics are strongly correlated with each other, which does make sense, and follow the same distributions by EHR use. We will also log-transform these demographics to help normalize their seemingly skewed distributions.
 
+####Normality Check
+We notice that many of the predictor variables are not normally distributed in the above scatter plot. We logged the predictor variables that are skewed to be normally distributed.
 ```{r}
-hosps <- hosps %>% mutate(staffed_beds_log = round(log(Staffed_beds),2),
-                          total_discharges_log = round(log(Total_discharges),2),
-                          patient_days_log = round(log(Patient_days),2),
-                          gross_patient_rev_log = round(log(Gross_patient_revenue),2)
-                          )
-# check for normality for one of them
+#Variables that are not normally distributed are logged: num_phys, staffed_bed, Gross_patient_revenue
+hosps$num_phys_log <- round(log(hosps$num_phys),2)
+hosps$staffed_beds_log <- round(log(hosps$Staffed_beds),2)
+hosps$gross_patient_rev_log <- round(log(hosps$Gross_patient_revenue),2)
+hosps$total_discharge_log <- round(log(hosps$Total_discharges),2)
+hosps$patient_days_log<- round(log(hosps$Patient_days),2)
+
+#Check for normality after logging
+qqnorm(hosps$num_phys_log)
+qqline(hosps$num_phys_log)
+
+qqnorm(hosps$staffed_beds_log)
+qqline(hosps$staffed_beds_log)
+
 qqnorm(hosps$gross_patient_rev_log)
 qqline(hosps$gross_patient_rev_log)
+
+qqnorm(hosps$total_discharge_log)
+qqline(hosps$total_discharge_log)
+
+qqnorm(hosps$patient_days_log)
+qqline(hosps$patient_days_log)
 ```
 
-Let's look at the correlation plots again with the log-transformed values.
+From observing qq-plots after taking log on the variables, we get much closer to normality for each variables. Now note some of correlations. Now let's look at the correlation matrix again with the normalized variables.
+
+**[General trends noticeable from the correlation matrix.]**
+*Years since graduation is relevant only to MD, so it is not applicable to all practitioners
+*Female proportion is not associated with any other variables
+*EHR seems most heavily correlated (correlation coefficients over 0.7) with num_phys, n_specialty, staffed_bed, and gross patient revenue.
+*Potential confounding Factors: We can see that all four variables have positive correlation with each other. IN particular, total discharge has very strong positive association with patient days (coef = 0.99)
 ```{r}
-scatterplotMatrix(~staffed_beds_log+total_discharges_log+patient_days_log+gross_patient_rev_log|EHR_use, data=hosps, 
-                  col=my_colors , smoother.args=list(col="grey") , cex=1.5 , pch=c(15,16), legend.pos="bottomleft")
-hosps %>%
-  ggplot(aes(EHR_use, gross_patient_rev_log)) +
-  stat_sum(aes(size = ..n.., group = 1)) +
-  scale_size_area(max_size = 10)
+#Correlation Matrix with logged variables
+#Final table
+scatterplotMatrix(~staffed_beds_log+total_discharge_log + patient_days_log
++gross_patient_rev_log|EHR_use, data=hosps, col=my_colors , smoother.args=list(col="grey") , cex=1.5 , pch=c(15,16))
+
+
+hosps_cor3 <- hosps %>% ungroup() %>% 
+  mutate(EHR_use = ifelse(EHR_use=='1', 1, 0)) %>% 
+  select(staffed_beds_log, total_discharge_log, patient_days_log, gross_patient_rev_log)
+tidy(round(cor(hosps_cor3, use = "complete.obs"), 2))
 ```
 
 The difference in distributions is not as apparent by the use of EHR. We believed that the gross patient revenue, which may be implying overall hospital size, is a confounding factor that affects other predictor variables. We can also observe this in the strong correlation (above 0.8) between GPR and staffed beds,  GPR and total discharge, and GPR and patient days. Thus, we will stratify on gross patient revenue. Let's see if other predictor variables still have effect on EHR use proportion after stratifying on GPR.
