@@ -19,6 +19,8 @@ library(fiftystater)
 library(zipcode)
 library(gridExtra)
 library(knitr)
+library(arulesViz)
+library(stringr)
 ```
 
 All of our data are based on the 2016 Medicare & Medicaid EHR Incentive Program since the adoption of EHR is an ongoing basis: a provider who adopted and used EHR during the 2014 program, for example, is likely to still be in the program the following years. So theoretically, the 2016 program would be the most cumulative source of providers adopting EHR. As mentioned in [Related Work](https://euniceyeh.github.io/EHR-Project/work.html), the adoption of EHR has been consistently rising over the years across the U.S., so there is also no interest in looking at the use over time when we can just look at the latest collection of data. And since 2017 isn't quite over yet, it wouldn't be fair to start looking at the usage of EHR within the 2017 program, so the most recent completed data would be on the 2016 program.
@@ -32,8 +34,9 @@ To answer the first of our [Initial Questions](https://euniceyeh.github.io/EHR-P
 And here we are: readily available on [Data.Medicare.gov](https://data.medicare.gov/Physician-Compare/Physician-Compare-National-Downloadable-File/mj5m-pzi6) are the demographics of physicians eligible for the Medicare & Medicaid EHR incentive program at the practitioner level. 
 We used the API link to read in the data set and applied SQL filtering options to speed up the download since it is a large file. We specified the limit to be exactly 2254703 because that's the exact number of rows the data contain, if we don't specify this, the default limit of rows that get downloaded is 100. To compensate, we will specify the exact columns of interest to include, which can also be specified in the download link (we looked through the metadata on the website to select the meaningful and interesting variables).
 
-```{r load-EPs-data, cache=TRUE}
+```{r load-EPs-data, cache=TRUE, warning=FALSE}
 dat <- read.csv("https://data.medicare.gov/resource/c8qv-268j.csv?$limit=2254703&$select=npi,frst_nm,gndr,cred,med_sch,grd_yr,pri_spec,cty,st,zip,hosp_afl_1,hosp_afl_lbn_1,ehr&$order=npi")
+saveRDS(dat, "./data/dat_raw.rds") # saving data for reproducibility
 ```
 
 
@@ -48,24 +51,24 @@ summary(dat)
 
 Observations from the above output:
 
-  - There are 53 levels of states, which means this data include states outside of the 50 mainland states and DC. we don't have sufficient data on the virgin islands and Guam, so we will have to filter these states out. 
+  - There are `r length(unique(dat$st))` levels of states, which means this data include states outside of the 50 mainland states and DC. Since we don't have sufficient data on the Virgin Islands and Guam, we will have to filter these states out. 
   - There is one person whose gender is unknown, we will filter this person out since we want to group by gender.
-  - There are rows with missing graduation years, will need to filer this out too if graduation years is one of the main demographics of interest (will mess up plotting). Also, one or more physician who graduated in 2017 slipped into our data...we will ignore this by filtering it out too.
-  - It looks like most zip codes in this data are the full 9-digit zip codes, which can be split into the standard 5-digit format and the 4-digit after.
-  - There are way too many levels of medical schools and primary specialties, we will probably focus on looking at the most popular ones for exploratory analysis.
+  - There are `r sum(is.na(dat$grd_yr))` rows with missing graduation years, will need to filer this out too if graduation years is one of the main demographics of interest (will mess up plotting). Also, one or more physician who graduated in 2017 slipped into our data...we will ignore this by filtering it out too.
+  - It looks like most zip codes in this data are the full 9-digit zip codes, which can be split into the standard 5-digit format and the 4-digit.
+  - There are way too many levels of medical schools and primary specialties, we will probably focus on looking at the most popular ones during exploratory analysis rather than the final primary analysis.
   
   
 ```{r}
 data("state")
 clean <- dat %>% filter(st %in% c(state.abb, "DC")) %>% 
-  filter(gndr %in% c("F", "M") & !is.na(as.integer(grd_yr)) & grd_yr != 2017)
+  filter(gndr %in% c("F", "M") & !is.na(grd_yr) & grd_yr != 2017)
 ```
 
 
-Now we only have `r length(unique(clean$st))` levels of states, `r length(unique(clean$gndr))` levels of gender, and no records with missing graduation year. To make sure we only keep valid zip codes, we can try to use R's zip code package to validate our zip codes. This is important because we want to be able to accurately perform our analyses on the location variables and regional analysis and to match with the vendor data by zip code.
+Now we only have `r length(unique(clean$st))` levels of states, `r length(unique(clean$gndr))` levels of gender, and no records with missing graduation year. To make sure we only keep valid zip codes, we can try to use R's zip code package to validate our zip codes. This is important because we want to be able to accurately perform our analyses on the location variables and regional analysis (especially zip code plotting).
 
 ```{r}
-# separate out the first five zip codes from the last four extension to match R zipcode data
+# separate out the first five zip codes from the last four extension
 clean <- clean %>% mutate(zip.ext = substr(as.character(zip), 6, 9), 
                           zip = substr(as.character(zip), 1, 5))
 
@@ -124,9 +127,10 @@ clean <- zip_dat %>%
 
 Continuing on with our wrangling...
 
-  - About `r (sum(dat$hosp_afl_1=='')/nrow(dat))*100`% of the (original) data are of physicians not affiliated with any hospital, these are the practitioners we will subset on to do our practitioner-level analysis on since these are the only cases when a physician's demographics can have an effect on the choice of using EHR. For physicians who are affiliated with a hospital,  their demographics would no longer be informative as to whether or not they use EHR, it would then have to be the demographics of the hospitals that could inform the use of EHR at the hospital-level. Thus, we were able to find hospital demographics such as ___ on hospitals across the U.S. in general, which will be discussed in the next section within this chapter, but there's no indication of participation in the incentive program nor EHR use, so we will have to merge that hospital demographic data with the practitioners in this data set who are affiliated with any one hospital.
+  - About `r (sum(dat$hosp_afl_1=='')/nrow(dat))*100`% of the (original) data are of physicians not affiliated with any hospital, these are the practitioners we will subset on to do our practitioner-level analysis on since these are the only cases when a physician's demographics can have an effect on the choice of using EHR. For physicians who are affiliated with a hospital,  their demographics would no longer be informative as to whether or not they use EHR, it would then have to be the demographics of the hospitals that could inform the use of EHR at the hospital-level. Thus, we were able to find demographics on hospitals across the U.S. in general, which will be discussed in the next section within this chapter, but there's no indication of participation in the incentive program nor EHR use, so we will have to merge that hospital demographic data with the practitioners in this data set who are affiliated with any one hospital.
+  
 
-for the practitioner-level analysis we want to:
+So for the practitioner-level analysis we want to:
 
   - Calculate the number of years since graduation
   - Use 1's and 0's instead of 'Y' and blanks as indicator of EHR use for our binary outcome
@@ -202,6 +206,7 @@ for (st in  c(state.abb, "DC")){
   st_df$State <- st
   hosp_web <- rbind(hosp_web, st_df)
 }
+saveRDS(hosp_web, "./data/hosp_raw.rds") # saving data for reproducibility
 ```
 
 ```{r load-hosp-data, include=FALSE}
@@ -261,7 +266,7 @@ summary(hosps)
 table(hosps[which(hosps$num_phys <= 10),]$EHR_use)
 ```
 
-Well, we managed to get about `{r} (nrow(hosps)/nrow(hosp_clean))*100`% match on the hospitals between the two data sets and the summary statistics on those hospital demographics look a lot nicer and less skewed! _**<------actually check this again on final run!!!!**_ Even though we aggregated the physical-level demographics because we didn't want to just throw away data, we do acknowledge that these physician-level demographics are not really meaningful because they are not representative of the demographics of the hospital. It is unlikely that we had all the physicians information from our `hosp_afl` for each hospital that matched. (i.e. the 10 physicians we have data on for a hospital may not accurately represent the all practitioners in that hospital) We thought of excluding hospitals with less than 10 practitioners in the data to obtain accurate physician demographics for the hospital, but it would mean cutting down way to much of our limited data. We decided to just focus on the main hospital demographics scraped from the website, and keep the aggregated physician demographics at the exploratory level. Merging with `hosp_afl` still provided us the main outcome of interest, "EHR_use (the hospital uses the electronic health system)", calculated as 1 if at least one practitioner in the hospital uses EHR and 0 if none of the practitioners in the hospital uses EHR - that's why we took the maximum in our code above. Reminder that for practitioners affiliated with hospitals, we assumed that EHR use is the hospital-level adoption and not individual's. Thus it makes sense that if at least one of the practitioners is recorded in the data as using EHR, we will assume the hospital uses EHR.  
+Well, we managed to get about `{r} (nrow(hosps)/nrow(hosp_clean))*100`% match on the hospitals between the two data sets and the summary statistics on those hospital demographics look a lot nicer and less skewed! Even though we aggregated the physical-level demographics because we didn't want to just throw away data, we do acknowledge that these physician-level demographics are not really meaningful because they are not representative of the demographics of the hospital. It is unlikely that we had all the physicians information from our `hosp_afl` for each hospital that matched. (i.e. the 10 physicians we have data on for a hospital may not accurately represent the all practitioners in that hospital) We thought of excluding hospitals with less than 10 practitioners in the data to obtain accurate physician demographics for the hospital, but it would mean cutting down way to much of our limited data. We decided to just focus on the main hospital demographics scraped from the website, and keep the aggregated physician demographics at the exploratory level. Merging with `hosp_afl` still provided us the main outcome of interest, "EHR_use (the hospital uses the electronic health system)", calculated as 1 if at least one practitioner in the hospital uses EHR and 0 if none of the practitioners in the hospital uses EHR - that's why we took the maximum in our code above. Reminder that for practitioners affiliated with hospitals, we assumed that EHR use is the hospital-level adoption and not individual's. Thus it makes sense that if at least one of the practitioners is recorded in the data as using EHR, we will assume the hospital uses EHR.  
 
 ### Output
 ```{r}
@@ -287,6 +292,7 @@ The [Health IT Dashboard](https://dashboard.healthit.gov/datadashboard/documenta
 
 ```{r load-EHR-data, cache=TRUE}
 EHR <- read.csv("https://dashboard.healthit.gov/datadashboard/data/MU_REPORT_2016.csv")
+saveRDS(EHR, "./data/EHR_raw.rds") # saving data for reproducibility
 ```
 
 
@@ -306,8 +312,8 @@ summary(EHR_clean)
 
 Observations:
 
-* There are 485841 records of missing CCN (the identifying number for eligible hospitals) and missing hospital type, which matches up with the number of records that are `Provider_Type == 'EP'`. It makes sense since these variables would not be relevant to an eligible professional (EP), who is not affiliated with any hospital.
-* There are exactly 20073 records of missing zip codes and blank specialty (specifically *not* NA's), and this number matches up with the number of `Provider_Type == 'Hospital'`.
+* There are `r nrow(is.na(EHR_clean$CCN)) ` records of missing CCN (the identifying number for eligible hospitals) and missing hospital type, which matches up with the number of records that are `Provider_Type == 'EP'`. It makes sense since these variables would not be relevant to an eligible professional (EP), who is not affiliated with any hospital.
+* There are exactly `r sum(EHR_clean$ZIP=="") ` records of missing zip codes and blank specialty (specifically *not* NA's), and this number matches up with the number of `Provider_Type == 'Hospital'`.
 * It sounds like the we just need to split the data into EPs and hospitals since there are enough distinct variables relevant for each type. Then clean each one before merging with their corresponding level of demographics.
 
 Split:
@@ -394,7 +400,7 @@ summary(EHR_EPs)
 table(EHR_EPs$ehr)
 ```
 
-Notice that the `ehr` column is not all `1`'s or `Y`'s when we expect them to be. this explains why we had so many physicians who fell in the `ehr=''` category. the physicians whom we have EHR product usage information on did not answer "yes" to EHR use in the original `EPs` data.
+Notice that the `ehr` column is not all `1`'s when we expect them to be. This explains why we had so many physicians who fell in the `ehr=''` category. The physicians whom we have EHR product usage information on did not answer "yes" to EHR use in the original `EPs` data.
 
 ### Output
 

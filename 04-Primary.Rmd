@@ -1,36 +1,4 @@
----
-title: "Primary"
-author: "Eunice Yeh"
-date: "December 11, 2017"
-output: html_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(readr)
-library(tidyverse)
-library(GGally)
-library(reshape2)
-library(lme4)
-library(lattice)
-library(boot)
-library(parallel)
-library(compiler)
-library(RColorBrewer)
-library(car)
-library(broom)
-library(caret)
-library(fiftystater)
-library(zipcode)
-library(gridExtra)
-library(knitr)
-```
-
 # Primary Analysis {#primary}
-
-```{r, echo=FALSE}
-EPs <- readRDS("C:/Users/eyeh/Desktop/EHR-Project/data/EPs.rds")
-```
 
 
 ## Physician Demographics
@@ -50,7 +18,6 @@ Before fitting our model, we explored the relationships between our variables of
 Here, each "transaction" is a practitioner who adapted EHR as part of the Medicare EHR Incentive Program in the U.S.
 
 ```{r}
-library("arulesViz")
 
 # first need to keep certain associational variables of interest and discretize them
 corr <- EPs %>% ungroup() %>% filter(med_sch != "OTHER") %>% 
@@ -78,7 +45,6 @@ plot(subrules, method="grouped", control=list(k=50))
 
 We concluded the following:
 
-* Practitioner graduation year is not very interesting
 * Medical School, Primary Specialty, and Gender had the most meaningful associations 
     - However, we would choose only one of medical school or primary specialty. They are likely highly correlated because there are specialty-specific schools such as chiropractic schools.
 
@@ -110,7 +76,7 @@ EPs %>% melt(id.vars="gndr", measure.vars="locations") %>%
 While practice locations seem to be distributed evenly between males and females, note that the large majority of physicians in our data set have only one location. There are a few outliers who have over 300 unique zip codes associated with their practices.
 
 3. Years since graduation by credentials using bubble plots
-```{r last-bubble}
+```{r}
 EPs %>% mutate(cred = reorder(cred, yrs_grd)) %>% 
   ggplot(aes(cred, yrs_grd)) +
   stat_sum(aes(size = ..n.., group = 1)) +
@@ -120,23 +86,15 @@ EPs %>% mutate(cred = reorder(cred, yrs_grd)) %>%
 Credentials (physician degrees) had one of the fewest number of levels, so we wanted to see if it was a good candidate for our model. The distribution of years since graduation looked pretty consistent across different credentials. Unfortunately, there were disproportionally high numbers of physicians with credentials listed as N/A (~75%), meaning their credential was unknown, so we could not use this variable in our model.
 
 4. Gender, years since graduation, and number of locations by EHR use
-```{r matrix,eval=FALSE}
-# scatter plot matrix of all three effects by EHR use
-my_colors <- brewer.pal(nlevels(as.factor(EPs$ehr)), "Set1")
-EPs %>% mutate(gender = as.factor(as.integer(gndr))) %>% 
-  scatterplotMatrix(~gender+yrs_grd+locations|ehr, data=., 
-                    col=my_colors, smoother.args=list(col="grey"), 
-                    cex=1.5 , pch=c(15,16), legend.pos="center")
-```
+```{r}
+# scatter plot matrix of all three effects plus EHR use
+EPs %>% ggpairs(columns = c("gndr", "yrs_grd", "locations", "ehr"))
 
-```{r bubble}
 # bubble plot of years since graduation by EHR use
 EPs %>% ggplot(aes(ehr, yrs_grd)) +
   stat_sum(aes(size = ..n.., group = 1)) +
   scale_size_area(max_size = 10)
-```
 
-```{r violin}
 # jittered violin plot of years since graduation by EHR use
 EPs %>% melt(id.vars="ehr", measure.vars="yrs_grd") %>% 
   ggplot(aes(ehr, value)) +
@@ -146,7 +104,6 @@ EPs %>% melt(id.vars="ehr", measure.vars="yrs_grd") %>%
   scale_y_sqrt()
 ```
 
-- Note that we forced gender, which is binary, into the scatter plot matrix so just ignore any noise between the values 1 and 2 on the scale for gender.
 - Again, we can confirm that all three variables of interest (gender, years since graduation, and number of locations) are not strongly correlated with each other at all. We can safely add them into the final model without interaction terms.
 - From the this scatter plot matrix, it is apparent that the distribution of gender and years since graduation differ by EHR use (as indicated by the red and blue colors, blinded here because we want to give you some suspense dun dun dun - but actually, we just couldn't get the legend to not completely cover the density curves).
 - A general observation from the bubble and violin plots is that there are proportionally more physicians in our data who have not used EHR. so we already have an imbalance in sample size between the two groups. But overall, our sample size is still large enough.
@@ -210,19 +167,8 @@ Looks like our model did pretty well!
 
 Now let's focus on the other type of providers eligible for the Medicaid & Medicare EHR Incentive Program: the hospitals. Recall that in this analysis population, we included only the physicians who are affiliated with any hospital and aggregated their demographics and EHR use at the hospital level. This is because the use of EHR would no longer depend on the physicians themselves, but rather the hospitals who decide to participate in the program. Since the aggregated physician demographics are not reliable demographic representations of the hospitals, as discussed in the [Data](https://euniceyeh.github.io/EHR-Project/data.html#eligible-hospitals-hosp) chapter, we will only perform exploratory analysis on them and focus on the scraped hospital demographics (staffed beds, total discharges, patient days, gross patient revenue) for the final analysis.
 
-```{r, echo=FALSE}
-hosps <- readRDS("C:/Users/eyeh/Desktop/EHR-Project/data/hosps.rds")
-```
 
-
-
-
-
-
-
-
-
-##Exploratory Analysis
+###Exploratory Analysis
 **Number of practitioners in hospital**
 We suspect that if there is less than 10 physicians in our data per hospital, it is not an accurate representation of the hospital. i.e. The 10 practitioners may not accurately represent the entire group of practitioners in the hospital. We thought of excluding the hospitals with less than 10 practitioners in the data, but it would mean removing 108 out of 166 hospitals in the "control group" that does not use EHR.
 
@@ -239,7 +185,7 @@ less10ind <- which(hosps$num_phys <= 10)
 table(hosps[less10ind,]$EHR_use)
 ```
 
-#Box plots
+####Box plots
 Each box plot shows an independent variable's distribution grouped by electronic use or not.
 
 ```{r}
@@ -262,7 +208,7 @@ boxplot(n_specialty~EHR_use ,data=hosps,
 ```
 
 
-#Correlations among variables
+####Correlations among variables
 ```{r}
 #Correlation Matrix
 my_colors <- brewer.pal(nlevels(as.factor(hosps$EHR_use)), "Set1")
@@ -270,7 +216,7 @@ scatterplotMatrix(~num_phys+female_prop+Staffed_beds+Total_discharges+Patient_da
 ```
 
 
-#Normality Check
+####Normality Check
 We notice that many of the predictor variables are not normally distributed in the above scatter plot. We logged the predictor variables that are skewed to be normally distributed.
 ```{r}
 #Variables that are not normally distributed are logged: num_phys, staffed_bed, Gross_patient_revenue
@@ -317,20 +263,7 @@ hosps_cor3 <- hosps %>% ungroup() %>%
 tidy(round(cor(hosps_cor3, use = "complete.obs"), 2))
 ```
 
-
-
-
-
-
-
-
-
-
-
-
 The difference in distributions is not as apparent by the use of EHR. We believed that the gross patient revenue, which may be implying overall hospital size, is a confounding factor that affects other predictor variables. We can also observe this in the strong correlation (above 0.8) between GPR and staffed beds,  GPR and total discharge, and GPR and patient days. Thus, we will stratify on gross patient revenue. Let's see if other predictor variables still have effect on EHR use proportion after stratifying on GPR.
-
-
 
 ```{r}
 hosps$gpr_grp = cut(hosps$gross_patient_rev_log, 

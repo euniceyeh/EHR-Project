@@ -129,7 +129,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="5.1.2" data-path="primary.html"><a href="primary.html#final-analysis"><i class="fa fa-check"></i><b>5.1.2</b> Final Analysis</a></li>
 </ul></li>
 <li class="chapter" data-level="5.2" data-path="primary.html"><a href="primary.html#hospital-demographics"><i class="fa fa-check"></i><b>5.2</b> Hospital Demographics</a><ul>
-<li class="chapter" data-level="5.2.1" data-path="primary.html"><a href="primary.html#exploratory-1"><i class="fa fa-check"></i><b>5.2.1</b> Exploratory</a></li>
+<li class="chapter" data-level="5.2.1" data-path="primary.html"><a href="primary.html#exploratory-analysis"><i class="fa fa-check"></i><b>5.2.1</b> Exploratory Analysis</a></li>
 <li class="chapter" data-level="5.2.2" data-path="primary.html"><a href="primary.html#final-analysis-1"><i class="fa fa-check"></i><b>5.2.2</b> Final Analysis</a></li>
 </ul></li>
 </ul></li>
@@ -165,96 +165,72 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
             <section class="normal" id="section-">
 <div id="data" class="section level1">
 <h1><span class="header-section-number">Chapter 4</span> Data</h1>
-<p>All of our data are based on the 2016 Medicare &amp; Medicaid EHR Incentive Program since the adoption of EHR is an ongoing basis: a provider who adopted and used EHR during the 2014 program, for example, is likely to still be in the program the following years. So theorethically, the 2016 program would be the most cumulative source of providers adopting EHR. As mentioned in <a href="https://euniceyeh.github.io/EHR-Project/work.html">Related Work</a>, the adoption of EHR has been consistently rising over the years across the U.S., so there is also no interest in looking at the use over time when we can just look at the latest collection of data. And since 2017 isn’t quite over yet, it wouldn’t be fair to start looking at the usage of EHR within the 2017 program, so the most recent completed data would be on the 2016 program.</p>
+<p>All of our data are based on the 2016 Medicare &amp; Medicaid EHR Incentive Program since the adoption of EHR is an ongoing basis: a provider who adopted and used EHR during the 2014 program, for example, is likely to still be in the program the following years. So theoretically, the 2016 program would be the most cumulative source of providers adopting EHR. As mentioned in <a href="https://euniceyeh.github.io/EHR-Project/work.html">Related Work</a>, the adoption of EHR has been consistently rising over the years across the U.S., so there is also no interest in looking at the use over time when we can just look at the latest collection of data. And since 2017 isn’t quite over yet, it wouldn’t be fair to start looking at the usage of EHR within the 2017 program, so the most recent completed data would be on the 2016 program.</p>
 <div id="eligible-professionals-eps" class="section level2">
 <h2><span class="header-section-number">4.1</span> Eligible Professionals (EPs)</h2>
 <p>To answer the first of our <a href="https://euniceyeh.github.io/EHR-Project/questions.html">Initial Questions</a> as to whether or not a physician’s age, education, practice location, etc. may be related to their use of EHR in the incentive program, we must be able to find demographics data at the practitioner level.</p>
 <div id="sourcemetadata" class="section level3">
 <h3><span class="header-section-number">4.1.1</span> Source/Metadata</h3>
-<p>And here we are: readily available on <a href="https://data.medicare.gov/Physician-Compare/Physician-Compare-National-Downloadable-File/mj5m-pzi6">Data.Medicare.gov</a> are the demographics of physicians eligible for the Medicare &amp; Medicaid EHR incentive program at the practitioner level. We used the api link to read in the dataset and applied SQL filtering options to speed up the download since it is a large file. we specified the limit to be exactly 2254703 because that’s the exact number of rows the data contain, if we don’t specify this the default limit of rows that get downloaded is 100. to compensate, we will specify specific columns to download, which also be specified in the download link (looked thru metadata on the website to select variables i’m interested in).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># change limit to 2254703 on the final run</span>
-dat &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://data.medicare.gov/resource/c8qv-268j.csv?$limit=10000&amp;$select=npi,frst_nm,gndr,cred,med_sch,grd_yr,pri_spec,cty,st,zip,hosp_afl_1,hosp_afl_lbn_1,ehr&amp;$order=npi&quot;</span>)</code></pre></div>
+<p>And here we are: readily available on <a href="https://data.medicare.gov/Physician-Compare/Physician-Compare-National-Downloadable-File/mj5m-pzi6">Data.Medicare.gov</a> are the demographics of physicians eligible for the Medicare &amp; Medicaid EHR incentive program at the practitioner level. We used the API link to read in the data set and applied SQL filtering options to speed up the download since it is a large file. We specified the limit to be exactly 2254703 because that’s the exact number of rows the data contain, if we don’t specify this, the default limit of rows that get downloaded is 100. To compensate, we will specify the exact columns of interest to include, which can also be specified in the download link (we looked through the metadata on the website to select the meaningful and interesting variables).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://data.medicare.gov/resource/c8qv-268j.csv?$limit=2254703&amp;$select=npi,frst_nm,gndr,cred,med_sch,grd_yr,pri_spec,cty,st,zip,hosp_afl_1,hosp_afl_lbn_1,ehr&amp;$order=npi&quot;</span>)
+<span class="kw">saveRDS</span>(dat, <span class="st">&quot;./data/dat_raw.rds&quot;</span>) <span class="co"># saving data for reproducibility</span></code></pre></div>
 </div>
 <div id="wrangling" class="section level3">
 <h3><span class="header-section-number">4.1.2</span> Wrangling</h3>
 <p>Let’s first take a look at the data structure and a summary of all the columns.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(dat)</code></pre></div>
-<pre><code>## &#39;data.frame&#39;:    10000 obs. of  13 variables:
-##  $ cred          : Factor w/ 16 levels &quot;&quot;,&quot;AU&quot;,&quot;CNA&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
-##  $ cty           : Factor w/ 2023 levels &quot;ABBEVILLE&quot;,&quot;ABERDEEN&quot;,..: 454 56 1548 524 1785 217 1093 1093 74 74 ...
+<pre><code>## &#39;data.frame&#39;:    1527291 obs. of  13 variables:
+##  $ cred          : Factor w/ 22 levels &quot;&quot;,&quot;AA&quot;,&quot;AU&quot;,&quot;CNA&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ cty           : Factor w/ 10192 levels &quot;20850&quot;,&quot;ABBEVILLE&quot;,..: 2345 274 7938 2790 9076 1041 5545 5545 364 364 ...
 ##  $ ehr           : Factor w/ 2 levels &quot;&quot;,&quot;Y&quot;: 1 1 1 1 2 1 1 1 1 1 ...
-##  $ frst_nm       : Factor w/ 1872 levels &quot;AAMIR&quot;,&quot;AARON&quot;,..: 155 155 155 1722 1408 409 763 763 917 917 ...
-##  $ gndr          : Factor w/ 2 levels &quot;F&quot;,&quot;M&quot;: 2 2 2 2 2 2 1 1 2 2 ...
+##  $ frst_nm       : Factor w/ 54156 levels &quot;A&quot;,&quot;A&#39;LANNE&quot;,..: 3360 3360 3360 48311 38890 10170 20706 20706 24158 24158 ...
+##  $ gndr          : Factor w/ 3 levels &quot;F&quot;,&quot;M&quot;,&quot;U&quot;: 2 2 2 2 2 2 1 1 2 2 ...
 ##  $ grd_yr        : int  1994 1994 1994 2003 1999 2003 2007 2007 1997 1997 ...
-##  $ hosp_afl_1    : int  490126 490126 490126 140010 360262 391312 360098 360098 60024 60024 ...
-##  $ hosp_afl_lbn_1: Factor w/ 1450 levels &quot;&quot;,&quot;ABBEVILLE AREA MEDICAL CENTER&quot;,..: 615 615 615 341 743 919 584 584 1333 1333 ...
-##  $ med_sch       : Factor w/ 210 levels &quot;A T STILL UN, ARIZONA SCHL OF DENT.Y &amp; ORAL HLTH&quot;,..: 101 101 101 160 101 108 128 128 97 97 ...
+##  $ hosp_afl_1    : Factor w/ 4746 levels &quot;&quot;,&quot;010001&quot;,&quot;010005&quot;,..: 4371 4371 4371 1112 3220 3617 3168 3168 622 622 ...
+##  $ hosp_afl_lbn_1: Factor w/ 4515 levels &quot;&quot;,&quot;ABBEVILLE AREA MEDICAL CENTER&quot;,..: 2020 2020 2020 1127 2405 2967 1943 1943 4203 4203 ...
+##  $ med_sch       : Factor w/ 398 levels &quot;A T STILL UN, ARIZONA SCHL OF DENT.Y &amp; ORAL HLTH&quot;,..: 215 215 215 321 215 223 261 261 209 209 ...
 ##  $ npi           : int  1003000126 1003000126 1003000126 1003000134 1003000142 1003000407 1003000423 1003000423 1003000480 1003000480 ...
-##  $ pri_spec      : Factor w/ 72 levels &quot;ADDICTION MEDICINE&quot;,..: 33 33 33 53 3 21 44 44 24 24 ...
-##  $ st            : Factor w/ 53 levels &quot;AK&quot;,&quot;AL&quot;,&quot;AR&quot;,..: 47 47 47 15 36 39 36 36 6 6 ...
-##  $ zip           : int  201662247 222053610 241537474 602011718 436082675 158251367 440608702 440608702 800452545 800452545 ...</code></pre>
+##  $ pri_spec      : Factor w/ 83 levels &quot;&quot;,&quot;ADDICTION MEDICINE&quot;,..: 38 38 38 61 5 24 51 51 27 27 ...
+##  $ st            : Factor w/ 56 levels &quot;&quot;,&quot;AK&quot;,&quot;AL&quot;,&quot;AR&quot;,..: 50 50 50 17 39 42 39 39 7 7 ...
+##  $ zip           : Factor w/ 188675 levels &quot;&quot;,&quot;000075949&quot;,..: 43170 47812 50388 117622 89610 35299 90294 90294 150777 150777 ...</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(dat)</code></pre></div>
-<pre><code>##       cred                cty       ehr          frst_nm     gndr    
-##         :9575   PITTSBURGH  : 209    :8623   MICHAEL : 182   F:5699  
-##  MD     : 253   HOUSTON     : 156   Y:1377   SARAH   : 134   M:4301  
-##  PA     :  39   NEW YORK    : 125            JENNIFER: 127           
-##  PT     :  29   ANN ARBOR   : 119            DAVID   : 103           
-##  NP     :  19   DALLAS      : 117            MATTHEW :  92           
-##  OD     :  17   PHILADELPHIA:  99            JOHN    :  89           
-##  (Other):  68   (Other)     :9175            (Other) :9273           
-##      grd_yr       hosp_afl_1    
-##  Min.   :1963   Min.   : 10001  
-##  1st Qu.:2004   1st Qu.:140011  
-##  Median :2009   Median :260032  
-##  Mean   :2007   Mean   :269085  
-##  3rd Qu.:2012   3rd Qu.:390147  
-##  Max.   :2017   Max.   :800001  
-##  NA&#39;s   :9      NA&#39;s   :3156    
-##                                     hosp_afl_lbn_1
-##                                            :3171  
-##  UNIVERSITY OF VIRGINIA MEDICAL CENTER     :  64  
-##  BANNER PAYSON MEDICAL CENTER              :  63  
-##  UNIVERSITY OF MICHIGAN HEALTH SYSTEM      :  60  
-##  PROVIDENCE REGIONAL MEDICAL CENTER EVERETT:  59  
-##  EASTERN MAINE MEDICAL CENTER              :  56  
-##  (Other)                                   :6527  
-##                                       med_sch          npi           
-##  OTHER                                    :6302   Min.   :1.003e+09  
-##  BAYLOR COLLEGE OF MEDICINE               :  73   1st Qu.:1.003e+09  
-##  UNIVERSITY OF FLORIDA COLLEGE OF MEDICINE:  67   Median :1.003e+09  
-##  LAKE ERIE COLLEGE OF OSTEOPATHIC MEDICINE:  63   Mean   :1.003e+09  
-##  NEW YORK UNIVERSITY SCHOOL OF MEDICINE   :  59   3rd Qu.:1.003e+09  
-##  INDIANA UNIVERSITY SCHOOL OF MEDICINE    :  58   Max.   :1.004e+09  
-##  (Other)                                  :3378                      
-##                                    pri_spec          st      
-##  NURSE PRACTITIONER                    :1569   TX     : 780  
-##  PHYSICIAN ASSISTANT                   :1053   CA     : 768  
-##  INTERNAL MEDICINE                     : 936   PA     : 679  
-##  PHYSICAL THERAPY                      : 652   FL     : 612  
-##  FAMILY PRACTICE                       : 638   NY     : 592  
-##  CERTIFIED REGISTERED NURSE ANESTHETIST: 541   MI     : 422  
-##  (Other)                               :4611   (Other):6147  
-##       zip           
-##  Min.   :      603  
-##  1st Qu.:212086417  
-##  Median :452192364  
-##  Mean   :476032054  
-##  3rd Qu.:752434115  
-##  Max.   :998017863  
-## </code></pre>
+<pre><code>##       cred                   cty          ehr            frst_nm        gndr           grd_yr       hosp_afl_1     
+##         :1012568   HOUSTON     :  25754    :1194451   MICHAEL:  30701   F:681413   Min.   :1942          : 449488  
+##  MD     : 344822   PITTSBURGH  :  25135   Y: 332840   DAVID  :  27486   M:845877   1st Qu.:1988   230046 :  13889  
+##  PA     :  29223   NEW YORK    :  18521               JOHN   :  27117   U:     1   Median :1999   450076 :   7003  
+##  NP     :  25666   PHILADELPHIA:  18025               ROBERT :  21989              Mean   :1997   490009 :   5784  
+##  DO     :  21639   CHICAGO     :  16532               JAMES  :  20402              3rd Qu.:2008   390111 :   5496  
+##  CNA    :  16635   ANN ARBOR   :  16390               (Other):1399580              Max.   :2017   050454 :   5261  
+##  (Other):  76738   (Other)     :1406934               NA&#39;s   :     16              NA&#39;s   :4024   (Other):1040370  
+##                                             hosp_afl_lbn_1                                            med_sch      
+##                                                    : 450721   OTHER                                       :771781  
+##  UNIVERSITY OF MICHIGAN HEALTH SYSTEM              :  13889   WAYNE STATE UNIVERSITY SCHOOL OF MEDICINE   : 11559  
+##  UNIVERSITY OF TEXAS M D ANDERSON CANCER CENTER,THE:   7003   INDIANA UNIVERSITY SCHOOL OF MEDICINE       : 10794  
+##  UNIVERSITY OF VIRGINIA MEDICAL CENTER             :   5784   PHILADELPHIA COLLEGE OF OSTEOPATHIC MEDICINE: 10036  
+##  HOSPITAL OF UNIV OF PENNSYLVANIA                  :   5496   TEMPLE UNIVERSITY SCHOOL OF MEDICINE        :  9473  
+##  UCSF MEDICAL CENTER                               :   5261   UNIVERSITY OF MINNESOTA MEDICAL SCHOOL      :  9266  
+##  (Other)                                           :1039137   (Other)                                     :704382  
+##       npi                            pri_spec            st                zip         
+##  Min.   :1.003e+09   NURSE PRACTITIONER  :148237   CA     :131284   481095000:  14678  
+##  1st Qu.:1.165e+09   INTERNAL MEDICINE   :141051   TX     :114489   152124756:   6601  
+##  Median :1.337e+09   FAMILY PRACTICE     :119255   PA     :100942   770304000:   6033  
+##  Mean   :1.340e+09   PHYSICIAN ASSISTANT :111992   NY     : 95038   229080001:   4827  
+##  3rd Qu.:1.509e+09   PHYSICAL THERAPY    : 69682   FL     : 84422   326103003:   4336  
+##  Max.   :1.680e+09   DIAGNOSTIC RADIOLOGY: 64327   MI     : 66982   110303816:   3727  
+##                      (Other)             :872747   (Other):934134   (Other)  :1487089</code></pre>
 <p>Observations from the above output:</p>
 <ul>
-<li>There are 53 levels of states, which means this data include states outside of the 50 mainland states and DC. we don’t have sufficient data on the virgin islands and guam, so we will have to filter these states out.</li>
+<li>There are 56 levels of states, which means this data include states outside of the 50 mainland states and DC. Since we don’t have sufficient data on the Virgin Islands and Guam, we will have to filter these states out.</li>
 <li>There is one person whose gender is unknown, we will filter this person out since we want to group by gender.</li>
-<li>There are rows with missing graduation years, will need to filer this out too if graduation years is one of the main demographics of interest (will mess up plotting). Also, one or more physician who graduated in 2017 slipped into our data…we will ignore this by filtering it out too.</li>
-<li>The zip code, 603, is out of range. a standard zip code has to be at least 5 digits. looks like most zip codes in this data are the full 9-digit zip codes, which can be split into the standard 5-digit format and the 4-digit after.</li>
-<li>There are way too many levels of medical schools and primary specialties, we will probably focus on looking at the most popular ones for exploratory analysis.</li>
+<li>There are 4024 rows with missing graduation years, will need to filer this out too if graduation years is one of the main demographics of interest (will mess up plotting). Also, one or more physician who graduated in 2017 slipped into our data…we will ignore this by filtering it out too.</li>
+<li>It looks like most zip codes in this data are the full 9-digit zip codes, which can be split into the standard 5-digit format and the 4-digit.</li>
+<li>There are way too many levels of medical schools and primary specialties, we will probably focus on looking at the most popular ones during exploratory analysis rather than the final primary analysis.</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;state&quot;</span>)
 clean &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(st <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(state.abb, <span class="st">&quot;DC&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(gndr <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;F&quot;</span>, <span class="st">&quot;M&quot;</span>) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(<span class="kw">as.integer</span>(grd_yr)) <span class="op">&amp;</span><span class="st"> </span>grd_yr <span class="op">!=</span><span class="st"> </span><span class="dv">2017</span>)</code></pre></div>
-<p>Now we only have 51 levels of states, 2 levels of gender, and no records with missing graduation year. But we still have zip codes as small as 2138, which is still out of range. To make sure only keep valid zip codes (since there may be other ways the zip codes are not clean), we can try to use R’s zip code package to validate our zip codes.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># separate out the first five zip codes from the last four extension to match R zipcode data</span>
+<span class="st">  </span><span class="kw">filter</span>(gndr <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;F&quot;</span>, <span class="st">&quot;M&quot;</span>) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(grd_yr) <span class="op">&amp;</span><span class="st"> </span>grd_yr <span class="op">!=</span><span class="st"> </span><span class="dv">2017</span>)</code></pre></div>
+<p>Now we only have 51 levels of states, 2 levels of gender, and no records with missing graduation year. To make sure we only keep valid zip codes, we can try to use R’s zip code package to validate our zip codes. This is important because we want to be able to accurately perform our analyses on the location variables and regional analysis (especially zip code plotting).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># separate out the first five zip codes from the last four extension</span>
 clean &lt;-<span class="st"> </span>clean <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">zip.ext =</span> <span class="kw">substr</span>(<span class="kw">as.character</span>(zip), <span class="dv">6</span>, <span class="dv">9</span>), 
                           <span class="dt">zip =</span> <span class="kw">substr</span>(<span class="kw">as.character</span>(zip), <span class="dv">1</span>, <span class="dv">5</span>))
 
@@ -263,31 +239,15 @@ clean &lt;-<span class="st"> </span>clean <span class="op">%&gt;%</span><span cl
 <span class="kw">data</span>(<span class="st">&quot;zipcode&quot;</span>)
 zip_dat &lt;-<span class="st"> </span>clean <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">left_join</span>(zipcode,<span class="dt">by=</span><span class="st">&#39;zip&#39;</span>) 
 
-<span class="co"># check if any of the invalid zip codes were matched to R&#39;s zip code package</span>
-zip_dat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="kw">nchar</span>(zip) <span class="op">&lt;</span><span class="st"> </span><span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(npi, frst_nm, zip, cty, st, city, state) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">15</span>)</code></pre></div>
-<pre><code>##           npi  frst_nm  zip           cty st city state
-## 1  1003003088    AVANI 8824  KENDALL PARK NJ &lt;NA&gt;  &lt;NA&gt;
-## 2  1003021866    DONNA 8060   MOUNT HOLLY NJ &lt;NA&gt;  &lt;NA&gt;
-## 3  1003024142  ALLISON 7719          WALL NJ &lt;NA&gt;  &lt;NA&gt;
-## 4  1003033390    BRIAN 6385     WATERFORD CT &lt;NA&gt;  &lt;NA&gt;
-## 5  1003033390    BRIAN 6385     WATERFORD CT &lt;NA&gt;  &lt;NA&gt;
-## 6  1003041427   LAURIE 8302     BRIDGETON NJ &lt;NA&gt;  &lt;NA&gt;
-## 7  1003149451 COURTNEY 8401 ATLANTIC CITY NJ &lt;NA&gt;  &lt;NA&gt;
-## 8  1003149477   ASHLEY 7430        MAHWAH NJ &lt;NA&gt;  &lt;NA&gt;
-## 9  1003150137     ALAN 2601       HYANNIS MA &lt;NA&gt;  &lt;NA&gt;
-## 10 1003162132  JESSICA 4901    WATERVILLE ME &lt;NA&gt;  &lt;NA&gt;
-## 11 1003188954 KIMBERLY 2557    OAK BLUFFS MA &lt;NA&gt;  &lt;NA&gt;
-## 12 1003228479   LAUREN 3103    MANCHESTER NH &lt;NA&gt;  &lt;NA&gt;
-## 13 1003248204    KELLY 2138     CAMBRIDGE MA &lt;NA&gt;  &lt;NA&gt;</code></pre>
-<p>As expected, none of the zip codes with only 4 digits matched, so these 13 records will have to be thrown away in order for us to be able to accurately do analysis on the location variables and regional analysis and to match with the vendor data by zip code.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">zip_mismatch &lt;-<span class="st"> </span>zip_dat <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="co"># check state mismatches</span>
+zip_mismatch &lt;-<span class="st"> </span>zip_dat <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">st =</span> <span class="kw">as.character</span>(st)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(st <span class="op">!=</span><span class="st"> </span>state <span class="op">|</span><span class="st"> </span><span class="kw">nchar</span>(zip) <span class="op">&lt;</span><span class="st"> </span><span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(st <span class="op">!=</span><span class="st"> </span>state) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(npi, frst_nm, zip, cty, city, st, state, latitude, longitude)
 
 <span class="co"># check number of records mismatched</span>
 <span class="kw">nrow</span>(zip_mismatch)</code></pre></div>
-<pre><code>## [1] 399</code></pre>
+<pre><code>## [1] 1034</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># look at the top five mismatches</span>
 (top5_mismatch &lt;-<span class="st"> </span>zip_mismatch <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">group_by</span>(zip, cty, st, city, state) <span class="op">%&gt;%</span><span class="st"> </span>
@@ -296,21 +256,21 @@ zip_dat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">
 <span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>))</code></pre></div>
 <pre><code>## # A tibble: 5 x 6
 ## # Groups:   zip, cty, st, city [5]
-##     zip        cty    st         city state     n
-##   &lt;chr&gt;     &lt;fctr&gt; &lt;chr&gt;        &lt;chr&gt; &lt;chr&gt; &lt;int&gt;
-## 1 21156     BOSTON    MA  Upper Falls    MD    10
-## 2 16550  WORCESTER    MA         Erie    PA     7
-## 3 22152     BOSTON    MA  Springfield    VA     7
-## 4 23602   PLYMOUTH    MA Newport News    VA     7
-## 5 31033 MANCHESTER    NH      Haddock    GA     7</code></pre>
-<p>In order to not just blatantly throw away 399 mismatches, we will look at the top 5 most common mismatches on a case-by-case basis to try to salvage as many records as possible without searching too deeply in our dataset. Also, starting from the 6th most common mismatches, the number of records <code>n</code> were down to 58 or less, so they would have little effect on the dataset.</p>
+##     zip            cty    st           city state     n
+##   &lt;chr&gt;         &lt;fctr&gt; &lt;chr&gt;          &lt;chr&gt; &lt;chr&gt; &lt;int&gt;
+## 1 99362    WALLA WALLA    WA    Walla Walla    OR   222
+## 2 52761      MUSCATINE    IA      Muscatine    IL   114
+## 3 43530        GRANGER    IN         Jewell    OH    86
+## 4 22401 FREDERICKSBURG    MD Fredericksburg    VA    82
+## 5 20176        HANOVER    MD       Leesburg    VA    74</code></pre>
+<p>In order to not just blatantly throw away 1034 mismatches, we will look at the top 5 most common mismatches on a case-by-case basis to try to salvage as many records as possible without searching too deeply in our data set. Also, starting from the 6th most common mismatches, the number of records <code>n</code> were down to 58 or less, so they would have little effect on the data set.</p>
 <p>The results of searching up the top 10 mismatches on Google Maps:</p>
 <ul>
-<li>The zipcode 99362 spans across Walla Walla in both WA and OR, so it is likely that the practice is located on the WA side of the zipcode coverage. We will ignore the state mismatch from the zipcode package for this case.</li>
-<li>The zipcode 52761 does belong to Muscatine, IA, which is right on the border of IL. Again, the practice is most likely located on the IA side. Will ignore the state mismatch for this case as well.</li>
-<li>The zip code for Granger, IN was most likely mistyped. The correct zip code for Granger is 46530, which is very close to 43530. We will fix the zipcode for this particular case only.</li>
-<li>The zipcode 22401 does belong to Frederickburg, VA, and is not near the border of VA and MD at all. There is a “Frederick” city in MD, but none of its zipcodes look similar enough to 22401. No clear culprit, will have to let this one go. :(</li>
-<li>The zipcode for Hanover, MD is 21076, which was most likely mistyped as 20176. We will fix this particular case as well.</li>
+<li>The zip code 99362 spans across Walla Walla in both WA and OR, so it is likely that the practice is located on the WA side of the zip code coverage. We will ignore the state mismatch from the zip code package for this case.</li>
+<li>The zip code 52761 does belong to Muscatine, IA, which is right on the border of IL. Again, the practice is most likely located on the IA side. Will ignore the state mismatch for this case as well.</li>
+<li>The zip code for Granger, IN was most likely mistyped. The correct zip code for Granger is 46530, which is very close to 43530. We will fix the zip code for this particular case only.</li>
+<li>The zip code 22401 does belong to Frederickburg, VA, and is not near the border of VA and MD at all. There is a “Frederick” city in MD, but none of its zip codes look similar enough to 22401. No clear culprit, will have to let this one go. :(</li>
+<li>The zip code for Hanover, MD is 21076, which was most likely mistyped as 20176. We will fix this particular case as well.</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># leave out the 22401 Fredericksburg MD mismatch, fix the zip codes for Granger and Hanover.</span>
 zip_fix &lt;-<span class="st"> </span>top5_mismatch <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span>
@@ -321,8 +281,7 @@ zip_fix &lt;-<span class="st"> </span>top5_mismatch <span class="op">%&gt;%</spa
 mismatch_tokeep &lt;-<span class="st"> </span>zip_dat <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>zip) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># we want to replace the original wrong zip codes with the fixed zip codes</span>
 <span class="st">  </span><span class="kw">inner_join</span>(zip_fix, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;cty&#39;</span>,<span class="st">&#39;st&#39;</span>, <span class="st">&#39;city&#39;</span>, <span class="st">&#39;state&#39;</span>))</code></pre></div>
-<pre><code>## Warning: Column `st` joining factor and character vector, coercing into
-## character vector</code></pre>
+<pre><code>## Warning: Column `st` joining factor and character vector, coercing into character vector</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">clean &lt;-<span class="st"> </span>zip_dat <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">st =</span> <span class="kw">as.character</span>(st), <span class="dt">state =</span> <span class="kw">as.character</span>(state)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(st <span class="op">==</span><span class="st"> </span>state <span class="op">|</span><span class="st"> </span><span class="kw">nchar</span>(zip) <span class="op">==</span><span class="st"> </span><span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># keeping only the matches</span>
@@ -330,86 +289,56 @@ mismatch_tokeep &lt;-<span class="st"> </span>zip_dat <span class="op">%&gt;%</s
 <span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>city, <span class="op">-</span>state) <span class="co"># will rely on the original city and state columns</span></code></pre></div>
 <p>Continuing on with our wrangling…</p>
 <ul>
-<li>About 31.56% of the (original) data are of physicians not affiliated with any hospital, these are the practitioners we will subset on to do our practitioner-level analysis on since these are the only cases when a physician’s demographics can have an effect on the choice of using EHR. For physicians who are affiliated with a hospital, their demographics would no longer be informative as to whether or not they use EHR, it would then have to be the demographics of the hospitals that could inform the use of EHR at the hospital-level. Thus, we were able to find hospital demographics such as ___ on hospitals across the U.S. in general, which will be discussed in the next section within this chapter, but there’s no indication of participation in the incentive program nor EHR use, so we will have to merge that hospital demographic data with the practitioners in this dataset who are affiliated with any one hospital.</li>
+<li>About 29.4304098% of the (original) data are of physicians not affiliated with any hospital, these are the practitioners we will subset on to do our practitioner-level analysis on since these are the only cases when a physician’s demographics can have an effect on the choice of using EHR. For physicians who are affiliated with a hospital, their demographics would no longer be informative as to whether or not they use EHR, it would then have to be the demographics of the hospitals that could inform the use of EHR at the hospital-level. Thus, we were able to find demographics on hospitals across the U.S. in general, which will be discussed in the next section within this chapter, but there’s no indication of participation in the incentive program nor EHR use, so we will have to merge that hospital demographic data with the practitioners in this data set who are affiliated with any one hospital.</li>
 </ul>
-<p>for the practitioner-level analysis we want to:</p>
+<p>So for the practitioner-level analysis we want to:</p>
 <ul>
-<li>Calculate the number of years since graudation</li>
+<li>Calculate the number of years since graduation</li>
 <li>Use 1’s and 0’s instead of ‘Y’ and blanks as indicator of EHR use for our binary outcome</li>
 <li>Keep only one record per physician, which means we would have to lose the distinct practice locations for physicians who have multiple practices. But since we can’t fit our logistic model with either city, state, or zip code, there’s no point in keeping this detail. Instead, we can calculate the number of distinct practices these physicians have in order to collapse the data to the practitioner level.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EPs &lt;-<span class="st"> </span>clean <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">filter</span>(<span class="kw">is.na</span>(hosp_afl_<span class="dv">1</span>)) <span class="op">%&gt;%</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EPs &lt;-<span class="st"> </span>clean <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(hosp_afl_<span class="dv">1</span> <span class="op">==</span><span class="st"> &#39;&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">yrs_grd =</span> <span class="dv">2016</span> <span class="op">-</span><span class="st"> </span><span class="kw">as.integer</span>(grd_yr), <span class="co"># calc the n of years since graduation</span>
          <span class="dt">cred =</span> <span class="kw">case_when</span>(cred <span class="op">==</span><span class="st"> &#39;&#39;</span> <span class="op">~</span><span class="st"> &#39;NA&#39;</span>, <span class="co"># assign blanks to NA&#39;s</span>
-                           <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span><span class="kw">as.character</span>(cred)),
-          <span class="dt">cred =</span> <span class="kw">as.factor</span>(cred),
-          <span class="dt">ehr =</span> <span class="kw">case_when</span>(ehr <span class="op">==</span><span class="st"> &#39;Y&#39;</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="co"># use numeric indicators</span>
-                          ehr <span class="op">==</span><span class="st"> &#39;&#39;</span> <span class="op">~</span><span class="st"> </span><span class="dv">0</span>),
-          <span class="dt">ehr =</span> <span class="kw">as.factor</span>(ehr)) <span class="op">%&gt;%</span>
-<span class="st">     </span><span class="kw">select</span>(<span class="op">-</span>hosp_afl_<span class="dv">1</span>, <span class="op">-</span>hosp_afl_lbn_<span class="dv">1</span>, <span class="op">-</span>frst_nm) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">distinct</span>(npi, <span class="dt">.keep_all =</span> <span class="ot">TRUE</span>)
-  
+                          <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span><span class="kw">as.character</span>(cred)),
+         <span class="dt">cred =</span> <span class="kw">as.factor</span>(cred),
+         <span class="dt">ehr =</span> <span class="kw">case_when</span>(ehr <span class="op">==</span><span class="st"> &#39;Y&#39;</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="co"># use numeric indicators</span>
+                         ehr <span class="op">==</span><span class="st"> &#39;&#39;</span> <span class="op">~</span><span class="st"> </span><span class="dv">0</span>),
+         <span class="dt">ehr =</span> <span class="kw">as.factor</span>(ehr)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>hosp_afl_<span class="dv">1</span>, <span class="op">-</span>hosp_afl_lbn_<span class="dv">1</span>, <span class="op">-</span>frst_nm) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">distinct</span>(npi, <span class="dt">.keep_all =</span> <span class="ot">TRUE</span>) <span class="co"># keep only one row per physician</span>
 
-
-<span class="co"># EPs &lt;- clean %&gt;% filter(is.na(as.integer(hosp_afl_1))) %&gt;%</span>
-<span class="co">#   mutate(yrs_grd = 2016 - as.integer(grd_yr), # calc the n of years since graduation</span>
-<span class="co">#          cred = case_when(cred == &#39;&#39; ~ &#39;NA&#39;, # assign blanks to NA&#39;s</span>
-<span class="co">#                           TRUE ~ as.character(cred)),</span>
-<span class="co">#          cred = as.factor(cred),</span>
-<span class="co">#          ehr = case_when(ehr == &#39;Y&#39; ~ 1, # use numeric indicators</span>
-<span class="co">#                          ehr == &#39;&#39; ~ 0),</span>
-<span class="co">#          ehr = as.factor(ehr)) %&gt;%</span>
-<span class="co">#   select(-hosp_afl_1, -hosp_afl_lbn_1, -frst_nm) %&gt;%</span>
-<span class="co">#   distinct(npi, .keep_all = TRUE) # keep only one row per physician</span>
-<span class="co">#</span>
-<span class="co"># # calculate the number of practices for each physician</span>
+<span class="co"># calculate the number of practices for each physician</span>
 SL &lt;-<span class="st"> </span>dat <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(npi) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(<span class="dt">locations =</span> <span class="kw">n_distinct</span>(zip))
-<span class="co">#</span>
+
 EPs &lt;-<span class="st"> </span><span class="kw">left_join</span>(EPs, SL, <span class="dt">by=</span><span class="st">&quot;npi&quot;</span>)
-<span class="co">#</span>
+
 <span class="kw">rm</span>(SL)
 <span class="kw">summary</span>(EPs)</code></pre></div>
-<pre><code>##       cred               cty       ehr      gndr         grd_yr    
-##  NA     :1535   NEW YORK   :  21   0:1531   F:1068   Min.   :1965  
-##  PT     :  14   ROCHESTER  :  16   1:  70   M: 533   1st Qu.:2003  
-##  DC     :  10   DALLAS     :  14                     Median :2009  
-##  MD     :  10   COLUMBUS   :  13                     Mean   :2006  
-##  CSW    :   8   DURHAM     :  13                     3rd Qu.:2013  
-##  OD     :   7   SAN ANTONIO:  13                     Max.   :2016  
-##  (Other):  17   (Other)    :1511                                   
-##                                      med_sch          npi           
-##  OTHER                                   :1133   Min.   :1.003e+09  
-##  LOGAN COLLEGE OF CHIROPRACTIC           :  19   1st Qu.:1.003e+09  
-##  SOUTHERN COLLEGE OF OPTOMETRY           :  17   Median :1.003e+09  
-##  PALMER COLLEGE CHIROPRACTIC - DAVENPORT :  16   Mean   :1.003e+09  
-##  NEW YORK CHIROPRACTIC COLLEGE           :  12   3rd Qu.:1.003e+09  
-##  ILLINOIS COLLEGE OF OPTOMETRY AT CHICAGO:  11   Max.   :1.004e+09  
-##  (Other)                                 : 393                      
-##                    pri_spec        st                zip           
-##  PHYSICAL THERAPY      :306   Length:1601        Length:1601       
-##  NURSE PRACTITIONER    :247   Class :character   Class :character  
-##  CLINICAL SOCIAL WORKER:201   Mode  :character   Mode  :character  
-##  CHIROPRACTIC          :128                                        
-##  PHYSICIAN ASSISTANT   :108                                        
-##  OPTOMETRY             : 99                                        
-##  (Other)               :512                                        
-##    zip.ext             latitude       longitude          yrs_grd     
-##  Length:1601        Min.   :20.04   Min.   :-161.88   Min.   : 0.00  
-##  Class :character   1st Qu.:33.87   1st Qu.:-102.09   1st Qu.: 3.00  
-##  Mode  :character   Median :38.69   Median : -88.16   Median : 7.00  
-##                     Mean   :37.66   Mean   : -93.17   Mean   :10.01  
-##                     3rd Qu.:41.28   3rd Qu.: -80.70   3rd Qu.:13.00  
-##                     Max.   :64.84   Max.   : -73.07   Max.   :51.00  
-##                     NA&#39;s   :66      NA&#39;s   :66                       
-##    locations     
-##  Min.   : 1.000  
-##  1st Qu.: 1.000  
-##  Median : 1.000  
-##  Mean   : 1.314  
-##  3rd Qu.: 1.000  
-##  Max.   :25.000  
-## </code></pre>
+<pre><code>##       cred                 cty         ehr        gndr           grd_yr                                         med_sch      
+##  NA     :167692   NEW YORK   :  3555   0:214471   F:128382   Min.   :1942   OTHER                                   :140789  
+##  MD     : 19334   HOUSTON    :  1875   1: 18284   M:104373   1st Qu.:1988   PALMER COLLEGE CHIROPRACTIC - DAVENPORT :  4547  
+##  DC     :  9698   BROOKLYN   :  1701              U:     0   Median :1999   LOGAN COLLEGE OF CHIROPRACTIC           :  2312  
+##  PT     :  6881   LOS ANGELES:  1700                         Mean   :1997   PENNSYLVANIA COLLEGE OF OPTOMETRY       :  2310  
+##  OD     :  6773   CHICAGO    :  1586                         3rd Qu.:2009   SOUTHERN COLLEGE OF OPTOMETRY           :  2211  
+##  CSW    :  5750   PHOENIX    :  1490                         Max.   :2016   ILLINOIS COLLEGE OF OPTOMETRY AT CHICAGO:  2184  
+##  (Other): 16627   (Other)    :220848                                        (Other)                                 : 78402  
+##       npi                              pri_spec          st                zip              zip.ext             latitude    
+##  Min.   :1.003e+09   PHYSICAL THERAPY      :34788   Length:232755      Length:232755      Length:232755      Min.   :19.10  
+##  1st Qu.:1.165e+09   CHIROPRACTIC          :27033   Class :character   Class :character   Class :character   1st Qu.:34.14  
+##  Median :1.336e+09   CLINICAL SOCIAL WORKER:25225   Mode  :character   Mode  :character   Mode  :character   Median :39.40  
+##  Mean   :1.340e+09   NURSE PRACTITIONER    :22163                                                            Mean   :38.19  
+##  3rd Qu.:1.509e+09   OPTOMETRY             :20352                                                            3rd Qu.:41.75  
+##  Max.   :1.680e+09   CLINICAL PSYCHOLOGIST :16522                                                            Max.   :66.90  
+##                      (Other)               :86672                                                            NA&#39;s   :140    
+##    longitude          yrs_grd        locations      
+##  Min.   :-170.27   Min.   : 0.00   Min.   :  1.000  
+##  1st Qu.: -98.57   1st Qu.: 7.00   1st Qu.:  1.000  
+##  Median : -86.18   Median :17.00   Median :  1.000  
+##  Mean   : -91.39   Mean   :18.55   Mean   :  1.293  
+##  3rd Qu.: -77.34   3rd Qu.:28.00   3rd Qu.:  1.000  
+##  Max.   : -67.24   Max.   :74.00   Max.   :359.000  
+##  NA&#39;s   :140</code></pre>
 </div>
 <div id="output" class="section level3">
 <h3><span class="header-section-number">4.1.3</span> Output</h3>
@@ -417,9 +346,8 @@ EPs &lt;-<span class="st"> </span><span class="kw">left_join</span>(EPs, SL, <sp
 <span class="kw">saveRDS</span>(EPs, <span class="dt">file =</span> <span class="st">&quot;./data/EPs.rds&quot;</span>)
 
 <span class="co"># for the rest of practitioners who are affiliated with a hospital</span>
-<span class="kw">library</span>(stringr)
 hosp_afl &lt;-<span class="st"> </span>clean <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># filter on the clean version</span>
-<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(<span class="kw">as.integer</span>(hosp_afl_<span class="dv">1</span>))) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(hosp_afl_<span class="dv">1</span> <span class="op">!=</span><span class="st"> &#39;&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">hosp_afl_lbn_1 =</span> <span class="kw">as.character</span>(hosp_afl_lbn_<span class="dv">1</span>), 
          <span class="dt">cty =</span> <span class="kw">str_trim</span>(<span class="kw">as.character</span>(cty)),
          <span class="dt">st =</span> <span class="kw">as.character</span>(st),
@@ -454,7 +382,8 @@ hosp_afl &lt;-<span class="st"> </span>clean <span class="op">%&gt;%</span><span
   st_df &lt;-<span class="st"> </span>st_df[<span class="op">!</span>(st_df<span class="op">$</span><span class="st">&quot;Hospital Name&quot;</span><span class="op">==</span><span class="st">&quot;T O T A L&quot;</span>),]
   st_df<span class="op">$</span>State &lt;-<span class="st"> </span>st
   hosp_web &lt;-<span class="st"> </span><span class="kw">rbind</span>(hosp_web, st_df)
-}</code></pre></div>
+}
+<span class="kw">saveRDS</span>(hosp_web, <span class="st">&quot;./data/hosp_raw.rds&quot;</span>) <span class="co"># saving data for reproducibility</span></code></pre></div>
 </div>
 <div id="wrangling-1" class="section level3">
 <h3><span class="header-section-number">4.2.2</span> Wrangling</h3>
@@ -485,41 +414,41 @@ hosp_afl &lt;-<span class="st"> </span>clean <span class="op">%&gt;%</span><span
                        <span class="dt">City =</span> <span class="kw">toupper</span>(<span class="kw">str_trim</span>(<span class="kw">as.character</span>(City)))
                        )
 <span class="kw">summary</span>(hosp_clean)</code></pre></div>
-<pre><code>##  Hospital_name          City            Staffed_beds     Total_discharges
-##  Length:3907        Length:3907        Min.   :    0.0   Min.   :     0  
-##  Class :character   Class :character   1st Qu.:   48.0   1st Qu.:  1244  
-##  Mode  :character   Mode  :character   Median :  133.0   Median :  4562  
-##                                        Mean   :  204.8   Mean   :  8017  
-##                                        3rd Qu.:  264.0   3rd Qu.: 11336  
-##                                        Max.   :36985.0   Max.   :136646  
-##   Patient_days    Gross_patient_revenue    State          
-##  Min.   :     0   Min.   :       0      Length:3907       
-##  1st Qu.:  4104   1st Qu.:   98340      Class :character  
-##  Median : 18892   Median :  377425      Mode  :character  
-##  Mean   : 37794   Mean   :  797958                        
-##  3rd Qu.: 51620   3rd Qu.: 1001421                        
-##  Max.   :695643   Max.   :15618749</code></pre>
-<p>It looks like the zero value wasn’t just for the gross patient revenue. From the summary output, we can see that the minimum values on all hospital demographics (staffed beds, total discharges, patient days, gross patient revenue) are zero, which doesn’t seem right. Theorethically, it is impossible for any <em>functioning</em> hospital to have a <em>total</em> of zero on any of these characteristics. Would having a total of zero number of staffed beds really make it a hospital? Can a hospital survive on a gross patient revenue of zero dollars? We thought that it might be a web scrapping error, but when we went back and looked on the website, some of their tables definitely have random zero hospital statistics and some even have a whole row of zeros for certain hospitals. The metadata wasn’t very clear on this, but it seems like it is their way of representing missing data. Instead of keeping them as zeros, which would affect any computation we want to perform on these continuous variables, we will convert every zero into a true missing value, <code>NA</code>. But if a hospital has all missing demographics (the entire row of zeros), then we will just remove that hospital entirely (delete the whole row).</p>
+<pre><code>##  Hospital_name          City            Staffed_beds     Total_discharges  Patient_days    Gross_patient_revenue
+##  Length:3907        Length:3907        Min.   :    0.0   Min.   :     0   Min.   :     0   Min.   :       0     
+##  Class :character   Class :character   1st Qu.:   48.0   1st Qu.:  1244   1st Qu.:  4104   1st Qu.:   98340     
+##  Mode  :character   Mode  :character   Median :  133.0   Median :  4562   Median : 18892   Median :  377425     
+##                                        Mean   :  204.8   Mean   :  8017   Mean   : 37794   Mean   :  797958     
+##                                        3rd Qu.:  264.0   3rd Qu.: 11336   3rd Qu.: 51621   3rd Qu.: 1001421     
+##                                        Max.   :36985.0   Max.   :136646   Max.   :695643   Max.   :15618749     
+##     State          
+##  Length:3907       
+##  Class :character  
+##  Mode  :character  
+##                    
+##                    
+## </code></pre>
+<p>It looks like the zero value wasn’t just for the gross patient revenue. From the summary output, we can see that the minimum values on all hospital demographics (staffed beds, total discharges, patient days, gross patient revenue) are zero, which doesn’t seem right. Theoretically, it is impossible for any <em>functioning</em> hospital to have a <em>total</em> of zero on any of these characteristics. Would having a total of zero number of staffed beds really make it a hospital? Can a hospital survive on a gross patient revenue of zero dollars? We thought that it might be a web scrapping error, but when we went back and looked on the website, some of their tables definitely have random zero hospital statistics and some even have a whole row of zeros for certain hospitals. The metadata wasn’t very clear on this, but it seems like it is their way of representing missing data. Instead of keeping them as zeros, which would affect any computation we want to perform on these continuous variables, we will convert every zero into a true missing value, <code>NA</code>. But if a hospital has all missing demographics (the entire row of zeros), then we will just remove that hospital entirely (delete the whole row).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the demographics are columns 3 to 6 of the data frame</span>
 <span class="kw">is.na</span>(hosp_clean[,<span class="dv">3</span><span class="op">:</span><span class="dv">6</span>]) &lt;-<span class="st"> </span><span class="op">!</span>hosp_clean[,<span class="dv">3</span><span class="op">:</span><span class="dv">6</span>] <span class="co"># turn 0&#39;s to NAs</span>
 hosp_clean &lt;-<span class="st"> </span>hosp_clean[<span class="kw">rowSums</span>(<span class="kw">is.na</span>(hosp_clean)) <span class="op">&lt;</span><span class="st"> </span><span class="dv">4</span>,] <span class="co"># only delete hosp with all four NAs</span>
 <span class="kw">summary</span>(hosp_clean)</code></pre></div>
-<pre><code>##  Hospital_name          City            Staffed_beds     Total_discharges
-##  Length:3456        Length:3456        Min.   :    1.0   Min.   :     1  
-##  Class :character   Class :character   1st Qu.:   73.0   1st Qu.:  2141  
-##  Mode  :character   Mode  :character   Median :  157.0   Median :  5692  
-##                                        Mean   :  231.6   Mean   :  9087  
-##                                        3rd Qu.:  290.0   3rd Qu.: 12564  
-##                                        Max.   :36985.0   Max.   :136646  
-##                                        NA&#39;s   :1         NA&#39;s   :9       
-##   Patient_days    Gross_patient_revenue    State          
-##  Min.   :     1   Min.   :    2298      Length:3456       
-##  1st Qu.:  7740   1st Qu.:  188177      Class :character  
-##  Median : 23922   Median :  504646      Mode  :character  
-##  Mean   : 42838   Mean   :  923192                        
-##  3rd Qu.: 57390   3rd Qu.: 1149258                        
-##  Max.   :695643   Max.   :15618749                        
-##  NA&#39;s   :9        NA&#39;s   :79</code></pre>
+<pre><code>##  Hospital_name          City            Staffed_beds     Total_discharges  Patient_days    Gross_patient_revenue
+##  Length:3456        Length:3456        Min.   :    1.0   Min.   :     1   Min.   :     1   Min.   :    2298     
+##  Class :character   Class :character   1st Qu.:   73.0   1st Qu.:  2141   1st Qu.:  7740   1st Qu.:  188177     
+##  Mode  :character   Mode  :character   Median :  157.0   Median :  5692   Median : 23922   Median :  504646     
+##                                        Mean   :  231.6   Mean   :  9087   Mean   : 42838   Mean   :  923192     
+##                                        3rd Qu.:  290.0   3rd Qu.: 12564   3rd Qu.: 57391   3rd Qu.: 1149258     
+##                                        Max.   :36985.0   Max.   :136646   Max.   :695643   Max.   :15618749     
+##                                        NA&#39;s   :1         NA&#39;s   :9        NA&#39;s   :9        NA&#39;s   :79           
+##     State          
+##  Length:3456       
+##  Class :character  
+##  Mode  :character  
+##                    
+##                    
+##                    
+## </code></pre>
 <p>Now the minimum value is 1…still questionable and potentially causing the skew in their distributions. But we did take a look at these specific hospitals with any one demographic characteristic of value 1 and they seem to also have low values of the other characteristics as well (not necessarily exactly of 1, that would’ve been even more suspicious), so these may very well be valid who knows. Anyway, we need to move on with our lives, I mean, to merging with <code>hosp_afl</code> (which is a subset of practitioners who are affiliated with a hospital from the previous section) on the hospital name and state since different hospitals in different locations can have the same name. Since <code>hosp_afl</code> can have multiple rows per hospital if more than one physician in the data is affiliated with it, so we will aggregate the data back to hospital-level after the merge by summarizing physician-level information.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hosps &lt;-<span class="st"> </span><span class="kw">inner_join</span>(hosp_clean, hosp_afl, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;Hospital_name&quot;</span>=<span class="st">&quot;hosp_afl_lbn_1&quot;</span>, <span class="st">&quot;State&quot;</span>=<span class="st">&quot;st&quot;</span>))
 hosps &lt;-<span class="st"> </span>hosps <span class="op">%&gt;%</span><span class="st"> </span>
@@ -530,35 +459,27 @@ hosps &lt;-<span class="st"> </span>hosps <span class="op">%&gt;%</span><span cl
             <span class="dt">n_specialty =</span><span class="kw">n_distinct</span>(pri_spec),
             <span class="dt">EHR_use =</span> <span class="kw">as.factor</span>(<span class="kw">max</span>(ehr)))
 <span class="kw">summary</span>(hosps)</code></pre></div>
-<pre><code>##    hosp_afl_1     Hospital_name         State            Staffed_beds   
-##  Min.   : 10001   Length:712         Length:712         Min.   :   7.0  
-##  1st Qu.:100311   Class :character   Class :character   1st Qu.: 141.5  
-##  Median :230273   Mode  :character   Mode  :character   Median : 242.5  
-##  Mean   :248324                                         Mean   : 295.2  
-##  3rd Qu.:370018                                         3rd Qu.: 380.5  
-##  Max.   :670073                                         Max.   :1750.0  
-##                                                                         
-##  Total_discharges  Patient_days    Gross_patient_revenue    num_phys     
-##  Min.   :   12    Min.   :    37   Min.   :    3736      Min.   : 1.000  
-##  1st Qu.: 5101    1st Qu.: 20188   1st Qu.:  456340      1st Qu.: 1.000  
-##  Median :10860    Median : 46707   Median :  923908      Median : 1.000  
-##  Mean   :13194    Mean   : 63369   Mean   : 1347802      Mean   : 1.784  
-##  3rd Qu.:17680    3rd Qu.: 85566   3rd Qu.: 1718996      3rd Qu.: 2.000  
-##  Max.   :77757    Max.   :425114   Max.   :14140692      Max.   :12.000  
-##                                    NA&#39;s   :5                             
-##   female_prop    avg_grad_year   n_specialty    EHR_use
-##  Min.   :0.000   Min.   :1965   Min.   :1.000   1:199  
-##  1st Qu.:0.000   1st Qu.:2004   1st Qu.:1.000   0:513  
-##  Median :0.500   Median :2008   Median :1.000          
-##  Mean   :0.512   Mean   :2007   Mean   :1.662          
-##  3rd Qu.:1.000   3rd Qu.:2011   3rd Qu.:2.000          
-##  Max.   :1.000   Max.   :2016   Max.   :8.000          
+<pre><code>##    hosp_afl_1   Hospital_name         State            Staffed_beds     Total_discharges  Patient_days    Gross_patient_revenue
+##  150042 :   5   Length:1857        Length:1857        Min.   :    7.0   Min.   :    1    Min.   :     2   Min.   :    3624     
+##  050471 :   3   Class :character   Class :character   1st Qu.:   72.0   1st Qu.: 2056    1st Qu.:  7248   1st Qu.:  185397     
+##  360052 :   3   Mode  :character   Mode  :character   Median :  154.0   Median : 5350    Median : 21967   Median :  488683     
+##  360134 :   3                                         Mean   :  232.1   Mean   : 8376    Mean   : 38899   Mean   :  854423     
+##  050257 :   2                                         3rd Qu.:  277.0   3rd Qu.:11983    3rd Qu.: 53935   3rd Qu.: 1100914     
+##  050380 :   2                                         Max.   :36985.0   Max.   :77757    Max.   :425114   Max.   :14140692     
+##  (Other):1839                                                           NA&#39;s   :1        NA&#39;s   :1        NA&#39;s   :9            
+##     num_phys       female_prop     avg_grad_year   n_specialty    EHR_use 
+##  Min.   :   1.0   Min.   :0.0000   Min.   :1971   Min.   : 1.00   1:1701  
+##  1st Qu.:  28.0   1st Qu.:0.2800   1st Qu.:1994   1st Qu.:12.00   0: 156  
+##  Median :  69.0   Median :0.3600   Median :1996   Median :22.00           
+##  Mean   : 114.4   Mean   :0.3592   Mean   :1996   Mean   :22.79           
+##  3rd Qu.: 152.0   3rd Qu.:0.4300   3rd Qu.:1998   3rd Qu.:33.00           
+##  Max.   :1460.0   Max.   :1.0000   Max.   :2014   Max.   :62.00           
 ## </code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(hosps[<span class="kw">which</span>(hosps<span class="op">$</span>num_phys <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>),]<span class="op">$</span>EHR_use)</code></pre></div>
 <pre><code>## 
 ##   1   0 
-## 198 513</code></pre>
-<p>Well, we managed to get about <code>{r} (nrow(hosps)/nrow(hosp_clean))*100</code>% match on the hospitals between the two data sets and the summary statistics on those hospital demographics look a lot nicer and less skewed! Even though we aggregated the physicial-level demographics because we didn’t want to just throw away data, we do acknowledge that these physician-level demographics are not really meaningful because they are not representative of the demographics of the hospital. It is unlikely that we had all the physicians information from our <code>hosp_afl</code> for each hospital that matched. (i.e. the 10 physicians we have data on for a hospital may not accurately represent the all practitioners in that hospital) We thought of excluding hospitals with less than 10 practitioners in the data to obtain accurate physician demographics for the hospital, but it would mean cutting down way to much of our limite data. We decided to just focus on the main hospital demographics scraped from the website, and keep the aggregated physician demographics at the exploratory level. Merging with <code>hosp_afl</code> still provided us the main outcome of interest, “EHR_use (the hospital uses the electronic health system)”, calculated as 1 if at least one practitioner in the hopstial uses EHR and 0 if none of the practitioners in the hospital uses EHR - that’s why we took the maximum in our code above. Reminder that for practitioners affiliated with hospitals, we assumed that EHR use is the hospital-level adoption and not individual’s. Thus it makes sense that if at least one of the practitioners is recorded in the data as using EHR, we will assume the hospital uses EHR.</p>
+##  52 114</code></pre>
+<p>Well, we managed to get about <code>{r} (nrow(hosps)/nrow(hosp_clean))*100</code>% match on the hospitals between the two data sets and the summary statistics on those hospital demographics look a lot nicer and less skewed! Even though we aggregated the physical-level demographics because we didn’t want to just throw away data, we do acknowledge that these physician-level demographics are not really meaningful because they are not representative of the demographics of the hospital. It is unlikely that we had all the physicians information from our <code>hosp_afl</code> for each hospital that matched. (i.e. the 10 physicians we have data on for a hospital may not accurately represent the all practitioners in that hospital) We thought of excluding hospitals with less than 10 practitioners in the data to obtain accurate physician demographics for the hospital, but it would mean cutting down way to much of our limited data. We decided to just focus on the main hospital demographics scraped from the website, and keep the aggregated physician demographics at the exploratory level. Merging with <code>hosp_afl</code> still provided us the main outcome of interest, “EHR_use (the hospital uses the electronic health system)”, calculated as 1 if at least one practitioner in the hospital uses EHR and 0 if none of the practitioners in the hospital uses EHR - that’s why we took the maximum in our code above. Reminder that for practitioners affiliated with hospitals, we assumed that EHR use is the hospital-level adoption and not individual’s. Thus it makes sense that if at least one of the practitioners is recorded in the data as using EHR, we will assume the hospital uses EHR.</p>
 </div>
 <div id="output-1" class="section level3">
 <h3><span class="header-section-number">4.2.3</span> Output</h3>
@@ -576,11 +497,12 @@ hosps &lt;-<span class="st"> </span>hosps <span class="op">%&gt;%</span><span cl
 </div>
 <div id="vendors-products-ehr" class="section level2">
 <h2><span class="header-section-number">4.3</span> Vendors &amp; Products (EHR)</h2>
-<p>Since so many professionals and hospitals across the U.S. have already adopted EHR, we realized that simplying looking at the binary outcome of EHR use would be too boring of a project. Thus, we were curious to further explore the demographics of those who do use EHR by the specific types of EHR vendor or product. Fortunately, we were able to find data to support this additional secondary/exploratory analysis.</p>
+<p>Since so many professionals and hospitals across the U.S. have already adopted EHR, we realized that simply looking at the binary outcome of EHR use would be too boring of a project. Thus, we were curious to further explore the demographics of those who do use EHR by the specific types of EHR vendor or product. Fortunately, we were able to find data to support this additional secondary/exploratory analysis.</p>
 <div id="sourcemetadata-2" class="section level3">
 <h3><span class="header-section-number">4.3.1</span> Source/Metadata</h3>
-<p>The <a href="https://dashboard.healthit.gov/datadashboard/documentation/ehr-products-mu-attestation-data-documentation.php">Health IT Dashboard</a> provides certified health IT product data from the ONC Certified Health IT Product List (CHPL) such as the unique vendors, products, and product types of each certified health IT product used as part of the Medicare EHR Incentive Program. We downloaded only the 2016 dataset, which also includes unique provider identifiers (NPI), in order to match the <code>EPs</code> dataset discussed in the first section of this chapter. As the <a href="https://dashboard.healthit.gov/api/open-api.php?source=onc-data-documentation.csv&amp;data=ehr-products-mu-attestation-data-documentation">metadata</a> explains, a provider in this dataset can be either an eligible professional (EP) and eligible hospital (Hospital), as distinguished by the <code>Provider_Type</code> column. Thus, only the <code>Provider_Type == 'EP'</code> records is merged with the subset of <code>EPs</code> who are not affiliated with any hospital, and the <code>Provider_Type == 'Hospital'</code> records is merged with the subset of <code>EPs</code> who are affiliated with a hospital, and therefore directly merged with the combined and cleaned version of the <code>hosp</code> dataset discussed in the previous section of this chapter.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EHR &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://dashboard.healthit.gov/datadashboard/data/MU_REPORT_2016.csv&quot;</span>)</code></pre></div>
+<p>The <a href="https://dashboard.healthit.gov/datadashboard/documentation/ehr-products-mu-attestation-data-documentation.php">Health IT Dashboard</a> provides certified health IT product data from the ONC Certified Health IT Product List (CHPL) such as the unique vendors, products, and product types of each certified health IT product used as part of the Medicare EHR Incentive Program. We downloaded only the 2016 data set, which also includes unique provider identifiers (NPI), in order to match the <code>EPs</code> data set discussed in the first section of this chapter. As the <a href="https://dashboard.healthit.gov/api/open-api.php?source=onc-data-documentation.csv&amp;data=ehr-products-mu-attestation-data-documentation">metadata</a> explains, a provider in this data set can be either an eligible professional (EP) and eligible hospital (Hospital), as distinguished by the <code>Provider_Type</code> column. Thus, only the <code>Provider_Type == 'EP'</code> records is merged with the subset of <code>EPs</code> who are not affiliated with any hospital, and the <code>Provider_Type == 'Hospital'</code> records is merged with the subset of <code>EPs</code> who are affiliated with a hospital, and therefore directly merged with the combined and cleaned version of the <code>hosp</code> data set discussed in the previous section of this chapter.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EHR &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://dashboard.healthit.gov/datadashboard/data/MU_REPORT_2016.csv&quot;</span>)
+<span class="kw">saveRDS</span>(EHR, <span class="st">&quot;./data/EHR_raw.rds&quot;</span>) <span class="co"># saving data for reproducibility</span></code></pre></div>
 </div>
 <div id="wrangling-2" class="section level3">
 <h3><span class="header-section-number">4.3.2</span> Wrangling</h3>
@@ -613,90 +535,225 @@ hosps &lt;-<span class="st"> </span>hosps <span class="op">%&gt;%</span><span cl
 <p>There are actually a lot of variables here that are not informative so we can drop them and just focus on a smaller set, i.e. program year would just be 2016 on every row in the data, EHR certification number or CHP ID is at an unnecessary level of detail. Let’s select the important columns and a few potentially interesting variables to summarize by (thus, using <code>distinct</code> instead of <code>select</code>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EHR_clean &lt;-<span class="st"> </span>EHR <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">distinct</span>(NPI, CCN, Provider_Type, Business_State_Territory, ZIP, Specialty, Hospital_Type, Vendor_Name, EHR_Product_Name, Product_Classification, Product_Setting)
 <span class="kw">summary</span>(EHR_clean)</code></pre></div>
-<pre><code>##       NPI                 CCN          Provider_Type   
-##  Min.   :1.003e+09   Min.   : 10001   EP      :393375  
-##  1st Qu.:1.255e+09   1st Qu.:121301   Hospital: 16330  
-##  Median :1.508e+09   Median :241361                    
-##  Mean   :1.501e+09   Mean   :261394                    
-##  3rd Qu.:1.750e+09   3rd Qu.:390179                    
-##  Max.   :1.993e+09   Max.   :670114                    
-##                      NA&#39;s   :393375                    
-##  Business_State_Territory      ZIP        
-##  California  : 31692             : 16330  
-##  Minnesota   : 24252      55905  : 11278  
-##  Florida     : 22664      48109  :  3336  
-##  Texas       : 22307      02114  :  3021  
-##  Pennsylvania: 20564      32224  :  2818  
-##  Michigan    : 19739      60611  :  2521  
-##  (Other)     :268487      (Other):370401  
-##                                                           Specialty     
-##  Family Medicine                                               : 61485  
-##  Internal Medicine                                             : 45820  
-##  Student in an Organized Health Care Education/Training Program: 17552  
-##  Cardiovascular Disease                                        : 17524  
-##                                                                : 16330  
-##  (Other)                                                       :250764  
-##  NA&#39;s                                                          :   230  
-##          Hospital_Type                      Vendor_Name    
-##                 :393375   Epic Systems Corporation:133637  
-##  Critical Access:  3348   Cerner Corporation      : 70367  
-##  General        : 12982   Allscripts              : 28067  
-##                           athenahealth, Inc.      : 20970  
-##                           eClinicalWorks, LLC     : 16354  
-##                           GE Healthcare           : 14882  
-##                           (Other)                 :125428  
-##                                      EHR_Product_Name 
-##  EpicCare Ambulatory 2014 Certified EHR Suite: 71207  
-##  athenaClinicals                             : 20945  
-##  Beacon Oncology 2014 Certified Module       : 16281  
-##  eClinicalWorks                              : 16097  
-##  NextGen Ambulatory EHR                      : 13616  
-##  Powerchart (Clinical)                       : 13293  
-##  (Other)                                     :258266  
-##   Product_Classification   Product_Setting  
-##              : 14690               : 14690  
-##  Complete EHR:202827     Ambulatory:325708  
-##  Modular EHR :192188     Inpatient : 69307  
-##                                             
-##                                             
-##                                             
+<pre><code>##       NPI                 CCN          Provider_Type    Business_State_Territory      ZIP        
+##  Min.   :1.003e+09   Min.   : 10001   EP      :393375   California  : 31692             : 16330  
+##  1st Qu.:1.255e+09   1st Qu.:121301   Hospital: 16330   Minnesota   : 24252      55905  : 11278  
+##  Median :1.508e+09   Median :241361                     Florida     : 22664      48109  :  3336  
+##  Mean   :1.501e+09   Mean   :261394                     Texas       : 22307      02114  :  3021  
+##  3rd Qu.:1.750e+09   3rd Qu.:390179                     Pennsylvania: 20564      32224  :  2818  
+##  Max.   :1.993e+09   Max.   :670114                     Michigan    : 19739      60611  :  2521  
+##                      NA&#39;s   :393375                     (Other)     :268487      (Other):370401  
+##                                                           Specialty              Hospital_Type   
+##  Family Medicine                                               : 61485                  :393375  
+##  Internal Medicine                                             : 45820   Critical Access:  3348  
+##  Student in an Organized Health Care Education/Training Program: 17552   General        : 12982  
+##  Cardiovascular Disease                                        : 17524                           
+##                                                                : 16330                           
+##  (Other)                                                       :250764                           
+##  NA&#39;s                                                          :   230                           
+##                    Vendor_Name                                         EHR_Product_Name   Product_Classification
+##  Epic Systems Corporation:133637   EpicCare Ambulatory 2014 Certified EHR Suite: 71207               : 14690    
+##  Cerner Corporation      : 70367   athenaClinicals                             : 20945   Complete EHR:202827    
+##  Allscripts              : 28067   Beacon Oncology 2014 Certified Module       : 16281   Modular EHR :192188    
+##  athenahealth, Inc.      : 20970   eClinicalWorks                              : 16097                          
+##  eClinicalWorks, LLC     : 16354   NextGen Ambulatory EHR                      : 13616                          
+##  GE Healthcare           : 14882   Powerchart (Clinical)                       : 13293                          
+##  (Other)                 :125428   (Other)                                     :258266                          
+##    Product_Setting  
+##            : 14690  
+##  Ambulatory:325708  
+##  Inpatient : 69307  
+##                     
+##                     
+##                     
 ## </code></pre>
 <p>Observations:</p>
 <ul>
-<li>There are 485841 records of missing CCN (the identifying number for eligible hospitals) and missing hospital type, which matches up with the number of records that are <code>Provider_Type == 'EP'</code>. It makes sense since these variables would not be relevant to an eligible professional (EP), who is not affiliated with any hospital.</li>
-<li>There are exactly 20073 records of missing zip codes and blank specialty (specifically <em>not</em> NA’s), and this number matches up with the number of <code>Provider_Type == 'Hospital'</code>.</li>
-<li><p>It sounds like the we just need to split the data into EPs and hospitals since there are enough distinct variables relevant for each type. Then we can merge each split with their corresponding demographic data from the previous sections.</p></li>
-<li>We want to inner join with the <code>EPs</code> data set on <code>NPI</code>, which has one row per physician by their unique NPI (one-to-many merge)</li>
-<li><p>We want to inner join with the <code>hosps</code> data set on <code>CCN</code>, which has one row per hospital by their unique CCN (one-to-many merge)</p></li>
+<li>There are records of missing CCN (the identifying number for eligible hospitals) and missing hospital type, which matches up with the number of records that are <code>Provider_Type == 'EP'</code>. It makes sense since these variables would not be relevant to an eligible professional (EP), who is not affiliated with any hospital.</li>
+<li>There are exactly 16330 records of missing zip codes and blank specialty (specifically <em>not</em> NA’s), and this number matches up with the number of <code>Provider_Type == 'Hospital'</code>.</li>
+<li>It sounds like the we just need to split the data into EPs and hospitals since there are enough distinct variables relevant for each type. Then clean each one before merging with their corresponding level of demographics.</li>
 </ul>
+<p>Split:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># split for EPs</span>
 EHR_EPs &lt;-<span class="st"> </span>EHR_clean <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Provider_Type <span class="op">==</span><span class="st"> &#39;EP&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>CCN, <span class="op">-</span>Hospital_Type, <span class="op">-</span>Provider_Type)
-<span class="co"># merge with EPs data</span>
-EHR_EPs &lt;-<span class="st"> </span><span class="kw">inner_join</span>(EHR_EPs, EPs, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&#39;NPI&#39;</span>=<span class="st">&#39;npi&#39;</span>))
-
-<span class="co"># split for hospitals</span>
+<span class="kw">summary</span>(EHR_EPs)</code></pre></div>
+<pre><code>##       NPI            Business_State_Territory      ZIP        
+##  Min.   :1.003e+09   California  : 30425      55905  : 11278  
+##  1st Qu.:1.255e+09   Minnesota   : 23895      48109  :  3336  
+##  Median :1.508e+09   Florida     : 21678      02114  :  3021  
+##  Mean   :1.501e+09   Texas       : 20941      32224  :  2818  
+##  3rd Qu.:1.750e+09   Pennsylvania: 19919      60611  :  2521  
+##  Max.   :1.993e+09   Michigan    : 19221      23298  :  2235  
+##                      (Other)     :257296      (Other):368166  
+##                                                           Specialty                        Vendor_Name    
+##  Family Medicine                                               : 61485   Epic Systems Corporation:131883  
+##  Internal Medicine                                             : 45820   Cerner Corporation      : 64893  
+##  Student in an Organized Health Care Education/Training Program: 17552   Allscripts              : 27743  
+##  Cardiovascular Disease                                        : 17524   athenahealth, Inc.      : 20929  
+##  Obstetrics &amp; Gynecology                                       : 15059   eClinicalWorks, LLC     : 16345  
+##  (Other)                                                       :235705   GE Healthcare           : 14861  
+##  NA&#39;s                                                          :   230   (Other)                 :116721  
+##                                      EHR_Product_Name   Product_Classification   Product_Setting  
+##  EpicCare Ambulatory 2014 Certified EHR Suite: 71047               : 14462               : 14462  
+##  athenaClinicals                             : 20928   Complete EHR:200889     Ambulatory:324643  
+##  Beacon Oncology 2014 Certified Module       : 16189   Modular EHR :178024     Inpatient : 54270  
+##  eClinicalWorks                              : 16097                                              
+##  NextGen Ambulatory EHR                      : 13613                                              
+##  Powerchart (Clinical)                       : 12548                                              
+##  (Other)                                     :242953</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># check for valid zip codes</span>
+EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="kw">nchar</span>(<span class="kw">as.character</span>(ZIP)) <span class="op">&lt;</span><span class="st"> </span><span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(ZIP) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarize</span>(<span class="kw">n</span>())</code></pre></div>
+<pre><code>## # A tibble: 3 x 2
+##      ZIP `n()`
+##   &lt;fctr&gt; &lt;int&gt;
+## 1   1010     1
+## 2   EH16     2
+## 3   IP28     9</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># split for hospitals</span>
 EHR_hosps &lt;-<span class="st"> </span>EHR_clean <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Provider_Type <span class="op">==</span><span class="st"> &#39;Hospital&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>ZIP, <span class="op">-</span>Specialty, <span class="op">-</span>Provider_Type)
-<span class="co"># merge with hosps data</span>
-EHR_hosps &lt;-<span class="st"> </span><span class="kw">inner_join</span>(EHR_hosps, hosps, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&#39;CCN&#39;</span>=<span class="st">&#39;hosp_afl_1&#39;</span>))
+<span class="kw">summary</span>(EHR_hosps)</code></pre></div>
+<pre><code>##       NPI                 CCN         Business_State_Territory         Hospital_Type  
+##  Min.   :1.003e+09   Min.   : 10001   Texas       : 1366                      :    0  
+##  1st Qu.:1.245e+09   1st Qu.:121301   California  : 1267       Critical Access: 3348  
+##  Median :1.488e+09   Median :241361   Florida     :  986       General        :12982  
+##  Mean   :1.495e+09   Mean   :261394   Illinois    :  667                              
+##  3rd Qu.:1.740e+09   3rd Qu.:390179   Pennsylvania:  645                              
+##  Max.   :1.993e+09   Max.   :670114   Ohio        :  564                              
+##                                       (Other)     :10835                              
+##                                           Vendor_Name                                      EHR_Product_Name
+##  Cerner Corporation                             :5474   HealthSentry                               :  851  
+##  Medical Information Technology, Inc. (MEDITECH):2879   Powerchart (Clinical)                      :  745  
+##  Epic Systems Corporation                       :1754   Powerchart (All CQM&#39;s)                     :  703  
+##  MEDHOST                                        : 653   P2 Sentinel (Powered by Sensage)           :  580  
+##  McKesson                                       : 625   EpicCare Inpatient 2014 Certified EHR Suite:  565  
+##  Cerner Health Services, Inc.                   : 525   HealtheLife and Powerchart                 :  552  
+##  (Other)                                        :4420   (Other)                                    :12334  
+##   Product_Classification   Product_Setting 
+##              :  228                :  228  
+##  Complete EHR: 1938      Ambulatory: 1065  
+##  Modular EHR :14164      Inpatient :15037  
+##                                            
+##                                            
+##                                            
+## </code></pre>
+<p>The summaries much look better separately for the two sets. Now we just have to clean up the zip codes for the physician-level EHR’s. Looks like there are only a few records with invalid zip codes. Similar to how we cleaned up the zip codes for <code>EPs</code>, we will match the zip codes with R’s own zip code package.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># first remove non-US states, appending DC to list</span>
+state_name &lt;-<span class="st"> </span><span class="kw">c</span>(state.name,<span class="st">&quot;District Of Columbia&quot;</span>)
+states &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">state_name =</span> state_name, <span class="dt">state_abb =</span> <span class="kw">c</span>(state.abb, <span class="st">&quot;DC&quot;</span>))
+EHR_EPs &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Business_State_Territory <span class="op">%in%</span><span class="st"> </span>state_name)
+<span class="kw">length</span>(<span class="kw">unique</span>(EHR_EPs<span class="op">$</span>Business_State_Territory))</code></pre></div>
+<pre><code>## [1] 51</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># remove invalid zip codes</span>
+EHR_EPs &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="kw">nchar</span>(<span class="kw">as.character</span>(ZIP)) <span class="op">&gt;=</span><span class="st"> </span><span class="dv">5</span>)
 
-<span class="co"># check EHR use (should expect all 1&#39;s or &quot;yes&quot;)</span>
+<span class="co"># merge R zip codes</span>
+<span class="kw">library</span>(zipcode)
+<span class="kw">data</span>(<span class="st">&quot;zipcode&quot;</span>)
+EHR_EPs &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">left_join</span>(zipcode, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;ZIP&quot;</span> =<span class="st"> &quot;zip&quot;</span>))</code></pre></div>
+<pre><code>## Warning: Column `ZIP`/`zip` joining factor and character vector, coercing into character vector</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># check state mismatches</span>
+EHR_mismatch &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">left_join</span>(states, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;state&quot;</span> =<span class="st"> &quot;state_abb&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># need to add in long state names</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Business_State_Territory =</span> <span class="kw">as.character</span>(Business_State_Territory)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(state_name <span class="op">!=</span><span class="st"> </span>Business_State_Territory)</code></pre></div>
+<pre><code>## Warning: Column `state`/`state_abb` joining character vector and factor, coercing into character vector</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># percent state mismatch</span>
+<span class="kw">nrow</span>(EHR_mismatch)<span class="op">/</span><span class="kw">nrow</span>(EHR_EPs)</code></pre></div>
+<pre><code>## [1] 0.04492693</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># check which zips are mismatching</span>
+EHR_mismatch <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(ZIP, Business_State_Territory, state_name) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">num =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(num)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">head</span>(<span class="dv">8</span>)</code></pre></div>
+<pre><code>## # A tibble: 8 x 4
+## # Groups:   ZIP, Business_State_Territory [8]
+##     ZIP Business_State_Territory   state_name   num
+##   &lt;chr&gt;                    &lt;chr&gt;       &lt;fctr&gt; &lt;int&gt;
+## 1 51503                 Nebraska         Iowa   120
+## 2 99362               Washington       Oregon    83
+## 3 54601                Minnesota    Wisconsin    80
+## 4 19104               New Jersey Pennsylvania    65
+## 5 55905                  Florida    Minnesota    63
+## 6 33331                     Ohio      Florida    58
+## 7 85259                Minnesota      Arizona    48
+## 8 55905                Wisconsin    Minnesota    46</code></pre>
+<p>The top 10 mismatches:</p>
+<ul>
+<li>Zip code 51503 is in Iowa (agrees with zip code package)/bordering Nebraska, but reported as Nebraska which is neighboring Iowa. This may be correct, so we’ll keep Nebraska as reported</li>
+<li>Zip code 55905 is in Minnesota, but reported state Florida is not near Minnesota. Since there is likely a typo in either zip or state, we’ll remove this mismatched zip all together</li>
+<li>Zip code 54601 is in Wisconsin/bordering Minnesota, but reported as Minnesota which is neighboring Wisconsin. We’ll keep Minnesota as reported</li>
+<li>Zip code 33331 is in Florida, which is nowhere near Ohio. Since it is unclear which was the typo, we’ll delete all these mismatches</li>
+<li>Zip code 55905 is in Minnesota - found it’s actually Mayo Clinic (along with #2). Wisconsin and Minnesota are bordering each other, so we’ll keep Wisconsin –&gt; in general, if we look at <code>test_mismatch %&gt;% filter(ZIP == &quot;55905&quot;)</code> you will notice that this zip code is incorrectly used for multiple states, possibly meaning there were data entry/quality issues, which validates our decision to clean up the zip codes.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EHR_zip &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">left_join</span>(states, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;state&quot;</span> =<span class="st"> &quot;state_abb&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Business_State_Territory =</span> <span class="kw">as.character</span>(Business_State_Territory)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(
+    (state_name <span class="op">==</span><span class="st"> </span>Business_State_Territory) <span class="op">|</span><span class="st"> </span>
+<span class="st">    </span>(state_name <span class="op">!=</span><span class="st"> </span>Business_State_Territory <span class="op">&amp;&amp;</span><span class="st"> </span>ZIP <span class="op">==</span><span class="st"> &quot;51503&quot;</span> <span class="op">&amp;&amp;</span><span class="st"> </span>Business_State_Territory <span class="op">==</span><span class="st"> &quot;Nebraska&quot;</span>) <span class="op">|</span>
+<span class="st">    </span>(state_name <span class="op">!=</span><span class="st"> </span>Business_State_Territory <span class="op">&amp;&amp;</span><span class="st"> </span>ZIP <span class="op">==</span><span class="st"> &quot;54601&quot;</span> <span class="op">&amp;&amp;</span><span class="st"> </span>Business_State_Territory <span class="op">==</span><span class="st"> &quot;Minnesota&quot;</span>) <span class="op">|</span>
+<span class="st">    </span>(state_name <span class="op">!=</span><span class="st"> </span>Business_State_Territory <span class="op">&amp;&amp;</span><span class="st"> </span>ZIP <span class="op">==</span><span class="st"> &quot;55905&quot;</span> <span class="op">&amp;&amp;</span><span class="st"> </span>Business_State_Territory <span class="op">==</span><span class="st"> &quot;Wisconsin&quot;</span>)
+    ) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(NPI, Business_State_Territory, ZIP, Specialty, Vendor_Name, EHR_Product_Name, Product_Classification, Product_Setting)</code></pre></div>
+<pre><code>## Warning: Column `state`/`state_abb` joining character vector and factor, coercing into character vector</code></pre>
+<p>We want to inner join with the <code>EPs</code> data set on <code>NPI</code>, which has one row per physician by their unique NPI (one-to-many merge).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># merge with EPs data</span>
+EHR_EPs &lt;-<span class="st"> </span><span class="kw">inner_join</span>(EHR_zip, EPs, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&#39;NPI&#39;</span>=<span class="st">&#39;npi&#39;</span>))
+<span class="kw">summary</span>(EHR_EPs)</code></pre></div>
+<pre><code>##       NPI            Business_State_Territory     ZIP                      Specialty    
+##  Min.   :1.003e+09   Length:24155             Length:24155       Optometrist    : 4746  
+##  1st Qu.:1.165e+09   Class :character         Class :character   Chiropractor   : 2893  
+##  Median :1.336e+09   Mode  :character         Mode  :character   Family Medicine: 2397  
+##  Mean   :1.340e+09                                               Ophthalmology  : 1906  
+##  3rd Qu.:1.509e+09                                               Dermatology    : 1571  
+##  Max.   :1.680e+09                                               (Other)        :10638  
+##                                                                  NA&#39;s           :    4  
+##                               Vendor_Name                                        EHR_Product_Name  Product_Classification
+##  Epic Systems Corporation           : 4225   EpicCare Ambulatory 2014 Certified EHR Suite: 2043               :  352     
+##  Integrated Practice Solutions, Inc.: 1600   ChiroTouch                                  : 1281   Complete EHR:15438     
+##  Modernizing Medicine, Inc.         : 1544   NextGen Ambulatory EHR                      : 1209   Modular EHR : 8365     
+##  NextGen Healthcare                 : 1285   athenaClinicals                             : 1019                          
+##  GE Healthcare                      : 1048   EMA                                         :  888                          
+##  Mayo Clinic                        : 1035   eClinicalWorks                              :  732                          
+##  (Other)                            :13418   (Other)                                     :16983                          
+##    Product_Setting       cred              cty        ehr       gndr          grd_yr    
+##            :  352   NA     :15578   ROCHESTER: 1663   0: 5355   F: 9673   Min.   :1951  
+##  Ambulatory:21513   MD     : 4987   LOS ALTOS:  687   1:18800   M:14482   1st Qu.:1985  
+##  Inpatient : 2290   OD     : 1675   PALO ALTO:  527             U:    0   Median :1996  
+##                     DC     : 1271   NEW YORK :  335                       Mean   :1995  
+##                     DO     :  325   FREMONT  :  276                       3rd Qu.:2005  
+##                     DPM    :  290   BOSTON   :  207                       Max.   :2016  
+##                     (Other):   29   (Other)  :20460                                     
+##                                      med_sch                   pri_spec         st                zip           
+##  OTHER                                   : 5140   OPTOMETRY        :5155   Length:24155       Length:24155      
+##  PALMER COLLEGE CHIROPRACTIC - DAVENPORT :  699   CHIROPRACTIC     :3161   Class :character   Class :character  
+##  ILLINOIS COLLEGE OF OPTOMETRY AT CHICAGO:  640   FAMILY PRACTICE  :2637   Mode  :character   Mode  :character  
+##  SOUTHERN COLLEGE OF OPTOMETRY           :  572   DERMATOLOGY      :2534                                        
+##  PENNSYLVANIA COLLEGE OF OPTOMETRY       :  538   OPHTHALMOLOGY    :2044                                        
+##  INDIANA UNIVERSITY - SCHOOL OF OPTOMETRY:  420   INTERNAL MEDICINE:1499                                        
+##  (Other)                                 :16146   (Other)          :7125                                        
+##    zip.ext             latitude       longitude          yrs_grd        locations     
+##  Length:24155       Min.   :19.53   Min.   :-159.38   Min.   : 0.00   Min.   : 1.000  
+##  Class :character   1st Qu.:34.61   1st Qu.:-104.96   1st Qu.:11.00   1st Qu.: 1.000  
+##  Mode  :character   Median :39.04   Median : -90.03   Median :20.00   Median : 1.000  
+##                     Mean   :38.31   Mean   : -93.52   Mean   :21.31   Mean   : 1.281  
+##                     3rd Qu.:42.13   3rd Qu.: -80.31   3rd Qu.:31.00   3rd Qu.: 1.000  
+##                     Max.   :64.85   Max.   : -67.88   Max.   :65.00   Max.   :53.000  
+##                     NA&#39;s   :11      NA&#39;s   :11</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># check EHR use (should expect all 1&#39;s or &quot;yes&quot;)</span>
 <span class="kw">table</span>(EHR_EPs<span class="op">$</span>ehr)</code></pre></div>
 <pre><code>## 
-##  0  1 
-## 49 91</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(EHR_hosps<span class="op">$</span>ehr)</code></pre></div>
-<pre><code>## &lt; table of extent 0 &gt;</code></pre>
-<ul>
-<li>Specific product types are too dirty and not meaningful, will focus on vendor types.</li>
-<li>Notice that the <code>ehr</code> column is not all <code>1</code>’s or <code>Y</code>’s when we expect them to be. this explains why we had so many physicians who fell in the <code>ehr=''</code> category. the physicians whom we have EHR product usage information on did not answer “yes” to EHR use in the original <code>EPs</code> data.</li>
-<li>again the top primary specialties overall are 306, 247, 201, 128, 108, compare that to the top specialities among physicians whom we have vendor information: 30, 25, 15, 13, 12.</li>
-<li>merge with the cleaned hosp data</li>
-</ul>
+##     0     1 
+##  5355 18800</code></pre>
+<p>Notice that the <code>ehr</code> column is not all <code>1</code>’s when we expect them to be. This explains why we had so many physicians who fell in the <code>ehr=''</code> category. The physicians whom we have EHR product usage information on did not answer “yes” to EHR use in the original <code>EPs</code> data.</p>
 </div>
 <div id="output-2" class="section level3">
 <h3><span class="header-section-number">4.3.3</span> Output</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">saveRDS</span>(EHR_EPs, <span class="dt">file =</span> <span class="st">&quot;./data/EHR_EPs.rds&quot;</span>)</code></pre></div>
 <p>Although the specific product types are too granular and not meaningful enough to clean, we believe that exploring the professional and hospital demographics across vendor types may still be interesting, especially if we focus on the top 10 most popular vendors or classify the smaller local vendors as one group.</p>
 
 </div>
@@ -748,6 +805,17 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

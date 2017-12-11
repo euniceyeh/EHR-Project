@@ -1,14 +1,3 @@
----
-title: "05 Secondary"
-author: "Katherine Wang"
-date: "12/11/2017"
-output: html_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 # Secondary Analysis {#secondary}
 
 
@@ -16,28 +5,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ## By Geographical Regions
 
 ### Physician Demographics
-
-```{r, echo = FALSE, message=FALSE}
-library(readr)
-library(tidyverse)
-library(GGally)
-library(reshape2)
-library(lattice)
-library(boot)
-library(parallel)
-library(compiler)
-library(RColorBrewer)
-library(broom)
-library(caret)
-library(fiftystater)
-library(zipcode)
-library(gridExtra)
-library(knitr)
-library(stringr)
-
-EHR_EPs <- readRDS("~/Desktop/BST 260/EHR-Project/data/EHR_EPs.rds")
-
-```
 
 
 ```{r, message=FALSE}
@@ -138,11 +105,6 @@ zip_mapdata %>%
 ```
 
 Here we can see that most of the Physicians we have are clustered near Minneapolis.
-
-```{r, echo = FALSE}
-EPs <- readRDS("~/Desktop/BST 260/EHR-Project/data/EPs.rds")
-```
-
 
 ```{r}
 useehr <- EPs %>% 
@@ -336,19 +298,6 @@ When it came to looking at patterns between primary specialty and states, it was
 
 ### Hospital Demographics
 
-```{r, echo = FALSE}
-hosp_web <- readRDS("~/Desktop/BST 260/EHR-Project/data/hosp_web.rds")
-hosp_clean <- transform(hosp_web, 
-                       Staffed_beds = as.numeric(gsub(",", "", Staffed_beds)), 
-                       Total_discharges = as.numeric(gsub(",", "", Total_discharges)),
-                       Patient_days = as.numeric(gsub(",","", Patient_days)),
-                       Gross_patient_revenue = as.numeric(gsub("\\$|,", "", Gross_patient_revenue)),
-                       Hospital_name = toupper(Hospital_name),
-                       City = toupper(str_trim(as.character(City)))
-                       )
-```
-
-
 ```{r}
 #load hosp_all data & add long state names
 state_name <- c(state.name,"District Of Columbia")
@@ -528,5 +477,6 @@ Interesting conclusions from the jitter plot:
 * While NextGen Healthcare is used by all the top 10 specialties, they are most popular among the ophthalmologists and optometrists.
 * Modernizing Medicine Inc is very popular among dermatologists.
 * Epic Systems, Cerner Corporation, athenahealth, and GE Healthcare are pretty consistently used across all the top 10 disciplines. Epic is the most consistently popular, however.
+
 
 
