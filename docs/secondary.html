@@ -144,7 +144,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 </ul></li>
 <li class="divider"></li>
-<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://katwang.github.io/BST-260-Final-Project-Site" target="blank">Our Project Website</a></li>
+<li><a href="https://github.com/euniceyeh/EHR-Project" target="blank">Our Github Repo</a></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with Bookdown</a></li>
 
 </ul>
 
@@ -264,7 +266,8 @@ state_name &lt;-<span class="st"> </span><span class="kw">c</span>(state.name,<s
 states &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">state_name =</span> state_name, <span class="dt">state_abb =</span> <span class="kw">c</span>(state.abb, <span class="st">&quot;DC&quot;</span>))
 
 useehr &lt;-<span class="st"> </span>useehr <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">left_join</span>(states, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;st&quot;</span> =<span class="st"> &quot;state_abb&quot;</span>))</code></pre></div>
-<pre><code>## Warning: Column `st`/`state_abb` joining character vector and factor, coercing into character vector</code></pre>
+<pre><code>## Warning: Column `st`/`state_abb` joining character vector and factor,
+## coercing into character vector</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">useehr <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_map</span>(<span class="kw">aes</span>(<span class="dt">map_id =</span> id), <span class="dt">data =</span> fifty_states, <span class="dt">map =</span> fifty_states, <span class="dt">color=</span><span class="st">&quot;grey50&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;grey90&quot;</span>) <span class="op">+</span>
@@ -486,7 +489,8 @@ specialty <span class="op">%&gt;%</span><span class="st"> </span><span class="kw
 state_name &lt;-<span class="st"> </span><span class="kw">c</span>(state.name,<span class="st">&quot;District Of Columbia&quot;</span>)
 states &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">state_name =</span> state_name, <span class="dt">state_abb =</span> <span class="kw">c</span>(state.abb, <span class="st">&quot;DC&quot;</span>))
 hosp_all &lt;-<span class="st"> </span>hosp_clean <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">left_join</span>(states, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;State&quot;</span> =<span class="st"> &quot;state_abb&quot;</span>))</code></pre></div>
-<pre><code>## Warning: Column `State`/`state_abb` joining character vector and factor, coercing into character vector</code></pre>
+<pre><code>## Warning: Column `State`/`state_abb` joining character vector and factor,
+## coercing into character vector</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">beds &lt;-<span class="st"> </span>hosp_all <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Staffed_beds)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">group_by</span>(state_name) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">avgbed =</span> <span class="kw">mean</span>(Staffed_beds)) 

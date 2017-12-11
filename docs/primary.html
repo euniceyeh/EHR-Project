@@ -144,7 +144,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 </ul></li>
 <li class="divider"></li>
-<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://katwang.github.io/BST-260-Final-Project-Site" target="blank">Our Project Website</a></li>
+<li><a href="https://github.com/euniceyeh/EHR-Project" target="blank">Our Github Repo</a></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with Bookdown</a></li>
 
 </ul>
 
@@ -190,8 +192,10 @@ rules &lt;-<span class="st"> </span><span class="kw">apriori</span>(corrt, <span
 <pre><code>## Apriori
 ## 
 ## Parameter specification:
-##  confidence minval smax arem  aval originalSupport maxtime support minlen maxlen target   ext
-##         0.5    0.1    1 none FALSE            TRUE       5    0.01      1     10  rules FALSE
+##  confidence minval smax arem  aval originalSupport maxtime support minlen
+##         0.5    0.1    1 none FALSE            TRUE       5    0.01      1
+##  maxlen target   ext
+##      10  rules FALSE
 ## 
 ## Algorithmic control:
 ##  filter tree heap memopt load sort verbose
@@ -200,10 +204,10 @@ rules &lt;-<span class="st"> </span><span class="kw">apriori</span>(corrt, <span
 ## Absolute minimum support count: 919 
 ## 
 ## set item appearances ...[0 item(s)] done [0.00s].
-## set transactions ...[203 item(s), 91966 transaction(s)] done [0.02s].
-## sorting and recoding items ... [90 item(s)] done [0.01s].
-## creating transaction tree ... done [0.03s].
-## checking subsets of size 1 2 3 done [0.04s].
+## set transactions ...[203 item(s), 91966 transaction(s)] done [0.03s].
+## sorting and recoding items ... [90 item(s)] done [0.00s].
+## creating transaction tree ... done [0.04s].
+## checking subsets of size 1 2 3 done [0.00s].
 ## writing ... [80 rule(s)] done [0.00s].
 ## creating S4 object  ... done [0.00s].</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(rules)</code></pre></div>
@@ -212,9 +216,12 @@ rules &lt;-<span class="st"> </span><span class="kw">apriori</span>(corrt, <span
 <p>The top 30 rules are chosen with respect to the lift measure (a measure of rule strength) - the deviation of the support of the whole rule from the support expected under independence given the supports of both sides of the rule.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">subrules &lt;-<span class="st"> </span>rules[<span class="kw">quality</span>(rules)<span class="op">$</span>confidence <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.85</span>]
 <span class="kw">inspect</span>(<span class="kw">head</span>(<span class="kw">sort</span>(subrules, <span class="dt">by =</span><span class="st">&quot;lift&quot;</span>),<span class="dv">30</span>))</code></pre></div>
-<pre><code>##     lhs                              rhs      support    confidence lift     count
-## [1] {pri_spec=NURSE PRACTITIONER} =&gt; {gndr=F} 0.02473740 0.9009901  2.265309 2275 
-## [2] {grd_yr=1976}                 =&gt; {gndr=M} 0.01154775 0.8530120  1.416338 1062</code></pre>
+<pre><code>##     lhs                              rhs      support    confidence
+## [1] {pri_spec=NURSE PRACTITIONER} =&gt; {gndr=F} 0.02473740 0.9009901 
+## [2] {grd_yr=1976}                 =&gt; {gndr=M} 0.01154775 0.8530120 
+##     lift     count
+## [1] 2.265309 2275 
+## [2] 1.416338 1062</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(subrules, <span class="dt">method=</span><span class="st">&quot;grouped&quot;</span>, <span class="dt">control=</span><span class="kw">list</span>(<span class="dt">k=</span><span class="dv">50</span>))</code></pre></div>
 <p><img src="EHR-Project_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <p>We concluded the following:</p>
@@ -452,11 +459,16 @@ hosps<span class="op">$</span>patient_days_log&lt;-<span class="st"> </span><spa
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">EHR_use =</span> <span class="kw">ifelse</span>(EHR_use<span class="op">==</span><span class="st">&#39;1&#39;</span>, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(staffed_beds_log, total_discharge_log, patient_days_log, gross_patient_rev_log)
 <span class="kw">tidy</span>(<span class="kw">round</span>(<span class="kw">cor</span>(hosps_cor3, <span class="dt">use =</span> <span class="st">&quot;complete.obs&quot;</span>), <span class="dv">2</span>))</code></pre></div>
-<pre><code>##               .rownames staffed_beds_log total_discharge_log patient_days_log gross_patient_rev_log
-## 1      staffed_beds_log             1.00                0.86             0.88                  0.81
-## 2   total_discharge_log             0.86                1.00             0.99                  0.91
-## 3      patient_days_log             0.88                0.99             1.00                  0.90
-## 4 gross_patient_rev_log             0.81                0.91             0.90                  1.00</code></pre>
+<pre><code>##               .rownames staffed_beds_log total_discharge_log
+## 1      staffed_beds_log             1.00                0.86
+## 2   total_discharge_log             0.86                1.00
+## 3      patient_days_log             0.88                0.99
+## 4 gross_patient_rev_log             0.81                0.91
+##   patient_days_log gross_patient_rev_log
+## 1             0.88                  0.81
+## 2             0.99                  0.91
+## 3             1.00                  0.90
+## 4             0.90                  1.00</code></pre>
 <p>The difference in distributions is not as apparent by the use of EHR. We believed that the gross patient revenue, which may be implying overall hospital size, is a confounding factor that affects other predictor variables. We can also observe this in the strong correlation (above 0.8) between GPR and staffed beds, GPR and total discharge, and GPR and patient days. Thus, we will stratify on gross patient revenue. Let’s see if other predictor variables still have effect on EHR use proportion after stratifying on GPR.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hosps<span class="op">$</span>gpr_grp =<span class="st"> </span><span class="kw">cut</span>(hosps<span class="op">$</span>gross_patient_rev_log, 
                     <span class="kw">quantile</span>(hosps<span class="op">$</span>gross_patient_rev_log, <span class="dt">prob =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, .<span class="dv">2</span>), <span class="dt">na.rm =</span> <span class="ot">TRUE</span>), <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>)
@@ -468,13 +480,15 @@ hosps <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">fi
 <span class="st">    </span><span class="kw">filter</span>(term<span class="op">==</span>filter_var)</code></pre></div>
 <pre><code>## # A tibble: 5 x 8
 ## # Groups:   gpr_grp [5]
-##       gpr_grp                term  estimate std.error  statistic      p.value   conf.low  conf.high
-##        &lt;fctr&gt;               &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
-## 1  [8.2,11.9] total_discharge_log -1.967436  0.491234 -4.0050898 6.199393e-05  -2.967412 -1.0301035
-## 2 (11.9,12.7] total_discharge_log -4.927093  1.449333 -3.3995581 6.749484e-04  -8.099257 -2.5095708
-## 3 (12.7,13.4] total_discharge_log -4.829553  2.695692 -1.7915816 7.320001e-02 -10.080298  0.5485006
-## 4 (13.4,14.1] total_discharge_log -2.275644  1.916510 -1.1873892 2.350741e-01  -5.758814  2.0138160
-## 5 (14.1,16.5] total_discharge_log -1.453429  1.998146 -0.7273889 4.669878e-01  -5.228651  2.6754307</code></pre>
+##       gpr_grp                term  estimate std.error  statistic
+##        &lt;fctr&gt;               &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1  [8.2,11.9] total_discharge_log -1.967436  0.491234 -4.0050898
+## 2 (11.9,12.7] total_discharge_log -4.927093  1.449333 -3.3995581
+## 3 (12.7,13.4] total_discharge_log -4.829553  2.695692 -1.7915816
+## 4 (13.4,14.1] total_discharge_log -2.275644  1.916510 -1.1873892
+## 5 (14.1,16.5] total_discharge_log -1.453429  1.998146 -0.7273889
+## # ... with 3 more variables: p.value &lt;dbl&gt;, conf.low &lt;dbl&gt;,
+## #   conf.high &lt;dbl&gt;</code></pre>
 <p>We are only showing the statistical results on total discharge because it is the only demographic that has a different significance in effect on EHR use across the stratification of gross patient revenue, as evident by the p-values. So in our final model, we will use total discharge and gross patient revenue and their interaction term.</p>
 </div>
 </div>
@@ -500,14 +514,22 @@ glm1 &lt;-<span class="st"> </span><span class="kw">glm</span>(EHR_use <span cla
 ## -2.0305  -0.3535  -0.2603  -0.2060   2.9414  
 ## 
 ## Coefficients:
-##                                        Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)                            24.29327    5.39258   4.505 6.64e-06 ***
-## gross_patient_rev_log                  -2.30611    0.49088  -4.698 2.63e-06 ***
-## staffed_beds_log                       -4.75227    1.36357  -3.485 0.000492 ***
-## total_discharge_log                    -2.61047    0.69616  -3.750 0.000177 ***
-## patient_days_log                        2.73517    0.69808   3.918 8.92e-05 ***
-## gross_patient_rev_log:staffed_beds_log  0.40783    0.10677   3.820 0.000134 ***
-## total_discharge_log:patient_days_log   -0.06185    0.04895  -1.264 0.206382    
+##                                        Estimate Std. Error z value
+## (Intercept)                            24.29327    5.39258   4.505
+## gross_patient_rev_log                  -2.30611    0.49088  -4.698
+## staffed_beds_log                       -4.75227    1.36357  -3.485
+## total_discharge_log                    -2.61047    0.69616  -3.750
+## patient_days_log                        2.73517    0.69808   3.918
+## gross_patient_rev_log:staffed_beds_log  0.40783    0.10677   3.820
+## total_discharge_log:patient_days_log   -0.06185    0.04895  -1.264
+##                                        Pr(&gt;|z|)    
+## (Intercept)                            6.64e-06 ***
+## gross_patient_rev_log                  2.63e-06 ***
+## staffed_beds_log                       0.000492 ***
+## total_discharge_log                    0.000177 ***
+## patient_days_log                       8.92e-05 ***
+## gross_patient_rev_log:staffed_beds_log 0.000134 ***
+## total_discharge_log:patient_days_log   0.206382    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -522,8 +544,9 @@ glm1 &lt;-<span class="st"> </span><span class="kw">glm</span>(EHR_use <span cla
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p_hat_logit &lt;-<span class="st"> </span><span class="kw">predict</span>(glm1, <span class="dt">newdata =</span> testing, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)
 y_hat_logit &lt;-<span class="st"> </span><span class="kw">ifelse</span>(p_hat_logit <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.5</span>, <span class="dv">1</span>,  <span class="dv">0</span>)
 <span class="kw">confusionMatrix</span>(<span class="dt">data =</span> y_hat_logit, <span class="dt">reference =</span> testing<span class="op">$</span>EHR_use)</code></pre></div>
-<pre><code>## Warning in confusionMatrix.default(data = y_hat_logit, reference = testing$EHR_use): Levels are not in the same order for
-## reference and data. Refactoring data to match.</code></pre>
+<pre><code>## Warning in confusionMatrix.default(data = y_hat_logit, reference = testing
+## $EHR_use): Levels are not in the same order for reference and data.
+## Refactoring data to match.</code></pre>
 <pre><code>## Confusion Matrix and Statistics
 ## 
 ##           Reference
@@ -564,12 +587,18 @@ y_hat_logit &lt;-<span class="st"> </span><span class="kw">ifelse</span>(p_hat_l
 ## -1.6894  -0.3466  -0.2697  -0.2300   2.7863  
 ## 
 ## Coefficients:
-##                                        Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)                            25.68744    5.31031   4.837 1.32e-06 ***
-## gross_patient_rev_log                  -2.18995    0.47545  -4.606 4.10e-06 ***
-## staffed_beds_log                       -3.37459    1.14599  -2.945 0.003233 ** 
-## total_discharge_log                    -0.44873    0.21107  -2.126 0.033503 *  
-## gross_patient_rev_log:staffed_beds_log  0.31235    0.08909   3.506 0.000455 ***
+##                                        Estimate Std. Error z value
+## (Intercept)                            25.68744    5.31031   4.837
+## gross_patient_rev_log                  -2.18995    0.47545  -4.606
+## staffed_beds_log                       -3.37459    1.14599  -2.945
+## total_discharge_log                    -0.44873    0.21107  -2.126
+## gross_patient_rev_log:staffed_beds_log  0.31235    0.08909   3.506
+##                                        Pr(&gt;|z|)    
+## (Intercept)                            1.32e-06 ***
+## gross_patient_rev_log                  4.10e-06 ***
+## staffed_beds_log                       0.003233 ** 
+## total_discharge_log                    0.033503 *  
+## gross_patient_rev_log:staffed_beds_log 0.000455 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -595,11 +624,16 @@ y_hat_logit &lt;-<span class="st"> </span><span class="kw">ifelse</span>(p_hat_l
 ## -1.8495  -0.3370  -0.2777  -0.2550   2.6907  
 ## 
 ## Coefficients:
-##                                           Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)                               35.18429    6.61203   5.321 1.03e-07 ***
-## gross_patient_rev_log                     -3.02172    0.59662  -5.065 4.09e-07 ***
-## total_discharge_log                       -3.64510    0.78982  -4.615 3.93e-06 ***
-## gross_patient_rev_log:total_discharge_log  0.28840    0.06561   4.395 1.11e-05 ***
+##                                           Estimate Std. Error z value
+## (Intercept)                               35.18429    6.61203   5.321
+## gross_patient_rev_log                     -3.02172    0.59662  -5.065
+## total_discharge_log                       -3.64510    0.78982  -4.615
+## gross_patient_rev_log:total_discharge_log  0.28840    0.06561   4.395
+##                                           Pr(&gt;|z|)    
+## (Intercept)                               1.03e-07 ***
+## gross_patient_rev_log                     4.09e-07 ***
+## total_discharge_log                       3.93e-06 ***
+## gross_patient_rev_log:total_discharge_log 1.11e-05 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -614,8 +648,9 @@ y_hat_logit &lt;-<span class="st"> </span><span class="kw">ifelse</span>(p_hat_l
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p_hat_logit &lt;-<span class="st"> </span><span class="kw">predict</span>(glm3, <span class="dt">newdata =</span> testing, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)
 y_hat_logit &lt;-<span class="st"> </span><span class="kw">ifelse</span>(p_hat_logit <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>)
 <span class="kw">confusionMatrix</span>(<span class="dt">data =</span> y_hat_logit, <span class="dt">reference =</span> testing<span class="op">$</span>EHR_use)</code></pre></div>
-<pre><code>## Warning in confusionMatrix.default(data = y_hat_logit, reference = testing$EHR_use): Levels are not in the same order for
-## reference and data. Refactoring data to match.</code></pre>
+<pre><code>## Warning in confusionMatrix.default(data = y_hat_logit, reference = testing
+## $EHR_use): Levels are not in the same order for reference and data.
+## Refactoring data to match.</code></pre>
 <pre><code>## Confusion Matrix and Statistics
 ## 
 ##           Reference
@@ -659,11 +694,16 @@ logit(EHR) = \beta_0 + \beta_1(staffed~beds) + \beta_2(gross~patient~revenue) + 
 <p>Here is a table of odds ratios with 95% CI.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">exp</span>(<span class="kw">cbind</span>(<span class="dt">OR =</span> <span class="kw">coef</span>(glm3), <span class="kw">confint</span>(glm3)))</code></pre></div>
 <pre><code>## Waiting for profiling to be done...</code></pre>
-<pre><code>##                                                     OR        2.5 %       97.5 %
-## (Intercept)                               1.906966e+15 5.233109e+09 9.745855e+20
-## gross_patient_rev_log                     4.871726e-02 1.481991e-02 1.541502e-01
-## total_discharge_log                       2.611883e-02 5.560800e-03 1.236346e-01
-## gross_patient_rev_log:total_discharge_log 1.334285e+00 1.172378e+00 1.516940e+00</code></pre>
+<pre><code>##                                                     OR        2.5 %
+## (Intercept)                               1.906966e+15 5.233109e+09
+## gross_patient_rev_log                     4.871726e-02 1.481991e-02
+## total_discharge_log                       2.611883e-02 5.560800e-03
+## gross_patient_rev_log:total_discharge_log 1.334285e+00 1.172378e+00
+##                                                 97.5 %
+## (Intercept)                               9.745855e+20
+## gross_patient_rev_log                     1.541502e-01
+## total_discharge_log                       1.236346e-01
+## gross_patient_rev_log:total_discharge_log 1.516940e+00</code></pre>
 <p>Interpretation of the final model: If the total discharge is equal at 5000, with the 10% increase in the revenue, the odds of using EHR is 2.92 times higher. Similarly, if the gross patient revenue is equal at 5000 and the discharged increases by 10%, the odds of using EHR is 2.95 times higher.</p>
 <p>Mathematically, if revenue increases 10% and discharge is the same, the odds of using EHR is the higher by <span class="math inline">\(1.102\cdot \log(1.1)-0.04\cdot \log(1.1)\cdot \log(discharge)\)</span> times. If discharge increases by 10% while the revenue is the same, the odds of using EHR is higher by <span class="math inline">\(1.2411\cdot \log(1.1) - 0.046\cdot \log(1.1)\cdot \log(revenue)\)</span></p>
 

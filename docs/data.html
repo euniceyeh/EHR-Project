@@ -144,7 +144,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 </ul></li>
 <li class="divider"></li>
-<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+<li><a href="https://katwang.github.io/BST-260-Final-Project-Site" target="blank">Our Project Website</a></li>
+<li><a href="https://github.com/euniceyeh/EHR-Project" target="blank">Our Github Repo</a></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with Bookdown</a></li>
 
 </ul>
 
@@ -194,30 +196,46 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ##  $ st            : Factor w/ 56 levels &quot;&quot;,&quot;AK&quot;,&quot;AL&quot;,&quot;AR&quot;,..: 50 50 50 17 39 42 39 39 7 7 ...
 ##  $ zip           : Factor w/ 188675 levels &quot;&quot;,&quot;000075949&quot;,..: 43170 47812 50388 117622 89610 35299 90294 90294 150777 150777 ...</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(dat)</code></pre></div>
-<pre><code>##       cred                   cty          ehr            frst_nm        gndr           grd_yr       hosp_afl_1     
-##         :1012568   HOUSTON     :  25754    :1194451   MICHAEL:  30701   F:681413   Min.   :1942          : 449488  
-##  MD     : 344822   PITTSBURGH  :  25135   Y: 332840   DAVID  :  27486   M:845877   1st Qu.:1988   230046 :  13889  
-##  PA     :  29223   NEW YORK    :  18521               JOHN   :  27117   U:     1   Median :1999   450076 :   7003  
-##  NP     :  25666   PHILADELPHIA:  18025               ROBERT :  21989              Mean   :1997   490009 :   5784  
-##  DO     :  21639   CHICAGO     :  16532               JAMES  :  20402              3rd Qu.:2008   390111 :   5496  
-##  CNA    :  16635   ANN ARBOR   :  16390               (Other):1399580              Max.   :2017   050454 :   5261  
-##  (Other):  76738   (Other)     :1406934               NA&#39;s   :     16              NA&#39;s   :4024   (Other):1040370  
-##                                             hosp_afl_lbn_1                                            med_sch      
-##                                                    : 450721   OTHER                                       :771781  
-##  UNIVERSITY OF MICHIGAN HEALTH SYSTEM              :  13889   WAYNE STATE UNIVERSITY SCHOOL OF MEDICINE   : 11559  
-##  UNIVERSITY OF TEXAS M D ANDERSON CANCER CENTER,THE:   7003   INDIANA UNIVERSITY SCHOOL OF MEDICINE       : 10794  
-##  UNIVERSITY OF VIRGINIA MEDICAL CENTER             :   5784   PHILADELPHIA COLLEGE OF OSTEOPATHIC MEDICINE: 10036  
-##  HOSPITAL OF UNIV OF PENNSYLVANIA                  :   5496   TEMPLE UNIVERSITY SCHOOL OF MEDICINE        :  9473  
-##  UCSF MEDICAL CENTER                               :   5261   UNIVERSITY OF MINNESOTA MEDICAL SCHOOL      :  9266  
-##  (Other)                                           :1039137   (Other)                                     :704382  
-##       npi                            pri_spec            st                zip         
-##  Min.   :1.003e+09   NURSE PRACTITIONER  :148237   CA     :131284   481095000:  14678  
-##  1st Qu.:1.165e+09   INTERNAL MEDICINE   :141051   TX     :114489   152124756:   6601  
-##  Median :1.337e+09   FAMILY PRACTICE     :119255   PA     :100942   770304000:   6033  
-##  Mean   :1.340e+09   PHYSICIAN ASSISTANT :111992   NY     : 95038   229080001:   4827  
-##  3rd Qu.:1.509e+09   PHYSICAL THERAPY    : 69682   FL     : 84422   326103003:   4336  
-##  Max.   :1.680e+09   DIAGNOSTIC RADIOLOGY: 64327   MI     : 66982   110303816:   3727  
-##                      (Other)             :872747   (Other):934134   (Other)  :1487089</code></pre>
+<pre><code>##       cred                   cty          ehr            frst_nm       
+##         :1012568   HOUSTON     :  25754    :1194451   MICHAEL:  30701  
+##  MD     : 344822   PITTSBURGH  :  25135   Y: 332840   DAVID  :  27486  
+##  PA     :  29223   NEW YORK    :  18521               JOHN   :  27117  
+##  NP     :  25666   PHILADELPHIA:  18025               ROBERT :  21989  
+##  DO     :  21639   CHICAGO     :  16532               JAMES  :  20402  
+##  CNA    :  16635   ANN ARBOR   :  16390               (Other):1399580  
+##  (Other):  76738   (Other)     :1406934               NA&#39;s   :     16  
+##  gndr           grd_yr       hosp_afl_1     
+##  F:681413   Min.   :1942          : 449488  
+##  M:845877   1st Qu.:1988   230046 :  13889  
+##  U:     1   Median :1999   450076 :   7003  
+##             Mean   :1997   490009 :   5784  
+##             3rd Qu.:2008   390111 :   5496  
+##             Max.   :2017   050454 :   5261  
+##             NA&#39;s   :4024   (Other):1040370  
+##                                             hosp_afl_lbn_1   
+##                                                    : 450721  
+##  UNIVERSITY OF MICHIGAN HEALTH SYSTEM              :  13889  
+##  UNIVERSITY OF TEXAS M D ANDERSON CANCER CENTER,THE:   7003  
+##  UNIVERSITY OF VIRGINIA MEDICAL CENTER             :   5784  
+##  HOSPITAL OF UNIV OF PENNSYLVANIA                  :   5496  
+##  UCSF MEDICAL CENTER                               :   5261  
+##  (Other)                                           :1039137  
+##                                          med_sch            npi           
+##  OTHER                                       :771781   Min.   :1.003e+09  
+##  WAYNE STATE UNIVERSITY SCHOOL OF MEDICINE   : 11559   1st Qu.:1.165e+09  
+##  INDIANA UNIVERSITY SCHOOL OF MEDICINE       : 10794   Median :1.337e+09  
+##  PHILADELPHIA COLLEGE OF OSTEOPATHIC MEDICINE: 10036   Mean   :1.340e+09  
+##  TEMPLE UNIVERSITY SCHOOL OF MEDICINE        :  9473   3rd Qu.:1.509e+09  
+##  UNIVERSITY OF MINNESOTA MEDICAL SCHOOL      :  9266   Max.   :1.680e+09  
+##  (Other)                                     :704382                      
+##                  pri_spec            st                zip         
+##  NURSE PRACTITIONER  :148237   CA     :131284   481095000:  14678  
+##  INTERNAL MEDICINE   :141051   TX     :114489   152124756:   6601  
+##  FAMILY PRACTICE     :119255   PA     :100942   770304000:   6033  
+##  PHYSICIAN ASSISTANT :111992   NY     : 95038   229080001:   4827  
+##  PHYSICAL THERAPY    : 69682   FL     : 84422   326103003:   4336  
+##  DIAGNOSTIC RADIOLOGY: 64327   MI     : 66982   110303816:   3727  
+##  (Other)             :872747   (Other):934134   (Other)  :1487089</code></pre>
 <p>Observations from the above output:</p>
 <ul>
 <li>There are 56 levels of states, which means this data include states outside of the 50 mainland states and DC. Since we don’t have sufficient data on the Virgin Islands and Guam, we will have to filter these states out.</li>
@@ -281,7 +299,8 @@ zip_fix &lt;-<span class="st"> </span>top5_mismatch <span class="op">%&gt;%</spa
 mismatch_tokeep &lt;-<span class="st"> </span>zip_dat <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>zip) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># we want to replace the original wrong zip codes with the fixed zip codes</span>
 <span class="st">  </span><span class="kw">inner_join</span>(zip_fix, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;cty&#39;</span>,<span class="st">&#39;st&#39;</span>, <span class="st">&#39;city&#39;</span>, <span class="st">&#39;state&#39;</span>))</code></pre></div>
-<pre><code>## Warning: Column `st` joining factor and character vector, coercing into character vector</code></pre>
+<pre><code>## Warning: Column `st` joining factor and character vector, coercing into
+## character vector</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">clean &lt;-<span class="st"> </span>zip_dat <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">st =</span> <span class="kw">as.character</span>(st), <span class="dt">state =</span> <span class="kw">as.character</span>(state)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(st <span class="op">==</span><span class="st"> </span>state <span class="op">|</span><span class="st"> </span><span class="kw">nchar</span>(zip) <span class="op">==</span><span class="st"> </span><span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># keeping only the matches</span>
@@ -315,30 +334,46 @@ EPs &lt;-<span class="st"> </span><span class="kw">left_join</span>(EPs, SL, <sp
 
 <span class="kw">rm</span>(SL)
 <span class="kw">summary</span>(EPs)</code></pre></div>
-<pre><code>##       cred                 cty         ehr        gndr           grd_yr                                         med_sch      
-##  NA     :167692   NEW YORK   :  3555   0:214471   F:128382   Min.   :1942   OTHER                                   :140789  
-##  MD     : 19334   HOUSTON    :  1875   1: 18284   M:104373   1st Qu.:1988   PALMER COLLEGE CHIROPRACTIC - DAVENPORT :  4547  
-##  DC     :  9698   BROOKLYN   :  1701              U:     0   Median :1999   LOGAN COLLEGE OF CHIROPRACTIC           :  2312  
-##  PT     :  6881   LOS ANGELES:  1700                         Mean   :1997   PENNSYLVANIA COLLEGE OF OPTOMETRY       :  2310  
-##  OD     :  6773   CHICAGO    :  1586                         3rd Qu.:2009   SOUTHERN COLLEGE OF OPTOMETRY           :  2211  
-##  CSW    :  5750   PHOENIX    :  1490                         Max.   :2016   ILLINOIS COLLEGE OF OPTOMETRY AT CHICAGO:  2184  
-##  (Other): 16627   (Other)    :220848                                        (Other)                                 : 78402  
-##       npi                              pri_spec          st                zip              zip.ext             latitude    
-##  Min.   :1.003e+09   PHYSICAL THERAPY      :34788   Length:232755      Length:232755      Length:232755      Min.   :19.10  
-##  1st Qu.:1.165e+09   CHIROPRACTIC          :27033   Class :character   Class :character   Class :character   1st Qu.:34.14  
-##  Median :1.336e+09   CLINICAL SOCIAL WORKER:25225   Mode  :character   Mode  :character   Mode  :character   Median :39.40  
-##  Mean   :1.340e+09   NURSE PRACTITIONER    :22163                                                            Mean   :38.19  
-##  3rd Qu.:1.509e+09   OPTOMETRY             :20352                                                            3rd Qu.:41.75  
-##  Max.   :1.680e+09   CLINICAL PSYCHOLOGIST :16522                                                            Max.   :66.90  
-##                      (Other)               :86672                                                            NA&#39;s   :140    
-##    longitude          yrs_grd        locations      
-##  Min.   :-170.27   Min.   : 0.00   Min.   :  1.000  
-##  1st Qu.: -98.57   1st Qu.: 7.00   1st Qu.:  1.000  
-##  Median : -86.18   Median :17.00   Median :  1.000  
-##  Mean   : -91.39   Mean   :18.55   Mean   :  1.293  
-##  3rd Qu.: -77.34   3rd Qu.:28.00   3rd Qu.:  1.000  
-##  Max.   : -67.24   Max.   :74.00   Max.   :359.000  
-##  NA&#39;s   :140</code></pre>
+<pre><code>##       cred                 cty         ehr        gndr      
+##  NA     :167692   NEW YORK   :  3555   0:214471   F:128382  
+##  MD     : 19334   HOUSTON    :  1875   1: 18284   M:104373  
+##  DC     :  9698   BROOKLYN   :  1701              U:     0  
+##  PT     :  6881   LOS ANGELES:  1700                        
+##  OD     :  6773   CHICAGO    :  1586                        
+##  CSW    :  5750   PHOENIX    :  1490                        
+##  (Other): 16627   (Other)    :220848                        
+##      grd_yr                                         med_sch      
+##  Min.   :1942   OTHER                                   :140789  
+##  1st Qu.:1988   PALMER COLLEGE CHIROPRACTIC - DAVENPORT :  4547  
+##  Median :1999   LOGAN COLLEGE OF CHIROPRACTIC           :  2312  
+##  Mean   :1997   PENNSYLVANIA COLLEGE OF OPTOMETRY       :  2310  
+##  3rd Qu.:2009   SOUTHERN COLLEGE OF OPTOMETRY           :  2211  
+##  Max.   :2016   ILLINOIS COLLEGE OF OPTOMETRY AT CHICAGO:  2184  
+##                 (Other)                                 : 78402  
+##       npi                              pri_spec          st           
+##  Min.   :1.003e+09   PHYSICAL THERAPY      :34788   Length:232755     
+##  1st Qu.:1.165e+09   CHIROPRACTIC          :27033   Class :character  
+##  Median :1.336e+09   CLINICAL SOCIAL WORKER:25225   Mode  :character  
+##  Mean   :1.340e+09   NURSE PRACTITIONER    :22163                     
+##  3rd Qu.:1.509e+09   OPTOMETRY             :20352                     
+##  Max.   :1.680e+09   CLINICAL PSYCHOLOGIST :16522                     
+##                      (Other)               :86672                     
+##      zip              zip.ext             latitude       longitude      
+##  Length:232755      Length:232755      Min.   :19.10   Min.   :-170.27  
+##  Class :character   Class :character   1st Qu.:34.14   1st Qu.: -98.57  
+##  Mode  :character   Mode  :character   Median :39.40   Median : -86.18  
+##                                        Mean   :38.19   Mean   : -91.39  
+##                                        3rd Qu.:41.75   3rd Qu.: -77.34  
+##                                        Max.   :66.90   Max.   : -67.24  
+##                                        NA&#39;s   :140     NA&#39;s   :140      
+##     yrs_grd        locations      
+##  Min.   : 0.00   Min.   :  1.000  
+##  1st Qu.: 7.00   1st Qu.:  1.000  
+##  Median :17.00   Median :  1.000  
+##  Mean   :18.55   Mean   :  1.293  
+##  3rd Qu.:28.00   3rd Qu.:  1.000  
+##  Max.   :74.00   Max.   :359.000  
+## </code></pre>
 </div>
 <div id="output" class="section level3">
 <h3><span class="header-section-number">4.1.3</span> Output</h3>
@@ -414,41 +449,41 @@ hosp_afl &lt;-<span class="st"> </span>clean <span class="op">%&gt;%</span><span
                        <span class="dt">City =</span> <span class="kw">toupper</span>(<span class="kw">str_trim</span>(<span class="kw">as.character</span>(City)))
                        )
 <span class="kw">summary</span>(hosp_clean)</code></pre></div>
-<pre><code>##  Hospital_name          City            Staffed_beds     Total_discharges  Patient_days    Gross_patient_revenue
-##  Length:3907        Length:3907        Min.   :    0.0   Min.   :     0   Min.   :     0   Min.   :       0     
-##  Class :character   Class :character   1st Qu.:   48.0   1st Qu.:  1244   1st Qu.:  4104   1st Qu.:   98340     
-##  Mode  :character   Mode  :character   Median :  133.0   Median :  4562   Median : 18892   Median :  377425     
-##                                        Mean   :  204.8   Mean   :  8017   Mean   : 37794   Mean   :  797958     
-##                                        3rd Qu.:  264.0   3rd Qu.: 11336   3rd Qu.: 51621   3rd Qu.: 1001421     
-##                                        Max.   :36985.0   Max.   :136646   Max.   :695643   Max.   :15618749     
-##     State          
-##  Length:3907       
-##  Class :character  
-##  Mode  :character  
-##                    
-##                    
-## </code></pre>
+<pre><code>##  Hospital_name          City            Staffed_beds     Total_discharges
+##  Length:3907        Length:3907        Min.   :    0.0   Min.   :     0  
+##  Class :character   Class :character   1st Qu.:   48.0   1st Qu.:  1244  
+##  Mode  :character   Mode  :character   Median :  133.0   Median :  4562  
+##                                        Mean   :  204.8   Mean   :  8017  
+##                                        3rd Qu.:  264.0   3rd Qu.: 11336  
+##                                        Max.   :36985.0   Max.   :136646  
+##   Patient_days    Gross_patient_revenue    State          
+##  Min.   :     0   Min.   :       0      Length:3907       
+##  1st Qu.:  4104   1st Qu.:   98340      Class :character  
+##  Median : 18892   Median :  377425      Mode  :character  
+##  Mean   : 37794   Mean   :  797958                        
+##  3rd Qu.: 51621   3rd Qu.: 1001421                        
+##  Max.   :695643   Max.   :15618749</code></pre>
 <p>It looks like the zero value wasn’t just for the gross patient revenue. From the summary output, we can see that the minimum values on all hospital demographics (staffed beds, total discharges, patient days, gross patient revenue) are zero, which doesn’t seem right. Theoretically, it is impossible for any <em>functioning</em> hospital to have a <em>total</em> of zero on any of these characteristics. Would having a total of zero number of staffed beds really make it a hospital? Can a hospital survive on a gross patient revenue of zero dollars? We thought that it might be a web scrapping error, but when we went back and looked on the website, some of their tables definitely have random zero hospital statistics and some even have a whole row of zeros for certain hospitals. The metadata wasn’t very clear on this, but it seems like it is their way of representing missing data. Instead of keeping them as zeros, which would affect any computation we want to perform on these continuous variables, we will convert every zero into a true missing value, <code>NA</code>. But if a hospital has all missing demographics (the entire row of zeros), then we will just remove that hospital entirely (delete the whole row).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the demographics are columns 3 to 6 of the data frame</span>
 <span class="kw">is.na</span>(hosp_clean[,<span class="dv">3</span><span class="op">:</span><span class="dv">6</span>]) &lt;-<span class="st"> </span><span class="op">!</span>hosp_clean[,<span class="dv">3</span><span class="op">:</span><span class="dv">6</span>] <span class="co"># turn 0&#39;s to NAs</span>
 hosp_clean &lt;-<span class="st"> </span>hosp_clean[<span class="kw">rowSums</span>(<span class="kw">is.na</span>(hosp_clean)) <span class="op">&lt;</span><span class="st"> </span><span class="dv">4</span>,] <span class="co"># only delete hosp with all four NAs</span>
 <span class="kw">summary</span>(hosp_clean)</code></pre></div>
-<pre><code>##  Hospital_name          City            Staffed_beds     Total_discharges  Patient_days    Gross_patient_revenue
-##  Length:3456        Length:3456        Min.   :    1.0   Min.   :     1   Min.   :     1   Min.   :    2298     
-##  Class :character   Class :character   1st Qu.:   73.0   1st Qu.:  2141   1st Qu.:  7740   1st Qu.:  188177     
-##  Mode  :character   Mode  :character   Median :  157.0   Median :  5692   Median : 23922   Median :  504646     
-##                                        Mean   :  231.6   Mean   :  9087   Mean   : 42838   Mean   :  923192     
-##                                        3rd Qu.:  290.0   3rd Qu.: 12564   3rd Qu.: 57391   3rd Qu.: 1149258     
-##                                        Max.   :36985.0   Max.   :136646   Max.   :695643   Max.   :15618749     
-##                                        NA&#39;s   :1         NA&#39;s   :9        NA&#39;s   :9        NA&#39;s   :79           
-##     State          
-##  Length:3456       
-##  Class :character  
-##  Mode  :character  
-##                    
-##                    
-##                    
-## </code></pre>
+<pre><code>##  Hospital_name          City            Staffed_beds     Total_discharges
+##  Length:3456        Length:3456        Min.   :    1.0   Min.   :     1  
+##  Class :character   Class :character   1st Qu.:   73.0   1st Qu.:  2141  
+##  Mode  :character   Mode  :character   Median :  157.0   Median :  5692  
+##                                        Mean   :  231.6   Mean   :  9087  
+##                                        3rd Qu.:  290.0   3rd Qu.: 12564  
+##                                        Max.   :36985.0   Max.   :136646  
+##                                        NA&#39;s   :1         NA&#39;s   :9       
+##   Patient_days    Gross_patient_revenue    State          
+##  Min.   :     1   Min.   :    2298      Length:3456       
+##  1st Qu.:  7740   1st Qu.:  188177      Class :character  
+##  Median : 23922   Median :  504646      Mode  :character  
+##  Mean   : 42838   Mean   :  923192                        
+##  3rd Qu.: 57391   3rd Qu.: 1149258                        
+##  Max.   :695643   Max.   :15618749                        
+##  NA&#39;s   :9        NA&#39;s   :79</code></pre>
 <p>Now the minimum value is 1…still questionable and potentially causing the skew in their distributions. But we did take a look at these specific hospitals with any one demographic characteristic of value 1 and they seem to also have low values of the other characteristics as well (not necessarily exactly of 1, that would’ve been even more suspicious), so these may very well be valid who knows. Anyway, we need to move on with our lives, I mean, to merging with <code>hosp_afl</code> (which is a subset of practitioners who are affiliated with a hospital from the previous section) on the hospital name and state since different hospitals in different locations can have the same name. Since <code>hosp_afl</code> can have multiple rows per hospital if more than one physician in the data is affiliated with it, so we will aggregate the data back to hospital-level after the merge by summarizing physician-level information.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hosps &lt;-<span class="st"> </span><span class="kw">inner_join</span>(hosp_clean, hosp_afl, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;Hospital_name&quot;</span>=<span class="st">&quot;hosp_afl_lbn_1&quot;</span>, <span class="st">&quot;State&quot;</span>=<span class="st">&quot;st&quot;</span>))
 hosps &lt;-<span class="st"> </span>hosps <span class="op">%&gt;%</span><span class="st"> </span>
@@ -459,21 +494,29 @@ hosps &lt;-<span class="st"> </span>hosps <span class="op">%&gt;%</span><span cl
             <span class="dt">n_specialty =</span><span class="kw">n_distinct</span>(pri_spec),
             <span class="dt">EHR_use =</span> <span class="kw">as.factor</span>(<span class="kw">max</span>(ehr)))
 <span class="kw">summary</span>(hosps)</code></pre></div>
-<pre><code>##    hosp_afl_1   Hospital_name         State            Staffed_beds     Total_discharges  Patient_days    Gross_patient_revenue
-##  150042 :   5   Length:1857        Length:1857        Min.   :    7.0   Min.   :    1    Min.   :     2   Min.   :    3624     
-##  050471 :   3   Class :character   Class :character   1st Qu.:   72.0   1st Qu.: 2056    1st Qu.:  7248   1st Qu.:  185397     
-##  360052 :   3   Mode  :character   Mode  :character   Median :  154.0   Median : 5350    Median : 21967   Median :  488683     
-##  360134 :   3                                         Mean   :  232.1   Mean   : 8376    Mean   : 38899   Mean   :  854423     
-##  050257 :   2                                         3rd Qu.:  277.0   3rd Qu.:11983    3rd Qu.: 53935   3rd Qu.: 1100914     
-##  050380 :   2                                         Max.   :36985.0   Max.   :77757    Max.   :425114   Max.   :14140692     
-##  (Other):1839                                                           NA&#39;s   :1        NA&#39;s   :1        NA&#39;s   :9            
-##     num_phys       female_prop     avg_grad_year   n_specialty    EHR_use 
-##  Min.   :   1.0   Min.   :0.0000   Min.   :1971   Min.   : 1.00   1:1701  
-##  1st Qu.:  28.0   1st Qu.:0.2800   1st Qu.:1994   1st Qu.:12.00   0: 156  
-##  Median :  69.0   Median :0.3600   Median :1996   Median :22.00           
-##  Mean   : 114.4   Mean   :0.3592   Mean   :1996   Mean   :22.79           
-##  3rd Qu.: 152.0   3rd Qu.:0.4300   3rd Qu.:1998   3rd Qu.:33.00           
-##  Max.   :1460.0   Max.   :1.0000   Max.   :2014   Max.   :62.00           
+<pre><code>##    hosp_afl_1   Hospital_name         State            Staffed_beds    
+##  150042 :   5   Length:1857        Length:1857        Min.   :    7.0  
+##  050471 :   3   Class :character   Class :character   1st Qu.:   72.0  
+##  360052 :   3   Mode  :character   Mode  :character   Median :  154.0  
+##  360134 :   3                                         Mean   :  232.1  
+##  050257 :   2                                         3rd Qu.:  277.0  
+##  050380 :   2                                         Max.   :36985.0  
+##  (Other):1839                                                          
+##  Total_discharges  Patient_days    Gross_patient_revenue    num_phys     
+##  Min.   :    1    Min.   :     2   Min.   :    3624      Min.   :   1.0  
+##  1st Qu.: 2056    1st Qu.:  7248   1st Qu.:  185397      1st Qu.:  28.0  
+##  Median : 5350    Median : 21967   Median :  488683      Median :  69.0  
+##  Mean   : 8376    Mean   : 38899   Mean   :  854423      Mean   : 114.4  
+##  3rd Qu.:11983    3rd Qu.: 53935   3rd Qu.: 1100914      3rd Qu.: 152.0  
+##  Max.   :77757    Max.   :425114   Max.   :14140692      Max.   :1460.0  
+##  NA&#39;s   :1        NA&#39;s   :1        NA&#39;s   :9                             
+##   female_prop     avg_grad_year   n_specialty    EHR_use 
+##  Min.   :0.0000   Min.   :1971   Min.   : 1.00   1:1701  
+##  1st Qu.:0.2800   1st Qu.:1994   1st Qu.:12.00   0: 156  
+##  Median :0.3600   Median :1996   Median :22.00           
+##  Mean   :0.3592   Mean   :1996   Mean   :22.79           
+##  3rd Qu.:0.4300   3rd Qu.:1998   3rd Qu.:33.00           
+##  Max.   :1.0000   Max.   :2014   Max.   :62.00           
 ## </code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(hosps[<span class="kw">which</span>(hosps<span class="op">$</span>num_phys <span class="op">&lt;=</span><span class="st"> </span><span class="dv">10</span>),]<span class="op">$</span>EHR_use)</code></pre></div>
 <pre><code>## 
@@ -535,37 +578,53 @@ hosps &lt;-<span class="st"> </span>hosps <span class="op">%&gt;%</span><span cl
 <p>There are actually a lot of variables here that are not informative so we can drop them and just focus on a smaller set, i.e. program year would just be 2016 on every row in the data, EHR certification number or CHP ID is at an unnecessary level of detail. Let’s select the important columns and a few potentially interesting variables to summarize by (thus, using <code>distinct</code> instead of <code>select</code>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EHR_clean &lt;-<span class="st"> </span>EHR <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">distinct</span>(NPI, CCN, Provider_Type, Business_State_Territory, ZIP, Specialty, Hospital_Type, Vendor_Name, EHR_Product_Name, Product_Classification, Product_Setting)
 <span class="kw">summary</span>(EHR_clean)</code></pre></div>
-<pre><code>##       NPI                 CCN          Provider_Type    Business_State_Territory      ZIP        
-##  Min.   :1.003e+09   Min.   : 10001   EP      :393375   California  : 31692             : 16330  
-##  1st Qu.:1.255e+09   1st Qu.:121301   Hospital: 16330   Minnesota   : 24252      55905  : 11278  
-##  Median :1.508e+09   Median :241361                     Florida     : 22664      48109  :  3336  
-##  Mean   :1.501e+09   Mean   :261394                     Texas       : 22307      02114  :  3021  
-##  3rd Qu.:1.750e+09   3rd Qu.:390179                     Pennsylvania: 20564      32224  :  2818  
-##  Max.   :1.993e+09   Max.   :670114                     Michigan    : 19739      60611  :  2521  
-##                      NA&#39;s   :393375                     (Other)     :268487      (Other):370401  
-##                                                           Specialty              Hospital_Type   
-##  Family Medicine                                               : 61485                  :393375  
-##  Internal Medicine                                             : 45820   Critical Access:  3348  
-##  Student in an Organized Health Care Education/Training Program: 17552   General        : 12982  
-##  Cardiovascular Disease                                        : 17524                           
-##                                                                : 16330                           
-##  (Other)                                                       :250764                           
-##  NA&#39;s                                                          :   230                           
-##                    Vendor_Name                                         EHR_Product_Name   Product_Classification
-##  Epic Systems Corporation:133637   EpicCare Ambulatory 2014 Certified EHR Suite: 71207               : 14690    
-##  Cerner Corporation      : 70367   athenaClinicals                             : 20945   Complete EHR:202827    
-##  Allscripts              : 28067   Beacon Oncology 2014 Certified Module       : 16281   Modular EHR :192188    
-##  athenahealth, Inc.      : 20970   eClinicalWorks                              : 16097                          
-##  eClinicalWorks, LLC     : 16354   NextGen Ambulatory EHR                      : 13616                          
-##  GE Healthcare           : 14882   Powerchart (Clinical)                       : 13293                          
-##  (Other)                 :125428   (Other)                                     :258266                          
-##    Product_Setting  
-##            : 14690  
-##  Ambulatory:325708  
-##  Inpatient : 69307  
-##                     
-##                     
-##                     
+<pre><code>##       NPI                 CCN          Provider_Type   
+##  Min.   :1.003e+09   Min.   : 10001   EP      :393375  
+##  1st Qu.:1.255e+09   1st Qu.:121301   Hospital: 16330  
+##  Median :1.508e+09   Median :241361                    
+##  Mean   :1.501e+09   Mean   :261394                    
+##  3rd Qu.:1.750e+09   3rd Qu.:390179                    
+##  Max.   :1.993e+09   Max.   :670114                    
+##                      NA&#39;s   :393375                    
+##  Business_State_Territory      ZIP        
+##  California  : 31692             : 16330  
+##  Minnesota   : 24252      55905  : 11278  
+##  Florida     : 22664      48109  :  3336  
+##  Texas       : 22307      02114  :  3021  
+##  Pennsylvania: 20564      32224  :  2818  
+##  Michigan    : 19739      60611  :  2521  
+##  (Other)     :268487      (Other):370401  
+##                                                           Specialty     
+##  Family Medicine                                               : 61485  
+##  Internal Medicine                                             : 45820  
+##  Student in an Organized Health Care Education/Training Program: 17552  
+##  Cardiovascular Disease                                        : 17524  
+##                                                                : 16330  
+##  (Other)                                                       :250764  
+##  NA&#39;s                                                          :   230  
+##          Hospital_Type                      Vendor_Name    
+##                 :393375   Epic Systems Corporation:133637  
+##  Critical Access:  3348   Cerner Corporation      : 70367  
+##  General        : 12982   Allscripts              : 28067  
+##                           athenahealth, Inc.      : 20970  
+##                           eClinicalWorks, LLC     : 16354  
+##                           GE Healthcare           : 14882  
+##                           (Other)                 :125428  
+##                                      EHR_Product_Name 
+##  EpicCare Ambulatory 2014 Certified EHR Suite: 71207  
+##  athenaClinicals                             : 20945  
+##  Beacon Oncology 2014 Certified Module       : 16281  
+##  eClinicalWorks                              : 16097  
+##  NextGen Ambulatory EHR                      : 13616  
+##  Powerchart (Clinical)                       : 13293  
+##  (Other)                                     :258266  
+##   Product_Classification   Product_Setting  
+##              : 14690               : 14690  
+##  Complete EHR:202827     Ambulatory:325708  
+##  Modular EHR :192188     Inpatient : 69307  
+##                                             
+##                                             
+##                                             
 ## </code></pre>
 <p>Observations:</p>
 <ul>
@@ -586,22 +645,38 @@ EHR_EPs &lt;-<span class="st"> </span>EHR_clean <span class="op">%&gt;%</span><s
 ##  3rd Qu.:1.750e+09   Pennsylvania: 19919      60611  :  2521  
 ##  Max.   :1.993e+09   Michigan    : 19221      23298  :  2235  
 ##                      (Other)     :257296      (Other):368166  
-##                                                           Specialty                        Vendor_Name    
-##  Family Medicine                                               : 61485   Epic Systems Corporation:131883  
-##  Internal Medicine                                             : 45820   Cerner Corporation      : 64893  
-##  Student in an Organized Health Care Education/Training Program: 17552   Allscripts              : 27743  
-##  Cardiovascular Disease                                        : 17524   athenahealth, Inc.      : 20929  
-##  Obstetrics &amp; Gynecology                                       : 15059   eClinicalWorks, LLC     : 16345  
-##  (Other)                                                       :235705   GE Healthcare           : 14861  
-##  NA&#39;s                                                          :   230   (Other)                 :116721  
-##                                      EHR_Product_Name   Product_Classification   Product_Setting  
-##  EpicCare Ambulatory 2014 Certified EHR Suite: 71047               : 14462               : 14462  
-##  athenaClinicals                             : 20928   Complete EHR:200889     Ambulatory:324643  
-##  Beacon Oncology 2014 Certified Module       : 16189   Modular EHR :178024     Inpatient : 54270  
-##  eClinicalWorks                              : 16097                                              
-##  NextGen Ambulatory EHR                      : 13613                                              
-##  Powerchart (Clinical)                       : 12548                                              
-##  (Other)                                     :242953</code></pre>
+##                                                           Specialty     
+##  Family Medicine                                               : 61485  
+##  Internal Medicine                                             : 45820  
+##  Student in an Organized Health Care Education/Training Program: 17552  
+##  Cardiovascular Disease                                        : 17524  
+##  Obstetrics &amp; Gynecology                                       : 15059  
+##  (Other)                                                       :235705  
+##  NA&#39;s                                                          :   230  
+##                    Vendor_Name    
+##  Epic Systems Corporation:131883  
+##  Cerner Corporation      : 64893  
+##  Allscripts              : 27743  
+##  athenahealth, Inc.      : 20929  
+##  eClinicalWorks, LLC     : 16345  
+##  GE Healthcare           : 14861  
+##  (Other)                 :116721  
+##                                      EHR_Product_Name 
+##  EpicCare Ambulatory 2014 Certified EHR Suite: 71047  
+##  athenaClinicals                             : 20928  
+##  Beacon Oncology 2014 Certified Module       : 16189  
+##  eClinicalWorks                              : 16097  
+##  NextGen Ambulatory EHR                      : 13613  
+##  Powerchart (Clinical)                       : 12548  
+##  (Other)                                     :242953  
+##   Product_Classification   Product_Setting  
+##              : 14462               : 14462  
+##  Complete EHR:200889     Ambulatory:324643  
+##  Modular EHR :178024     Inpatient : 54270  
+##                                             
+##                                             
+##                                             
+## </code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># check for valid zip codes</span>
 EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="kw">nchar</span>(<span class="kw">as.character</span>(ZIP)) <span class="op">&lt;</span><span class="st"> </span><span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">group_by</span>(ZIP) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarize</span>(<span class="kw">n</span>())</code></pre></div>
@@ -615,22 +690,38 @@ EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">
 EHR_hosps &lt;-<span class="st"> </span>EHR_clean <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(Provider_Type <span class="op">==</span><span class="st"> &#39;Hospital&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>ZIP, <span class="op">-</span>Specialty, <span class="op">-</span>Provider_Type)
 <span class="kw">summary</span>(EHR_hosps)</code></pre></div>
-<pre><code>##       NPI                 CCN         Business_State_Territory         Hospital_Type  
-##  Min.   :1.003e+09   Min.   : 10001   Texas       : 1366                      :    0  
-##  1st Qu.:1.245e+09   1st Qu.:121301   California  : 1267       Critical Access: 3348  
-##  Median :1.488e+09   Median :241361   Florida     :  986       General        :12982  
-##  Mean   :1.495e+09   Mean   :261394   Illinois    :  667                              
-##  3rd Qu.:1.740e+09   3rd Qu.:390179   Pennsylvania:  645                              
-##  Max.   :1.993e+09   Max.   :670114   Ohio        :  564                              
-##                                       (Other)     :10835                              
-##                                           Vendor_Name                                      EHR_Product_Name
-##  Cerner Corporation                             :5474   HealthSentry                               :  851  
-##  Medical Information Technology, Inc. (MEDITECH):2879   Powerchart (Clinical)                      :  745  
-##  Epic Systems Corporation                       :1754   Powerchart (All CQM&#39;s)                     :  703  
-##  MEDHOST                                        : 653   P2 Sentinel (Powered by Sensage)           :  580  
-##  McKesson                                       : 625   EpicCare Inpatient 2014 Certified EHR Suite:  565  
-##  Cerner Health Services, Inc.                   : 525   HealtheLife and Powerchart                 :  552  
-##  (Other)                                        :4420   (Other)                                    :12334  
+<pre><code>##       NPI                 CCN         Business_State_Territory
+##  Min.   :1.003e+09   Min.   : 10001   Texas       : 1366      
+##  1st Qu.:1.245e+09   1st Qu.:121301   California  : 1267      
+##  Median :1.488e+09   Median :241361   Florida     :  986      
+##  Mean   :1.495e+09   Mean   :261394   Illinois    :  667      
+##  3rd Qu.:1.740e+09   3rd Qu.:390179   Pennsylvania:  645      
+##  Max.   :1.993e+09   Max.   :670114   Ohio        :  564      
+##                                       (Other)     :10835      
+##          Hospital_Type  
+##                 :    0  
+##  Critical Access: 3348  
+##  General        :12982  
+##                         
+##                         
+##                         
+##                         
+##                                           Vendor_Name  
+##  Cerner Corporation                             :5474  
+##  Medical Information Technology, Inc. (MEDITECH):2879  
+##  Epic Systems Corporation                       :1754  
+##  MEDHOST                                        : 653  
+##  McKesson                                       : 625  
+##  Cerner Health Services, Inc.                   : 525  
+##  (Other)                                        :4420  
+##                                     EHR_Product_Name
+##  HealthSentry                               :  851  
+##  Powerchart (Clinical)                      :  745  
+##  Powerchart (All CQM&#39;s)                     :  703  
+##  P2 Sentinel (Powered by Sensage)           :  580  
+##  EpicCare Inpatient 2014 Certified EHR Suite:  565  
+##  HealtheLife and Powerchart                 :  552  
+##  (Other)                                    :12334  
 ##   Product_Classification   Product_Setting 
 ##              :  228                :  228  
 ##  Complete EHR: 1938      Ambulatory: 1065  
@@ -653,13 +744,15 @@ EHR_EPs &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><spa
 <span class="kw">library</span>(zipcode)
 <span class="kw">data</span>(<span class="st">&quot;zipcode&quot;</span>)
 EHR_EPs &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">left_join</span>(zipcode, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;ZIP&quot;</span> =<span class="st"> &quot;zip&quot;</span>))</code></pre></div>
-<pre><code>## Warning: Column `ZIP`/`zip` joining factor and character vector, coercing into character vector</code></pre>
+<pre><code>## Warning: Column `ZIP`/`zip` joining factor and character vector, coercing
+## into character vector</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># check state mismatches</span>
 EHR_mismatch &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">left_join</span>(states, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;state&quot;</span> =<span class="st"> &quot;state_abb&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># need to add in long state names</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Business_State_Territory =</span> <span class="kw">as.character</span>(Business_State_Territory)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(state_name <span class="op">!=</span><span class="st"> </span>Business_State_Territory)</code></pre></div>
-<pre><code>## Warning: Column `state`/`state_abb` joining character vector and factor, coercing into character vector</code></pre>
+<pre><code>## Warning: Column `state`/`state_abb` joining character vector and factor,
+## coercing into character vector</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># percent state mismatch</span>
 <span class="kw">nrow</span>(EHR_mismatch)<span class="op">/</span><span class="kw">nrow</span>(EHR_EPs)</code></pre></div>
 <pre><code>## [1] 0.04492693</code></pre>
@@ -699,51 +792,76 @@ EHR_mismatch <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">    </span>(state_name <span class="op">!=</span><span class="st"> </span>Business_State_Territory <span class="op">&amp;&amp;</span><span class="st"> </span>ZIP <span class="op">==</span><span class="st"> &quot;55905&quot;</span> <span class="op">&amp;&amp;</span><span class="st"> </span>Business_State_Territory <span class="op">==</span><span class="st"> &quot;Wisconsin&quot;</span>)
     ) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(NPI, Business_State_Territory, ZIP, Specialty, Vendor_Name, EHR_Product_Name, Product_Classification, Product_Setting)</code></pre></div>
-<pre><code>## Warning: Column `state`/`state_abb` joining character vector and factor, coercing into character vector</code></pre>
+<pre><code>## Warning: Column `state`/`state_abb` joining character vector and factor,
+## coercing into character vector</code></pre>
 <p>We want to inner join with the <code>EPs</code> data set on <code>NPI</code>, which has one row per physician by their unique NPI (one-to-many merge).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># merge with EPs data</span>
 EHR_EPs &lt;-<span class="st"> </span><span class="kw">inner_join</span>(EHR_zip, EPs, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&#39;NPI&#39;</span>=<span class="st">&#39;npi&#39;</span>))
 <span class="kw">summary</span>(EHR_EPs)</code></pre></div>
-<pre><code>##       NPI            Business_State_Territory     ZIP                      Specialty    
-##  Min.   :1.003e+09   Length:24155             Length:24155       Optometrist    : 4746  
-##  1st Qu.:1.165e+09   Class :character         Class :character   Chiropractor   : 2893  
-##  Median :1.336e+09   Mode  :character         Mode  :character   Family Medicine: 2397  
-##  Mean   :1.340e+09                                               Ophthalmology  : 1906  
-##  3rd Qu.:1.509e+09                                               Dermatology    : 1571  
-##  Max.   :1.680e+09                                               (Other)        :10638  
-##                                                                  NA&#39;s           :    4  
-##                               Vendor_Name                                        EHR_Product_Name  Product_Classification
-##  Epic Systems Corporation           : 4225   EpicCare Ambulatory 2014 Certified EHR Suite: 2043               :  352     
-##  Integrated Practice Solutions, Inc.: 1600   ChiroTouch                                  : 1281   Complete EHR:15438     
-##  Modernizing Medicine, Inc.         : 1544   NextGen Ambulatory EHR                      : 1209   Modular EHR : 8365     
-##  NextGen Healthcare                 : 1285   athenaClinicals                             : 1019                          
-##  GE Healthcare                      : 1048   EMA                                         :  888                          
-##  Mayo Clinic                        : 1035   eClinicalWorks                              :  732                          
-##  (Other)                            :13418   (Other)                                     :16983                          
-##    Product_Setting       cred              cty        ehr       gndr          grd_yr    
-##            :  352   NA     :15578   ROCHESTER: 1663   0: 5355   F: 9673   Min.   :1951  
-##  Ambulatory:21513   MD     : 4987   LOS ALTOS:  687   1:18800   M:14482   1st Qu.:1985  
-##  Inpatient : 2290   OD     : 1675   PALO ALTO:  527             U:    0   Median :1996  
-##                     DC     : 1271   NEW YORK :  335                       Mean   :1995  
-##                     DO     :  325   FREMONT  :  276                       3rd Qu.:2005  
-##                     DPM    :  290   BOSTON   :  207                       Max.   :2016  
-##                     (Other):   29   (Other)  :20460                                     
-##                                      med_sch                   pri_spec         st                zip           
-##  OTHER                                   : 5140   OPTOMETRY        :5155   Length:24155       Length:24155      
-##  PALMER COLLEGE CHIROPRACTIC - DAVENPORT :  699   CHIROPRACTIC     :3161   Class :character   Class :character  
-##  ILLINOIS COLLEGE OF OPTOMETRY AT CHICAGO:  640   FAMILY PRACTICE  :2637   Mode  :character   Mode  :character  
-##  SOUTHERN COLLEGE OF OPTOMETRY           :  572   DERMATOLOGY      :2534                                        
-##  PENNSYLVANIA COLLEGE OF OPTOMETRY       :  538   OPHTHALMOLOGY    :2044                                        
-##  INDIANA UNIVERSITY - SCHOOL OF OPTOMETRY:  420   INTERNAL MEDICINE:1499                                        
-##  (Other)                                 :16146   (Other)          :7125                                        
-##    zip.ext             latitude       longitude          yrs_grd        locations     
-##  Length:24155       Min.   :19.53   Min.   :-159.38   Min.   : 0.00   Min.   : 1.000  
-##  Class :character   1st Qu.:34.61   1st Qu.:-104.96   1st Qu.:11.00   1st Qu.: 1.000  
-##  Mode  :character   Median :39.04   Median : -90.03   Median :20.00   Median : 1.000  
-##                     Mean   :38.31   Mean   : -93.52   Mean   :21.31   Mean   : 1.281  
-##                     3rd Qu.:42.13   3rd Qu.: -80.31   3rd Qu.:31.00   3rd Qu.: 1.000  
-##                     Max.   :64.85   Max.   : -67.88   Max.   :65.00   Max.   :53.000  
-##                     NA&#39;s   :11      NA&#39;s   :11</code></pre>
+<pre><code>##       NPI            Business_State_Territory     ZIP           
+##  Min.   :1.003e+09   Length:24155             Length:24155      
+##  1st Qu.:1.165e+09   Class :character         Class :character  
+##  Median :1.336e+09   Mode  :character         Mode  :character  
+##  Mean   :1.340e+09                                              
+##  3rd Qu.:1.509e+09                                              
+##  Max.   :1.680e+09                                              
+##                                                                 
+##            Specialty                                  Vendor_Name   
+##  Optometrist    : 4746   Epic Systems Corporation           : 4225  
+##  Chiropractor   : 2893   Integrated Practice Solutions, Inc.: 1600  
+##  Family Medicine: 2397   Modernizing Medicine, Inc.         : 1544  
+##  Ophthalmology  : 1906   NextGen Healthcare                 : 1285  
+##  Dermatology    : 1571   GE Healthcare                      : 1048  
+##  (Other)        :10638   Mayo Clinic                        : 1035  
+##  NA&#39;s           :    4   (Other)                            :13418  
+##                                      EHR_Product_Name
+##  EpicCare Ambulatory 2014 Certified EHR Suite: 2043  
+##  ChiroTouch                                  : 1281  
+##  NextGen Ambulatory EHR                      : 1209  
+##  athenaClinicals                             : 1019  
+##  EMA                                         :  888  
+##  eClinicalWorks                              :  732  
+##  (Other)                                     :16983  
+##   Product_Classification   Product_Setting       cred      
+##              :  352                :  352   NA     :15578  
+##  Complete EHR:15438      Ambulatory:21513   MD     : 4987  
+##  Modular EHR : 8365      Inpatient : 2290   OD     : 1675  
+##                                             DC     : 1271  
+##                                             DO     :  325  
+##                                             DPM    :  290  
+##                                             (Other):   29  
+##         cty        ehr       gndr          grd_yr    
+##  ROCHESTER: 1663   0: 5355   F: 9673   Min.   :1951  
+##  LOS ALTOS:  687   1:18800   M:14482   1st Qu.:1985  
+##  PALO ALTO:  527             U:    0   Median :1996  
+##  NEW YORK :  335                       Mean   :1995  
+##  FREMONT  :  276                       3rd Qu.:2005  
+##  BOSTON   :  207                       Max.   :2016  
+##  (Other)  :20460                                     
+##                                      med_sch                   pri_spec   
+##  OTHER                                   : 5140   OPTOMETRY        :5155  
+##  PALMER COLLEGE CHIROPRACTIC - DAVENPORT :  699   CHIROPRACTIC     :3161  
+##  ILLINOIS COLLEGE OF OPTOMETRY AT CHICAGO:  640   FAMILY PRACTICE  :2637  
+##  SOUTHERN COLLEGE OF OPTOMETRY           :  572   DERMATOLOGY      :2534  
+##  PENNSYLVANIA COLLEGE OF OPTOMETRY       :  538   OPHTHALMOLOGY    :2044  
+##  INDIANA UNIVERSITY - SCHOOL OF OPTOMETRY:  420   INTERNAL MEDICINE:1499  
+##  (Other)                                 :16146   (Other)          :7125  
+##       st                zip              zip.ext             latitude    
+##  Length:24155       Length:24155       Length:24155       Min.   :19.53  
+##  Class :character   Class :character   Class :character   1st Qu.:34.61  
+##  Mode  :character   Mode  :character   Mode  :character   Median :39.04  
+##                                                           Mean   :38.31  
+##                                                           3rd Qu.:42.13  
+##                                                           Max.   :64.85  
+##                                                           NA&#39;s   :11     
+##    longitude          yrs_grd        locations     
+##  Min.   :-159.38   Min.   : 0.00   Min.   : 1.000  
+##  1st Qu.:-104.96   1st Qu.:11.00   1st Qu.: 1.000  
+##  Median : -90.03   Median :20.00   Median : 1.000  
+##  Mean   : -93.52   Mean   :21.31   Mean   : 1.281  
+##  3rd Qu.: -80.31   3rd Qu.:31.00   3rd Qu.: 1.000  
+##  Max.   : -67.88   Max.   :65.00   Max.   :53.000  
+##  NA&#39;s   :11</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># check EHR use (should expect all 1&#39;s or &quot;yes&quot;)</span>
 <span class="kw">table</span>(EHR_EPs<span class="op">$</span>ehr)</code></pre></div>
 <pre><code>## 
