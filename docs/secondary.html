@@ -25,7 +25,7 @@
 <meta name="author" content="Eunice Yeh, Lauren Yoo, Katherine Wang">
 
 
-<meta name="date" content="2017-12-10">
+<meta name="date" content="2017-12-11">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -193,7 +193,7 @@ states_map &lt;-<span class="st"> </span><span class="kw">map_data</span>(<span 
         <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
         <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Number of Physicians in Dataset&quot;</span>)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># gender distribution</span>
 EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(Business_State_Territory) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarize</span>(<span class="dt">fem =</span> <span class="kw">mean</span>(gndr <span class="op">==</span><span class="st"> &quot;F&quot;</span>), <span class="dt">male =</span> <span class="kw">mean</span>(gndr <span class="op">==</span><span class="st"> &quot;M&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span>
@@ -211,7 +211,7 @@ EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">
         <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
         <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Distribution of Male Physicians&quot;</span>)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">age &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(grd_yr)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(Business_State_Territory) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarize</span>(<span class="dt">yrsgrad =</span> <span class="kw">mean</span>(<span class="dv">2016</span> <span class="op">-</span><span class="st"> </span>grd_yr))
 
 age <span class="op">%&gt;%</span><span class="st"> </span>
@@ -230,7 +230,7 @@ age <span class="op">%&gt;%</span><span class="st"> </span>
         <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
         <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Years Since Graduation&quot;</span>)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
 <p>Among those Physicians in our Vendor data set, there were many more freshly graduated practitioners in Minnesota compared to the rest of the country. We interpreted this as being similar to an ‘age’ variable, since people who have 15 years since graduating &amp; getting their degrees are more likely to be younger than those who have been graduated for 26 years.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mn &lt;-<span class="st"> </span><span class="kw">subset</span>(states_map, region <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;minnesota&quot;</span>))
 
@@ -238,9 +238,10 @@ zip_mapdata &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(grd_yr) <span class="op">&amp;</span><span class="st"> </span>Business_State_Territory <span class="op">==</span><span class="st"> &quot;Minnesota&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">group_by</span>(ZIP) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">yrsgrad =</span> <span class="kw">mean</span>(<span class="dv">2016</span> <span class="op">-</span><span class="st"> </span>grd_yr)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">left_join</span>(zipcode, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;ZIP&quot;</span> =<span class="st"> &quot;zip&quot;</span>))
-
-<span class="co">#minnesota only</span>
+<span class="st">  </span><span class="kw">left_join</span>(zipcode, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;ZIP&quot;</span> =<span class="st"> &quot;zip&quot;</span>))</code></pre></div>
+<pre><code>## Warning: Column `ZIP`/`zip` joining factor and character vector, coercing
+## into character vector</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#minnesota only</span>
 <span class="co"># zip_mapdata %&gt;% </span>
 <span class="co">#   ggplot() +</span>
 <span class="co">#   geom_polygon(data=mn, aes(x=long, y=lat, group = group),colour=&quot;white&quot;, fill=&quot;grey70&quot; ) +</span>
@@ -257,7 +258,7 @@ zip_mapdata <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">coord_fixed</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">88</span>, <span class="op">-</span><span class="dv">98</span>),  <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">42</span>, <span class="dv">50</span>), <span class="dt">ratio =</span> <span class="fl">1.5</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme_void</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.title =</span> <span class="kw">element_blank</span>())</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
 <p>Here we can see that most of the Physicians we have are clustered near Minneapolis.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">useehr &lt;-<span class="st"> </span>EPs <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">group_by</span>(st) <span class="op">%&gt;%</span><span class="st"> </span>
@@ -286,7 +287,7 @@ useehr &lt;-<span class="st"> </span>useehr <span class="op">%&gt;%</span><span 
         <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
         <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Percent EHR Usage&quot;</span>)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-43-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
 <p>In our dataset overall, we had more blank information on EHR usage than we did on confirmed EHR usage, which is why the percentages are low overall. However, it is interesting to note that Alaska and Vermont had extremely low EHR usage, while the Midwest tended to have relatively more adoption. Perhaps Alaska and Vermont have more rural environments, while many of the EHR vendors are based in the Midwest.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#find what types of product settings exist</span>
 <span class="kw">levels</span>(EHR_EPs<span class="op">$</span>Product_Setting)</code></pre></div>
@@ -297,7 +298,7 @@ EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">amb =</span> <span class="kw">sum</span>(Product_Setting <span class="op">==</span><span class="st"> &quot;Ambulatory&quot;</span>), 
                       <span class="dt">inp =</span> <span class="kw">sum</span>(Product_Setting <span class="op">==</span><span class="st"> &quot;Inpatient&quot;</span>)) </code></pre></div>
 <pre><code>##   amb inp
-## 1   0   0</code></pre>
+## 1 821 133</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">prod_setting &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(Product_Setting <span class="op">!=</span><span class="st"> &quot;&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">group_by</span>(Business_State_Territory) <span class="op">%&gt;%</span><span class="st"> </span>
@@ -326,8 +327,8 @@ prod_setting_overall <span class="op">%&gt;%</span><span class="st"> </span>kabl
 <tbody>
 <tr class="odd">
 <td align="left">Overall</td>
-<td align="right">NaN</td>
-<td align="right">NaN</td>
+<td align="right">0.8318136</td>
+<td align="right">0.1347518</td>
 </tr>
 </tbody>
 </table>
@@ -366,7 +367,7 @@ inpatient &lt;-<span class="st"> </span>prod_setting <span class="op">%&gt;%</sp
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Product Setting = Inpatient&quot;</span>)
 
 <span class="kw">grid.arrange</span>(ambulatory, inpatient, <span class="dt">nrow =</span> <span class="dv">1</span>)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># california = outlier</span>
 cali &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(Business_State_Territory <span class="op">==</span><span class="st"> &quot;California&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
@@ -393,13 +394,13 @@ prod_setting_overall <span class="op">%&gt;%</span><span class="st"> </span>kabl
 <tbody>
 <tr class="odd">
 <td align="left">Overall</td>
-<td align="right">NaN</td>
-<td align="right">NaN</td>
+<td align="right">0.8318136</td>
+<td align="right">0.1347518</td>
 </tr>
 <tr class="even">
 <td align="left">California</td>
-<td align="right">NaN</td>
-<td align="right">NaN</td>
+<td align="right">0.6666667</td>
+<td align="right">0.3209877</td>
 </tr>
 </tbody>
 </table>
@@ -411,7 +412,7 @@ prod_setting_overall <span class="op">%&gt;%</span><span class="st"> </span>kabl
 <p>We found that most EHR products were certified for ambulatory settings, by far. This extreme preference in ambulatory EHR products is consistent across the country, except in California where there is still a slight preference for ambulatory EHR products (among those adopting EHR’s in the incentive program), but it is less than the rest of the country.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># how many unique vendors</span>
 <span class="kw">length</span>(<span class="kw">unique</span>(<span class="kw">factor</span>(EHR_EPs<span class="op">$</span>Vendor_Name)))</code></pre></div>
-<pre><code>## [1] 0</code></pre>
+<pre><code>## [1] 79</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># find top 10 vendors</span>
 top10 &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Vendor_Name)) <span class="op">%&gt;%</span><span class="st"> </span>
@@ -429,10 +430,10 @@ EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">
 <span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(Vendor_Name, num), <span class="dt">y =</span> num)) <span class="op">+</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">geom_bar</span>(<span class="dt">stat=</span><span class="st">&#39;identity&#39;</span>) <span class="op">+</span><span class="st"> </span>
 <span class="st">    </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">45</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># percent usage of top 10</span>
 <span class="kw">sum</span>(top10<span class="op">$</span>num)<span class="op">/</span><span class="kw">nrow</span>(EHR_EPs)</code></pre></div>
-<pre><code>## [1] NaN</code></pre>
+<pre><code>## [1] 0.8500507</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pct_popvendors &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">group_by</span>(Business_State_Territory) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">num =</span> <span class="kw">n</span>(), 
@@ -456,12 +457,24 @@ pct_popvendors <span class="op">%&gt;%</span><span class="st"> </span>
         <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
         <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Usage of Top 10 Vendors&quot;</span>)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-45-2.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-41-2.png" width="672" /></p>
 <p>We found that the majority of EHR products used were from the top 10 vendors. Interestingly, though, Minnesota had almost 100% usage of the top 10 vendors. This could potentially be because many of the big vendors are based in the Midwest (ie Epic, Mayo Clinic, Cerner, etc).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#most common specialties in general</span>
 EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(pri_spec) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarize</span>(<span class="dt">num =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="kw">desc</span>(num))</code></pre></div>
-<pre><code>## # A tibble: 0 x 2
-## # ... with 2 variables: pri_spec &lt;fctr&gt;, num &lt;int&gt;</code></pre>
+<pre><code>## # A tibble: 50 x 2
+##                               pri_spec   num
+##                                 &lt;fctr&gt; &lt;int&gt;
+##  1                     FAMILY PRACTICE   192
+##  2                   INTERNAL MEDICINE   126
+##  3                  ORTHOPEDIC SURGERY    64
+##  4                       ENDOCRINOLOGY    54
+##  5                     GENERAL SURGERY    42
+##  6                           NEUROLOGY    41
+##  7 CARDIOVASCULAR DISEASE (CARDIOLOGY)    35
+##  8                    GASTROENTEROLOGY    29
+##  9               OBSTETRICS/GYNECOLOGY    24
+## 10                   PULMONARY DISEASE    24
+## # ... with 40 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># most common state -&gt; specialty</span>
 specialty &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(Business_State_Territory, pri_spec) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarize</span>(<span class="dt">num =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(Business_State_Territory, <span class="kw">desc</span>(num))
 
@@ -470,7 +483,7 @@ specialty &lt;-<span class="st"> </span>EHR_EPs <span class="op">%&gt;%</span><s
 
 specialty <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(Business_State_Territory, pri_spec)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_tile</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> num))</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
 <p>When it came to looking at patterns between primary specialty and states, it was nearly impossible to find useful information. There were too many states and too many different specialties to try to find significant correlations between the levels. Additionally, we tried to find group similar specialties but it did not make the results much more interpretable.</p>
 </div>
 <div id="hospital-demographics-1" class="section level3">
@@ -501,7 +514,7 @@ beds <span class="op">%&gt;%</span><span class="st"> </span>
         <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
         <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Average Hospital Beds per hospital&quot;</span>)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
 <p>Vermont and Rhode Island had the lowest number of average hospital beds per hospital, which makes sense since they are small states. Connecticut and Florida had the highest average, suggesting that hospitals in that state tend to be bigger on average.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># patient days</span>
 hosp_all <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Patient_days)) <span class="op">%&gt;%</span><span class="st"> </span>
@@ -522,7 +535,7 @@ hosp_all <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"
         <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
         <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Across states, mean patient days per hospital&quot;</span>)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-49-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
 <p>The distribution of average days at the hospital was mostly proportional to the distribution of average hospital beds from the previous map. The differences were:</p>
 <ul>
 <li>Florida had one of the highest averages for hospital beds (biggest hospitals) but did not have one of the highest average patient days (yay!)</li>
@@ -547,7 +560,7 @@ hosp_all <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"
         <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
         <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Across states, mean discharges days per hospital on average&quot;</span>)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-50-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
 <p>The distribution of average discharges was not very interesting - it was similar to the previous maps.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#avg revenue per discharge</span>
 revenue &lt;-<span class="st"> </span>hosp_all <span class="op">%&gt;%</span><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Gross_patient_revenue) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(Total_discharges)) <span class="op">%&gt;%</span><span class="st"> </span>
@@ -571,7 +584,7 @@ revenue <span class="op">%&gt;%</span>
         <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(),
         <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Across states, average revenue per discharge&quot;</span>)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-51-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-47-1.png" width="672" /></p>
 <p>Looks like Montana has the highest average gross patient revenue per discharge.</p>
 </div>
 <div id="regional-conclusions" class="section level3">
@@ -601,7 +614,7 @@ EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pri_spec, <span class="dt">y =</span> yrsgrad)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">45</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-52-1.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#vendors vs year since graduation</span>
 EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>(Vendor_Name <span class="op">%in%</span><span class="st"> </span>vendors) <span class="op">%&gt;%</span><span class="st"> </span>
@@ -609,18 +622,18 @@ EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Vendor_Name, <span class="dt">y =</span> yrsgrad)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">45</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-52-2.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-48-2.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#top vendors vs top specialty</span>
 EHR_EPs <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">filter</span>((pri_spec <span class="op">%in%</span><span class="st"> </span>spec_list) <span class="op">&amp;</span><span class="st"> </span>(Vendor_Name <span class="op">%in%</span><span class="st"> </span>vendors)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pri_spec, <span class="dt">y =</span> Vendor_Name)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>, <span class="dt">color =</span> <span class="st">&quot;steelblue4&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(pri_spec, Vendor_Name)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_jitter</span>(<span class="kw">aes</span>(<span class="dt">alpha =</span> <span class="fl">0.2</span>), <span class="dt">color =</span> <span class="st">&quot;steelblue4&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">45</span>, <span class="dt">hjust =</span> <span class="dv">1</span>),
         <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>,
         <span class="dt">axis.title =</span> <span class="kw">element_blank</span>()) <span class="op">+</span>
 <span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Top 10 Primary Specialties versus Top 10 Vendors&quot;</span>)</code></pre></div>
-<p><img src="EHR-Project_files/figure-html/unnamed-chunk-52-3.png" width="672" /></p>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-48-3.png" width="672" /></p>
 <p>Interesting conclusions from the boxplots:</p>
 <ul>
 <li>Ophthalmology had the highest median years since graduation, which makes sense that we found that our EHR users had more years since graduation than non-EHR users</li>
