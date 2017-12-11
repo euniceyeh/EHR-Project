@@ -51,7 +51,7 @@ Observations from the above output:
   - There are 53 levels of states, which means this data include states outside of the 50 mainland states and DC. we don't have sufficient data on the virgin islands and Guam, so we will have to filter these states out. 
   - There is one person whose gender is unknown, we will filter this person out since we want to group by gender.
   - There are rows with missing graduation years, will need to filer this out too if graduation years is one of the main demographics of interest (will mess up plotting). Also, one or more physician who graduated in 2017 slipped into our data...we will ignore this by filtering it out too.
-  - The zip code, `r min(as.integer(dat$zip))`, is out of range. a standard zip code has to be at least 5 digits. looks like most zip codes in this data are the full 9-digit zip codes, which can be split into the standard 5-digit format and the 4-digit after.
+  - It looks like most zip codes in this data are the full 9-digit zip codes, which can be split into the standard 5-digit format and the 4-digit after.
   - There are way too many levels of medical schools and primary specialties, we will probably focus on looking at the most popular ones for exploratory analysis.
   
   
@@ -62,7 +62,7 @@ clean <- dat %>% filter(st %in% c(state.abb, "DC")) %>%
 ```
 
 
-Now we only have `r length(unique(clean$st))` levels of states, `r length(unique(clean$gndr))` levels of gender, and no records with missing graduation year. But we still have zip codes as small as `r min(as.integer(clean$zip))`, which is still out of range. To make sure only keep valid zip codes (since there may be other ways the zip codes are not clean), we can try to use R's zip code package to validate our zip codes.
+Now we only have `r length(unique(clean$st))` levels of states, `r length(unique(clean$gndr))` levels of gender, and no records with missing graduation year. To make sure we only keep valid zip codes, we can try to use R's zip code package to validate our zip codes. This is important because we want to be able to accurately perform our analyses on the location variables and regional analysis and to match with the vendor data by zip code.
 
 ```{r}
 # separate out the first five zip codes from the last four extension to match R zipcode data
@@ -74,18 +74,10 @@ library(zipcode)
 data("zipcode")
 zip_dat <- clean %>% left_join(zipcode,by='zip') 
 
-# check if any of the invalid zip codes were matched to R's zip code package
-zip_dat %>% filter(nchar(zip) < 5) %>% select(npi, frst_nm, zip, cty, st, city, state) %>% head(15)
-```
-
-
-As expected, none of the zip codes with only 4 digits matched, so these `r sum(nchar(zip_dat$zip)<5)` records will have to be thrown away in order for us to be able to accurately do analysis on the location variables and regional analysis and to match with the vendor data by zip code.
-
-
-```{r}
+# check state mismatches
 zip_mismatch <- zip_dat %>% 
   mutate(st = as.character(st)) %>% 
-  filter(st != state | nchar(zip) < 5) %>% 
+  filter(st != state) %>% 
   select(npi, frst_nm, zip, cty, city, st, state, latitude, longitude)
 
 # check number of records mismatched
@@ -132,7 +124,7 @@ clean <- zip_dat %>%
 
 Continuing on with our wrangling...
 
-  - About `r (sum(is.na(dat$hosp_afl_1))/nrow(dat))*100`% of the (original) data are of physicians not affiliated with any hospital, these are the practitioners we will subset on to do our practitioner-level analysis on since these are the only cases when a physician's demographics can have an effect on the choice of using EHR. For physicians who are affiliated with a hospital,  their demographics would no longer be informative as to whether or not they use EHR, it would then have to be the demographics of the hospitals that could inform the use of EHR at the hospital-level. Thus, we were able to find hospital demographics such as ___ on hospitals across the U.S. in general, which will be discussed in the next section within this chapter, but there's no indication of participation in the incentive program nor EHR use, so we will have to merge that hospital demographic data with the practitioners in this data set who are affiliated with any one hospital.
+  - About `r (sum(dat$hosp_afl_1=='')/nrow(dat))*100`% of the (original) data are of physicians not affiliated with any hospital, these are the practitioners we will subset on to do our practitioner-level analysis on since these are the only cases when a physician's demographics can have an effect on the choice of using EHR. For physicians who are affiliated with a hospital,  their demographics would no longer be informative as to whether or not they use EHR, it would then have to be the demographics of the hospitals that could inform the use of EHR at the hospital-level. Thus, we were able to find hospital demographics such as ___ on hospitals across the U.S. in general, which will be discussed in the next section within this chapter, but there's no indication of participation in the incentive program nor EHR use, so we will have to merge that hospital demographic data with the practitioners in this data set who are affiliated with any one hospital.
 
 for the practitioner-level analysis we want to:
 
@@ -141,7 +133,7 @@ for the practitioner-level analysis we want to:
   - Keep only one record per physician, which means we would have to lose the distinct practice locations for physicians who have multiple practices. But since we can't fit our logistic model with either city, state, or zip code, there's no point in keeping this detail. Instead, we can calculate the number of distinct practices these physicians have in order to collapse the data to the practitioner level.
 
 ```{r}
-EPs <- clean %>% filter(is.na(as.integer(hosp_afl_1))) %>% 
+EPs <- clean %>% filter(hosp_afl_1 == '') %>% 
   mutate(yrs_grd = 2016 - as.integer(grd_yr), # calc the n of years since graduation
          cred = case_when(cred == '' ~ 'NA', # assign blanks to NA's
                           TRUE ~ as.character(cred)),
@@ -169,7 +161,7 @@ saveRDS(EPs, file = "./data/EPs.rds")
 
 # for the rest of practitioners who are affiliated with a hospital
 hosp_afl <- clean %>% # filter on the clean version
-  filter(!is.na(as.integer(hosp_afl_1))) %>% 
+  filter(hosp_afl_1 != '') %>% 
   mutate(hosp_afl_lbn_1 = as.character(hosp_afl_lbn_1), 
          cty = str_trim(as.character(cty)),
          st = as.character(st),
@@ -391,23 +383,15 @@ EHR_zip <- EHR_EPs %>%
   select(NPI, Business_State_Territory, ZIP, Specialty, Vendor_Name, EHR_Product_Name, Product_Classification, Product_Setting)
 ```
 
-Merge:
-
-  + We want to inner join with the `EPs` data set on `NPI`, which has one row per physician by their unique NPI (one-to-many merge)
-  + We want to inner join with the `hosps` data set on `CCN`, which has one row per hospital by their unique CCN (one-to-many merge)
+We want to inner join with the `EPs` data set on `NPI`, which has one row per physician by their unique NPI (one-to-many merge).
   
 ```{r}
 # merge with EPs data
 EHR_EPs <- inner_join(EHR_zip, EPs, by=c('NPI'='npi'))
 summary(EHR_EPs)
 
-# merge with hosps data
-EHR_hosps <- inner_join(EHR_hosps, hosps, by=c('CCN'='hosp_afl_1'))
-summary(EHR_hosps)
-
 # check EHR use (should expect all 1's or "yes")
 table(EHR_EPs$ehr)
-table(EHR_hosps$ehr)
 ```
 
 Notice that the `ehr` column is not all `1`'s or `Y`'s when we expect them to be. this explains why we had so many physicians who fell in the `ehr=''` category. the physicians whom we have EHR product usage information on did not answer "yes" to EHR use in the original `EPs` data.
@@ -416,7 +400,6 @@ Notice that the `ehr` column is not all `1`'s or `Y`'s when we expect them to be
 
 ```{r}
 saveRDS(EHR_EPs, file = "./data/EHR_EPs.rds")
-saveRDS(EHR_hosps, file = "./data/EHR_hosps.rds")
 ```
 
 Although the specific product types are too granular and not meaningful enough to clean, we believe that exploring the professional and hospital demographics across vendor types may still be interesting, especially if we focus on the top 10 most popular vendors or classify the smaller local vendors as one group.

@@ -5,10 +5,6 @@
 
 Since practitioners who are affiliated with a hospital may not have a choice in using EHR or not, we will exclude these from our analysis population, which is now just the practitioners who enrolled in the Medicare Incentive Program who are not affiliated with any hospital, which come from the data set `EPs` that we cleaned in section [4.1](https://euniceyeh.github.io/EHR-Project/data.html#eligible-professionals-eps).
 
-```{r}
-EPs <- readRDS("./data/EPs.rds")
-```
-
 We will use logistic regression because we have a dichotomous outcome (EHR used: Y/N) and want to explore the relationship between the outcome and other predictor/explanatory variables. The coefficients generated from logistic regression will give us a formula to predict a logit transformation of the probability of the outcome. The general formula will look like this:
 
 $$
