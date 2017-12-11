@@ -161,8 +161,8 @@ prod_setting_overall <- EHR_EPs %>%
             amb = sum(Product_Setting == "Ambulatory"), 
             inpat = sum(Product_Setting == "Inpatient")) %>% 
   mutate("Ambulatory (Outpatient)" = amb/total, Inpatient= inpat/total) %>% 
-  mutate(st = "Overall") %>% 
-  select(st, "Ambulatory (Outpatient)", Inpatient)
+  mutate(Place = "Overall") %>% 
+  select(Place, "Ambulatory (Outpatient)", Inpatient)
 prod_setting_overall %>% kable
 
 ambulatory <- prod_setting %>% 
@@ -212,7 +212,7 @@ cali <- EHR_EPs %>%
   select("Ambulatory (Outpatient)", Inpatient)
 
 prod_setting_overall <- bind_rows(prod_setting_overall,
-                                  data_frame(State = "California",
+                                  data_frame(Place = "California",
                                              "Ambulatory (Outpatient)" = cali$`Ambulatory (Outpatient)`,
                                              Inpatient = cali$Inpatient
                                   ))
