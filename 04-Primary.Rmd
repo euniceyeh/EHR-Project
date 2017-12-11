@@ -183,7 +183,7 @@ ggplot(hosps, aes(num_phys, colour = EHR_use)) +
 Again, we wanted to show that our data on the physicians for each hospital are limited, and could affect our final analysis if we only subset to hospitals with sufficient physicians data in order to accurately include the aggregated physician demographics of the hospitals.
 
 
-```{r}
+```{r, warning = FALSE}
 my_colors <- brewer.pal(nlevels(as.factor(hosps$EHR_use)), "Set1")
 # explore aggregated physician demographics
 scatterplotMatrix(~num_phys+female_prop+avg_grad_year+n_specialty|EHR_use, data=hosps, 

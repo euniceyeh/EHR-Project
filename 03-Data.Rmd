@@ -322,7 +322,7 @@ Observations:
 
 * There are 485841 records of missing CCN (the identifying number for eligible hospitals) and missing hospital type, which matches up with the number of records that are `Provider_Type == 'EP'`. It makes sense since these variables would not be relevant to an eligible professional (EP), who is not affiliated with any hospital.
 * There are exactly 20073 records of missing zip codes and blank specialty (specifically *not* NA's), and this number matches up with the number of `Provider_Type == 'Hospital'`.
-* It sounds like the first step we may need to do is to split the data into EPs and hospitals since there are enough distinct variables relevant for each type. Then we can merge each split with their corresponding demographic data from the previous sections.
+* It sounds like the we just need to split the data into EPs and hospitals since there are enough distinct variables relevant for each type. Then we can merge each split with their corresponding demographic data from the previous sections.
 
   + We want to inner join with the `EPs` data set on `NPI`, which has one row per physician by their unique NPI (one-to-many merge)
   + We want to inner join with the `hosps` data set on `CCN`, which has one row per hospital by their unique CCN (one-to-many merge)
@@ -340,11 +340,15 @@ EHR_hosps <- EHR_clean %>% filter(Provider_Type == 'Hospital') %>%
   select(-ZIP, -Specialty, -Provider_Type)
 # merge with hosps data
 EHR_hosps <- inner_join(EHR_hosps, hosps, by=c('CCN'='hosp_afl_1'))
+
+# check EHR use (should expect all 1's or "yes")
+table(EHR_EPs$ehr)
+table(EHR_hosps$ehr)
 ```
 
 
-  - specific product types are too dirty and not meaningful, will focus on vendor types.
-  - notice that the `ehr` column is not all `y` when we expect them to be. this explains why we had so many physicians who fell in the `ehr=''` category. the physicians whom we have EHR product usage information on did not answer "yes" to EHR use in the original `EPs` data.
+  - Specific product types are too dirty and not meaningful, will focus on vendor types.
+  - Notice that the `ehr` column is not all `1`'s or `Y`'s when we expect them to be. this explains why we had so many physicians who fell in the `ehr=''` category. the physicians whom we have EHR product usage information on did not answer "yes" to EHR use in the original `EPs` data.
   - again the top primary specialties overall are `r summary(EPs$pri_spec, maxsum=6)[1:5]`, compare that to the top specialities among physicians whom we have vendor information: `r summary(EHR_EPs$pri_spec, maxsum=6)[1:5]`.
   - merge with the cleaned hosp data
 

@@ -1,5 +1,5 @@
 --- 
-title: "BST 260 Final Project: EHR"
+title: "Electronic Health Records: Who Uses It?"
 author: "Eunice Yeh, Lauren Yoo, Katherine Wang"
 date: "`r Sys.Date()`"
 site: "bookdown::bookdown_site"
@@ -14,11 +14,14 @@ description: "This is the final project report for BST 260 on the relationships 
 
 # Overview and Motivation
 
-*"Insert an inspirational quote here."*
+*This is the final project report for Fall 2017 [Data Science I](http://datasciencelabs.github.io/) (BST 260) at [Harvard T.H. Chan School of Public Health](https://www.hsph.harvard.edu/) on the relationships between the use of Electronic Health Records (EHR) and provider demographics, separately among the eligible professionals (EPs) and eligible hospitals participating in the [2016 Medicare & Medicaid EHR Incentive Program](https://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/2016ProgramRequirements.html) across the United States. Enjoy!*
 
 ------
 
-![tehe doge](https://thesciencedog.files.wordpress.com/2013/09/golden-retriever-and-science1.jpg)
+![Motivation](data/Motivation.png)
+
+
+
 
 ```{r include=FALSE}
 # automatically create a bib database for R packages

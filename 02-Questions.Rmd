@@ -4,6 +4,25 @@
 
 ------
 
+Originally, we wanted to understand what kinds of people are more likely to adopt EHR in general. But then we learned about the Medicare & Medicaid EHR Incentive Program that is run by the government to encourage providers to use EHR. 
+
+
+
+
+
+
+
+We looked at hospital and physician level data from 2016 to see if there might be some similar characteristics of healthcare providers who are and are not adopting EHR use. Since EHR’s are a technology-based implementation, our group wanted to see if younger physicans are more likely to adopt EHR technology. What are some of the factors that might be associated with adoptation of EHR’s? Additionally, we know that physicians working in hospitals do not have a choice in adopting EHR’s. As a result, we wanted to see if there were hospital-related factors affecting adoption of EHRs.
+
+To qualify for the incentive program, participants in the program need to use certified EHR technology as recognized by CMS. This can include a comprehensive package offered by one vendor or different modules or products offered by different vendors. All must be certified, but practitioners have some choice in implementation. As a result, we also thought it might be interesting to see how vendors and products are distributed among the EHR users.
+
+We also hoped to gain some insight to see if there were any differences in trends across the United States - are the factors correlated with adoption of EHR’s consistent across the country? Or are just a few states leading the pack?
+
+
+
+
+
+
 Since the Medicare & Medicaid EHR Incentive Program accepts two types of providers in two different ways, our primary objective of looking at provider demographics on the use of EHR is split into two separate parts:
 
 1. What are the demographics of eligible **physicians** in the incentive program who have been using EHR; are these different from those who have yet to use EHR?
