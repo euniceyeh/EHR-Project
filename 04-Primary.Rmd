@@ -1,6 +1,5 @@
 # Primary Analysis {#primary}
 
-**[resate our primary objectives here and explain why we split the primary analysis into the following sections]**
 
 ## Physician Demographics
 
@@ -10,8 +9,11 @@ Since practitioners who are affiliated with a hospital may not have a choice in 
 EPs <- readRDS("./data/EPs.rds")
 ```
 
+We will use logistic regression because we have a dichotomous outcome (EHR used: Y/N) and want to explore the relationship between the outcome and other predictor/explanatory variables. The coefficients generated from logistic regression will give us a formula to predit a logit transformation of the probability of the outcome. The general formula will look like this:
 
-[explain that we are doing logistic regression model because of our binary outcome EHR use, and write out the mathematical theory and methods here.]
+$$
+ln\left(\frac{p}{1-p}\right) = \beta_0 + \beta_1X_1 + \beta_2X_2 + ....+\beta_kX_k
+$$
 
 ### Exploratory
 
@@ -121,7 +123,10 @@ EPs %>% melt(id.vars="ehr", measure.vars="yrs_grd") %>%
 
 #### Fit the Logistic Model
 
-[write out our final model]
+Our final physician-level logistic regression model looked like this:
+$$
+logit(EHR) = \beta_0 + \beta_1(gender) + \beta_2(years~since~grad) + \beta_3(location)
+$$
 
 ```{r}
 # fit the model
@@ -180,6 +185,7 @@ ggplot(hosps, aes(num_phys, colour = EHR_use)) +
   geom_density() +
   xlim(0, 500)
 ```
+
 Again, we wanted to show that our data on the physicians for each hospital are limited, and could affect our final analysis if we only subset to hospitals with sufficient physicians data in order to accurately include the aggregated physician demographics of the hospitals.
 
 
@@ -250,8 +256,8 @@ y_hat_logit <- ifelse(p_hat_logit > 0.5, 1,  0)
 confusionMatrix(data = y_hat_logit, reference = testing$EHR_use)
 ```
 
-
 Because total discharge and patient days have very high correlation (0.99), pick out one out of the two -  total discharge. Also, because we observed from correlation plots that staffed beds and the gross patient revenue are highly correlated, we add interaction variable to the model. 
+
 ```{r}
 glm2 <- glm(EHR_use ~ gross_patient_rev_log + staffed_beds_log  + gross_patient_rev_log*staffed_beds_log + total_discharges_log, data=training, family = "binomial")
 summary(glm2)
