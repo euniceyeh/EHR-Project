@@ -9,7 +9,7 @@ Since practitioners who are affiliated with a hospital may not have a choice in 
 EPs <- readRDS("./data/EPs.rds")
 ```
 
-We will use logistic regression because we have a dichotomous outcome (EHR used: Y/N) and want to explore the relationship between the outcome and other predictor/explanatory variables. The coefficients generated from logistic regression will give us a formula to predit a logit transformation of the probability of the outcome. The general formula will look like this:
+We will use logistic regression because we have a dichotomous outcome (EHR used: Y/N) and want to explore the relationship between the outcome and other predictor/explanatory variables. The coefficients generated from logistic regression will give us a formula to predict a logit transformation of the probability of the outcome. The general formula will look like this:
 
 $$
 ln\left(\frac{p}{1-p}\right) = \beta_0 + \beta_1X_1 + \beta_2X_2 + ....+\beta_kX_k
@@ -176,7 +176,7 @@ Looks like our model did pretty well!
 
 ## Hospital Demographics
 
-Now let's focus on the other type of providers eligible for the Medicaid & Medicare EHR Incentive Program: the hospitals. Recall that in this analysis population, we included only the physicians who are affiliated with any hospital and aggregated their demographics and EHR use at the hospital level. This is beacuse the use of EHR would no longer depend on the physicians themselves, but rather the hospitals who decide to participate in the program. Since the aggregated physician demographics are not reliable demographic representations of the hospitals, as discussed in the [Data](https://euniceyeh.github.io/EHR-Project/data.html#eligible-hospitals-hosp) chapter, we will only perform exploratory analysis on them and focus on the scraped hospital demographics (staffed beds, total discharges, patient days, gross patient revenue) for the final analysis.
+Now let's focus on the other type of providers eligible for the Medicaid & Medicare EHR Incentive Program: the hospitals. Recall that in this analysis population, we included only the physicians who are affiliated with any hospital and aggregated their demographics and EHR use at the hospital level. This is because the use of EHR would no longer depend on the physicians themselves, but rather the hospitals who decide to participate in the program. Since the aggregated physician demographics are not reliable demographic representations of the hospitals, as discussed in the [Data](https://euniceyeh.github.io/EHR-Project/data.html#eligible-hospitals-hosp) chapter, we will only perform exploratory analysis on them and focus on the scraped hospital demographics (staffed beds, total discharges, patient days, gross patient revenue) for the final analysis.
 
 ### Exploratory
 
@@ -235,7 +235,7 @@ hosps %>% filter(!is.na(gpr_grp)) %>%
     filter(term==filter_var)
 ```
 
-We are only showing the statistical results on total discharge because it is the only demographic that has a different signficance in effect on EHR use across the stratification of gross patient revenue, as evident by the p-values. So in our final model, we will use total discharge and gross patient revenue and their interaction term.
+We are only showing the statistical results on total discharge because it is the only demographic that has a different significance in effect on EHR use across the stratification of gross patient revenue, as evident by the p-values. So in our final model, we will use total discharge and gross patient revenue and their interaction term.
 
 
 ### Final Analysis

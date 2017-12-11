@@ -135,7 +135,7 @@ useehr %>%
   ggtitle("Percent EHR Usage")
 ```
 
-In our dataset overall, we had more blank information on EHR usage than we did on confirmed EHR usage, which is why the percentages are low overall. However, it is interesting to note that Alaska and Vermont had extremely low EHR usage, while the Midwest tended to have relatively more adoption. Perhaps Alaksa and Vermont have more rural environments, while many of the EHR vendors are based in the Midwest.
+In our dataset overall, we had more blank information on EHR usage than we did on confirmed EHR usage, which is why the percentages are low overall. However, it is interesting to note that Alaska and Vermont had extremely low EHR usage, while the Midwest tended to have relatively more adoption. Perhaps Alaska and Vermont have more rural environments, while many of the EHR vendors are based in the Midwest.
 
 ```{r}
 #find what types of product settings exist
@@ -414,7 +414,7 @@ Looks like Montana has the highest average gross patient revenue per discharge.
 
 ### Regional Conclusions
 
-The regional analyses served mostly exploratory/informational purposes. While we noticed many patterns regarding the Midwest, it is not clear if the patterns are due to association or causation. For example, we saw that the Midwestern states tended to have higher rates of EHR usage compared to the rest of the country. However, we also saw that many of the "Top 10" vendors in our dataset were also based in the Midwest. There could have been confounding effects - our data set may not have been representative of the entire country - Healthit.gov cited over 75% of Physician EHR adoption by 2015, while our data set could only match about 20% EHR usage in 2016. We could have had a skewed sample of Physicians that happened to have more EHR adoptees living in the Midwest. Also, the first plot showed that we did have strong representation in Physician counts in Minnesota and California, but not as much in the rest of the country.
+The regional analyses served mostly exploratory/informational purposes. While we noticed many patterns regarding the Midwest, it is not clear if the patterns are due to association or causation. For example, we saw that the Midwestern states tended to have higher rates of EHR usage compared to the rest of the country. However, we also saw that many of the "Top 10" vendors in our data set were also based in the Midwest. There could have been confounding effects - our data set may not have been representative of the entire country - Healthit.gov cited over 75% of Physician EHR adoption by 2015, while our data set could only match about 20% EHR usage in 2016. We could have had a skewed sample of Physicians that happened to have more EHR adopter living in the Midwest. Also, the first plot showed that we did have strong representation in Physician counts in Minnesota and California, but not as much in the rest of the country.
 
 
 
@@ -468,15 +468,15 @@ EHR_EPs %>%
 
 Interesting conclusions from the boxplots:
 
-* Opthmalmology had the highest median years since graduation, which makes sense that we found that our EHR users had more years since graduation than non-EHR users
+* Ophthalmology had the highest median years since graduation, which makes sense that we found that our EHR users had more years since graduation than non-EHR users
 * Mayo Clinic and GE Healthcare were used by the youngest practitioners, both having median years since graduation under 10 years.
 
 Interesting conclusions from the jitter plot:
 
 * Integrated Practice Solutions, Inc, the second most popular vendor in our data set, is exclusively used by chiropractors. They also dominate the other vendors among the chiropractors.
-* Eyefinity, Inc also has a specific audience, with only opthalmologists and optometrists (eye doctors) using their products.
+* Eyefinity, Inc also has a specific audience, with only ophthalmologists and optometrists (eye doctors) using their products.
 * Compulink Business Systems, Inc, is also very popular among the two eye specialties and their products seem to be targeted for a specific audience.
-* While NextGen Healthcare is used by all the top 10 specialties, they are most popular among the opthalmologists and optometrists.
+* While NextGen Healthcare is used by all the top 10 specialties, they are most popular among the ophthalmologists and optometrists.
 * Modernizing Medicine Inc is very popular among dermatologists.
 * Epic Systems, Cerner Corporation, athenahealth, and GE Healthcare are pretty consistently used across all the top 10 disciplines. Epic is the most consistently popular, however.
 
@@ -504,7 +504,7 @@ EHR_EPs %>%
 
 3. Perform Association Rule Learning on all variables from the first two sections. **check the validity of using this method if my variables are not independent from one another.**
 Here, each "transaction" is a practitioner who adapted EHR as part of the Medicare EHR Incentive Program in the U.S.
-***used becuse we have variables with a lot of variables
+***used because we have variables with a lot of variables
 
 
 ```{r, eval=FALSE}
