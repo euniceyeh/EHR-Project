@@ -1,0 +1,325 @@
+---
+title: "04-Primary"
+author: "Katherine Wang"
+date: "12/11/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = FALSE}
+library(readr)
+library(tidyverse)
+library(GGally)
+library(reshape2)
+library(lme4)
+library(lattice)
+library(boot)
+library(parallel)
+library(compiler)
+library(RColorBrewer)
+library(car)
+library(broom)
+library(caret)
+library(fiftystater)
+library(zipcode)
+library(gridExtra)
+library(knitr)
+library(stringr)
+
+EPs <- readRDS("~/Desktop/BST 260/EHR-Project/data/EPs.rds")
+hosps <- readRDS("~/Desktop/BST 260/EHR-Project/data/hosps.rds")
+```
+
+# Primary Analysis {#primary}
+
+
+## Physician Demographics
+
+Since practitioners who are affiliated with a hospital may not have a choice in using EHR or not, we will exclude these from our analysis population, which is now just the practitioners who enrolled in the Medicare Incentive Program who are not affiliated with any hospital, which come from the data set `EPs` that we cleaned in section [4.1](https://euniceyeh.github.io/EHR-Project/data.html#eligible-professionals-eps).
+
+We will use logistic regression because we have a dichotomous outcome (EHR used: Y/N) and want to explore the relationship between the outcome and other predictor/explanatory variables. The coefficients generated from logistic regression will give us a formula to predict a logit transformation of the probability of the outcome. The general formula will look like this:
+
+$$
+ln\left(\frac{p}{1-p}\right) = \beta_0 + \beta_1X_1 + \beta_2X_2 + ....+\beta_kX_k
+$$
+
+### Exploratory
+
+Before fitting our model, we explored the relationships between our variables of interest using [Association Rule Learning](https://www.r-bloggers.com/association-rule-learning-and-the-apriori-algorithm/). We will use the R package called `arulesViz` to help us visualize this because we have mostly categorical variables with too many levels for simple correlation matrices to handle. 
+
+Here, each "transaction" is a practitioner who adapted EHR as part of the Medicare EHR Incentive Program in the U.S.
+
+```{r}
+library("arulesViz")
+
+# first need to keep certain associational variables of interest and discretize them
+corr <- EPs %>% ungroup() %>% filter(med_sch != "OTHER") %>% 
+  select(gndr, grd_yr, pri_spec, st) %>% 
+  mutate(grd_yr = as.factor(grd_yr),
+         st = as.factor(st))
+
+# convert from a data frame to a transaction dataset
+corrt <- as(corr, "transactions")
+
+# create rules using the apriori
+rules <- apriori(corrt, parameter=list(support=0.01, confidence=0.5))
+plot(rules)
+```
+
+The result is a a set of ______________ association rules with generally high confidence and low support (proportion of transactions in the data set which contain the item set). Let's first trim this down a bit to show only important rules (confidence > 0.85). We'll pick the top 30 rules so we have a smaller subset to find meaningful relationships.
+
+The top 30 rules are chosen with respect to the lift measure (a measure of rule strength) - the deviation of the support of the whole rule from the support expected under independence given the supports of both sides of the rule.
+
+```{r}
+subrules <- rules[quality(rules)$confidence > 0.85]
+inspect(head(sort(subrules, by ="lift"),30))
+plot(subrules, method="grouped", control=list(k=50))
+```
+
+We concluded the following:
+
+* Practitioner graduation year is not very interesting
+* Medical School, Primary Specialty, and Gender had the most meaningful associations 
+    - However, we would choose only one of medical school or primary specialty. They are likely highly correlated because there are specialty-specific schools such as chiropractic schools.
+
+
+Now we need to explore the relationships of our continuous independent variables
+
+1. Years since graduation by gender using jittered violin plots
+```{r}
+EPs %>% melt(id.vars="gndr", measure.vars="yrs_grd") %>% 
+  ggplot(aes(gndr, value)) +
+  geom_jitter(alpha = 0.1) +
+  geom_violin(alpha = 0.75) +
+  facet_grid(variable ~ .) +
+  scale_y_sqrt()
+```
+
+Gender seems to be pretty independent of the number of years since graduation so we should be able to add both to the model without influencing each other's effects. The distribution of years since graduation is skewed, so we used a square root scale to make the kernel density curves look more symmetric in the plots than it otherwise would have been. The actual values of the years since graduation were left alone so we could intuitively interpret the results from our model.
+
+2. Number of locations by gender using jittered violin plots
+```{r}
+EPs %>% melt(id.vars="gndr", measure.vars="locations") %>% 
+  ggplot(aes(gndr, value)) +
+  geom_jitter(alpha = 0.1) +
+  geom_violin(alpha = 0.75) +
+  facet_grid(variable ~ .) +
+  scale_y_log10()
+```
+
+While practice locations seem to be distributed evenly between males and females, note that the large majority of physicians in our data set have only one location. There are a few outliers who have over 300 unique zip codes associated with their practices.
+
+3. Years since graduation by credentials using bubble plots
+```{r}
+EPs %>% mutate(cred = reorder(cred, yrs_grd)) %>% 
+  ggplot(aes(cred, yrs_grd)) +
+  stat_sum(aes(size = ..n.., group = 1)) +
+  scale_size_area(max_size = 10)
+```
+
+Credentials (physician degrees) had one of the fewest number of levels, so we wanted to see if it was a good candidate for our model. The distribution of years since graduation looked pretty consistent across different credentials. Unfortunately, there were disproportionally high numbers of physicians with credentials listed as N/A (~75%), meaning their credential was unknown, so we could not use this variable in our model.
+
+4. Gender, years since graduation, and number of locations by EHR use
+```{r, eval=FALSE}
+# scatter plot matrix of all three effects by EHR use
+my_colors <- brewer.pal(nlevels(as.factor(EPs$ehr)), "Set1")
+EPs %>% mutate(gender = as.factor(as.integer(gndr))) %>% 
+  scatterplotMatrix(~gender+yrs_grd+locations|ehr, data=., 
+                    col=my_colors, smoother.args=list(col="grey"), 
+                    cex=1.5 , pch=c(15,16), legend.pos="center")
+
+# bubble plot of years since graduation by EHR use
+EPs %>% ggplot(aes(ehr, yrs_grd)) +
+  stat_sum(aes(size = ..n.., group = 1)) +
+  scale_size_area(max_size = 10)
+
+# jittered violin plot of years since graduation by EHR use
+EPs %>% melt(id.vars="ehr", measure.vars="yrs_grd") %>% 
+  ggplot(aes(ehr, value)) +
+  geom_jitter(alpha = 0.1) +
+  geom_violin(alpha = 0.75) +
+  facet_grid(variable ~ .) +
+  scale_y_sqrt()
+```
+
+- Note that we forced gender, which is binary, into the scatter plot matrix so just ignore any noise between the values 1 and 2 on the scale for gender.
+- Again, we can confirm that all three variables of interest (gender, years since graduation, and number of locations) are not strongly correlated with each other at all. We can safely add them into the final model without interaction terms.
+- From the this scatter plot matrix, it is apparent that the distribution of gender and years since graduation differ by EHR use (as indicated by the red and blue colors, blinded here because we want to give you some suspense dun dun dun - but actually, we just couldn't get the legend to not completely cover the density curves).
+- A general observation from the bubble and violin plots is that there are proportionally more physicians in our data who have not used EHR. so we already have an imbalance in sample size between the two groups. But overall, our sample size is still large enough.
+
+### Final Analysis
+
+#### Fit the Logistic Model
+
+Our final physician-level logistic regression model looked like this:
+$$
+logit(EHR) = \beta_0 + \beta_1(gender) + \beta_2(years~since~grad) + \beta_3(location)
+$$
+
+```{r}
+# fit the model
+model <- glm(ehr ~ gndr + yrs_grd + locations, data = EPs, family = binomial)
+summary(model)
+
+#table of odds ratios with 95% CI
+(ORtab <- exp(cbind(OR = coef(model), confint(model))))
+```
+
+Holding years since graduation and locations at a fixed value, the odds of adopting EHR for males is `r round(ORtab[2,1],2)` the odds of adopting EHR for females.
+Holding gender (male) and locations at a fixed value, the odds of adopting EHR has a `r round((ORtab[3,1]-1)*100,2)`% increase for each additional year since graduation.
+
+We did not find a statistically significant effect in the number of practice locations on the use of EHR, so this makes me feel better about collapsing the records by unique physicians and losing the specific location information like city, state, and zip code. If owning practices in various different locations had an effect on EHR use, then we would have needed to consider fitting a mixed effects model that takes into account the random effects of the different locations these physicians practice in, or consider a repeated measures analysis on the non-collapsed data where a physician can have repeated records for each unique location of their practice, etc. But since we lack statistical evidence for the number of practice locations to show an effect on EHR use, we have no reason to seek a better model to fit.
+
+
+#### Predicted Probabilities
+
+We can look at the effects of varying years since graduation by gender while holding the number of practice locations constant at its sample mean on the outcome of EHR use with a ribbon plot of the predicted probabilities.
+
+```{r}
+# create a table of predicted probabilities varying the value of years since graduation and gender
+varyvals <- with(EPs, data.frame(yrs_grd = rep(seq(from = min(yrs_grd), to = max(yrs_grd), length.out = 100),
+    2), locations = mean(locations), gndr = factor(rep(c('M','F'), each = 100))))
+pred <- cbind(varyvals, predict(model, newdata = varyvals, type = "link",
+    se = TRUE))
+pred <- within(pred, {
+    PredictedProb <- plogis(fit)
+    LL <- plogis(fit - (1.96 * se.fit))
+    UL <- plogis(fit + (1.96 * se.fit))
+})
+
+# ribbon plot
+ggplot(pred, aes(x = yrs_grd, y = PredictedProb)) + 
+  geom_ribbon(aes(ymin = LL, ymax = UL, fill = gndr), alpha = 0.2) + 
+  geom_line(aes(colour = gndr), size = 1)
+```
+
+Well, how well does the model with these predictors fit compared to a null model? Let's perform the likelihood ratio test using a chi-square test of `{r} with(model, null.deviance - deviance)` (the difference in deviance for the two models) with `{r} with(model, df.null - df.residual)` degrees of freedom on our observed data, which gives us the following p-value:
+
+```{r}
+with(model, pchisq(null.deviance - deviance, df.null - df.residual, lower.tail = FALSE))
+```
+
+Looks like our model did pretty well!
+
+
+## Hospital Demographics
+
+Now let's focus on the other type of providers eligible for the Medicaid & Medicare EHR Incentive Program: the hospitals. Recall that in this analysis population, we included only the physicians who are affiliated with any hospital and aggregated their demographics and EHR use at the hospital level. This is because the use of EHR would no longer depend on the physicians themselves, but rather the hospitals who decide to participate in the program. Since the aggregated physician demographics are not reliable demographic representations of the hospitals, as discussed in the [Data](https://euniceyeh.github.io/EHR-Project/data.html#eligible-hospitals-hosp) chapter, we will only perform exploratory analysis on them and focus on the scraped hospital demographics (staffed beds, total discharges, patient days, gross patient revenue) for the final analysis.
+
+### Exploratory
+
+```{r}
+ggplot(hosps, aes(num_phys, colour = EHR_use)) +
+  geom_density() +
+  xlim(0, 500)
+```
+
+Again, we wanted to show that our data on the physicians for each hospital are limited, and could affect our final analysis if we only subset to hospitals with sufficient physicians data in order to accurately include the aggregated physician demographics of the hospitals.
+
+
+```{r, warning = FALSE}
+my_colors <- brewer.pal(nlevels(as.factor(hosps$EHR_use)), "Set1")
+# explore aggregated physician demographics
+scatterplotMatrix(~num_phys+female_prop+avg_grad_year+n_specialty|EHR_use, data=hosps, 
+                  col=my_colors , smoother.args=list(col="grey") , cex=1.5 , pch=c(15,16), legend.plot=FALSE)
+# explore scraped hospital demographics
+scatterplotMatrix(~Staffed_beds+Total_discharges+Patient_days+Gross_patient_revenue|EHR_use, data=hosps, 
+                  col=my_colors , smoother.args=list(col="grey") , cex=1.5 , pch=c(15,16))
+```
+
+The first correlation matrix of all the aggregated physician demographics at the hospital level is basically garbage. The second correlation matrix shows us that all four hospital demographics are strongly correlated with each other, which does make sense, and follow the same distributions by EHR use. We will also log-transform these demographics to help normalize their seemingly skewed distributions.
+
+```{r}
+hosps <- hosps %>% mutate(staffed_beds_log = round(log(Staffed_beds),2),
+                          total_discharges_log = round(log(Total_discharges),2),
+                          patient_days_log = round(log(Patient_days),2),
+                          gross_patient_rev_log = round(log(Gross_patient_revenue),2)
+                          )
+# check for normality for one of them
+qqnorm(hosps$gross_patient_rev_log)
+qqline(hosps$gross_patient_rev_log)
+```
+
+Let's look at the correlation plots again with the log-transformed values.
+```{r}
+scatterplotMatrix(~staffed_beds_log+total_discharges_log+patient_days_log+gross_patient_rev_log|EHR_use, data=hosps, 
+                  col=my_colors , smoother.args=list(col="grey") , cex=1.5 , pch=c(15,16), legend.pos="bottomleft")
+hosps %>%
+  ggplot(aes(EHR_use, gross_patient_rev_log)) +
+  stat_sum(aes(size = ..n.., group = 1)) +
+  scale_size_area(max_size = 10)
+```
+
+The difference in distributions is not as apparent by the use of EHR. We believed that the gross patient revenue, which may be implying overall hospital size, is a confounding factor that affects other predictor variables. We can also observe this in the strong correlation (above 0.8) between GPR and staffed beds,  GPR and total discharge, and GPR and patient days. Thus, we will stratify on gross patient revenue. Let's see if other predictor variables still have effect on EHR use proportion after stratifying on GPR.
+
+```{r}
+hosps$gpr_grp = cut(hosps$gross_patient_rev_log, 
+                    quantile(hosps$gross_patient_rev_log, prob = seq(0, 1, .2), na.rm = TRUE), include.lowest = TRUE)
+filter_var = "total_discharges_log" #"staffed_beds_log" #"patient_days_log"
+hosps %>% filter(!is.na(gpr_grp)) %>% 
+    group_by(gpr_grp) %>%
+    do(tidy(glm(EHR_use ~ staffed_beds_log + total_discharges_log + patient_days_log, 
+                data = ., family="binomial"), conf.int = TRUE)) %>%
+    filter(term==filter_var)
+```
+
+We are only showing the statistical results on total discharge because it is the only demographic that has a different significance in effect on EHR use across the stratification of gross patient revenue, as evident by the p-values. So in our final model, we will use total discharge and gross patient revenue and their interaction term.
+
+
+### Final Analysis
+
+
+We are just running the models below to show you our process of choosing the best fitting model, by splitting our data into training and test sets.
+```{r}
+Train <- createDataPartition(hosps$EHR_use, p=0.6, list=FALSE)
+training <- hosps[Train, ]
+testing <- hosps[-Train, ]
+
+# first model with all hosptial demographics
+glm1 <- glm(EHR_use ~ gross_patient_rev_log + staffed_beds_log + total_discharges_log + patient_days_log +staffed_beds_log:gross_patient_rev_log + total_discharges_log:patient_days_log, data=training, family = "binomial")
+summary(glm1)
+
+p_hat_logit <- predict(glm1, newdata = testing, type="response")
+y_hat_logit <- ifelse(p_hat_logit > 0.5, 1,  0)
+confusionMatrix(data = y_hat_logit, reference = testing$EHR_use)
+```
+
+Because total discharge and patient days have very high correlation (0.99), pick out one out of the two -  total discharge. Also, because we observed from correlation plots that staffed beds and the gross patient revenue are highly correlated, we add interaction variable to the model. 
+
+```{r}
+glm2 <- glm(EHR_use ~ gross_patient_rev_log + staffed_beds_log  + gross_patient_rev_log*staffed_beds_log + total_discharges_log, data=training, family = "binomial")
+summary(glm2)
+```
+
+
+This time, we will pick total discharge instead of the staffed beds. Then we will compare two models (glm2 vs. glm3) using chisquare test.
+```{r}
+glm3 <- glm(EHR_use ~ gross_patient_rev_log + total_discharges_log + gross_patient_rev_log*total_discharges_log, data=training, family = "binomial")
+summary(glm3)
+
+p_hat_logit <- predict(glm3, newdata = testing, type="response")
+y_hat_logit <- ifelse(p_hat_logit > 0.5, 1, 0)
+confusionMatrix(data = y_hat_logit, reference = testing$EHR_use)
+#chisquare test H0(null model): glm2, H1(alternative model):glm3
+anova(glm3, glm2, test="Chisq")
+```
+
+Because the anova test yields that glm3 is better, our final model is `glm3` with two variables: total staffed beds and gross patient revenue. 
+Our final physician-level logistic regression model looked like this:
+$$
+logit(EHR) = \beta_0 + \beta_1(staffed~beds) + \beta_2(gross~patient~revenue) + \beta_3(interaction)
+$$
+
+Here is a table of odds ratios with 95% CI.
+```{r}
+exp(cbind(OR = coef(glm3), confint(glm3)))
+```
+
+Interpretation of the final model: If the total discharge is equal at 5000, with the 10% increase in the revenue, the odds of using EHR is 2.92 times higher. Similarly, if the gross patient revenue is equal at 5000 and the discharged increases by 10%, the odds of using EHR is 2.95 times higher.
+
+Mathematically, if revenue increases 10% and discharge is the same, the odds of using EHR is the higher by $1.102\cdot \log(1.1)-0.04\cdot \log(1.1)\cdot \log(discharge)$ times. If discharge increases by 10% while the revenue is the same, the odds of using EHR is higher by $1.2411\cdot \log(1.1) - 0.046\cdot \log(1.1)\cdot \log(revenue)$
+
+
