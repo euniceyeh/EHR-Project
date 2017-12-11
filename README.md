@@ -7,3 +7,14 @@
 - The main objective of our project is to understand the relationship of EHR use with eligible providers, both physicians (EPs) and hospitals, in the [2016 Medicare & Medicaid EHR Incentive Program](https://www.cms.gov/Regulations-and-Guidance/Legislation/EHRIncentivePrograms/2016ProgramRequirements.html) across the United States. We also explore the demographics of both provider types by geographical regions and by EHR vendors as our secondary objectives.
 
 Hope you enjoy our project!
+
+
+EDIT------------
+Due to our issues with bookdown, we have restructured our repository.
+
+The documentation needed for grading are:
+- **Data**: our .rds files are available in the 'data' folder
+- **R Markdown Files**: all the .rmd files starting with a number, i.e. '01-Work.Rmd'
+- **HTML**: all HTML files can be found in the 'docs' folder
+
+Please note that the original bookdown [link](https://euniceyeh.github.io/EHR-Project/data.html#eligible-hospitals-hosp) still works. It may be more convenient to use that to open and view each of our HTML files. The left-hand panel can be used to toggle through all chapters of our report. However, the primary and secondary analysis chapters will take you to a new page (from which you can just use the 'back' button to return to the bookdown).
