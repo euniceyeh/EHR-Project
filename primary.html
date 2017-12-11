@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Electronic Health Records: Who Uses It?</title>
+  <meta name="description" content="This is the final project report for BST 260 on the relationships between the use of Electronic Health Records (EHR) and provider demographics, separately among the eligible professionals (EPs) and eligible hospitals participating in the Medicare &amp; Medicaid EHR Incentive Program in 2016.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Electronic Health Records: Who Uses It?" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is the final project report for BST 260 on the relationships between the use of Electronic Health Records (EHR) and provider demographics, separately among the eligible professionals (EPs) and eligible hospitals participating in the Medicare &amp; Medicaid EHR Incentive Program in 2016." />
+  <meta name="github-repo" content="euniceyeh/EHR-Project" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Electronic Health Records: Who Uses It?" />
+  
+  <meta name="twitter:description" content="This is the final project report for BST 260 on the relationships between the use of Electronic Health Records (EHR) and provider demographics, separately among the eligible professionals (EPs) and eligible hospitals participating in the Medicare &amp; Medicaid EHR Incentive Program in 2016." />
+  
+
+<meta name="author" content="Eunice Yeh, Lauren Yoo, Katherine Wang">
+
+
+<meta name="date" content="2017-12-11">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="data.html">
+<link rel="next" href="secondary.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">BST 260 Final Project: EHR</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Overview and Motivation</a></li>
+<li class="chapter" data-level="2" data-path="work.html"><a href="work.html"><i class="fa fa-check"></i><b>2</b> Related Work</a></li>
+<li class="chapter" data-level="3" data-path="questions.html"><a href="questions.html"><i class="fa fa-check"></i><b>3</b> Initial Questions</a></li>
+<li class="chapter" data-level="4" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i><b>4</b> Data</a><ul>
+<li class="chapter" data-level="4.1" data-path="data.html"><a href="data.html#eligible-professionals-eps"><i class="fa fa-check"></i><b>4.1</b> Eligible Professionals (EPs)</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="data.html"><a href="data.html#sourcemetadata"><i class="fa fa-check"></i><b>4.1.1</b> Source/Metadata</a></li>
+<li class="chapter" data-level="4.1.2" data-path="data.html"><a href="data.html#wrangling"><i class="fa fa-check"></i><b>4.1.2</b> Wrangling</a></li>
+<li class="chapter" data-level="4.1.3" data-path="data.html"><a href="data.html#output"><i class="fa fa-check"></i><b>4.1.3</b> Output</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="data.html"><a href="data.html#eligible-hospitals-hosp"><i class="fa fa-check"></i><b>4.2</b> Eligible Hospitals (Hosp)</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="data.html"><a href="data.html#sourcemetadata-1"><i class="fa fa-check"></i><b>4.2.1</b> Source/Metadata</a></li>
+<li class="chapter" data-level="4.2.2" data-path="data.html"><a href="data.html#wrangling-1"><i class="fa fa-check"></i><b>4.2.2</b> Wrangling</a></li>
+<li class="chapter" data-level="4.2.3" data-path="data.html"><a href="data.html#output-1"><i class="fa fa-check"></i><b>4.2.3</b> Output</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="data.html"><a href="data.html#vendors-products-ehr"><i class="fa fa-check"></i><b>4.3</b> Vendors &amp; Products (EHR)</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="data.html"><a href="data.html#sourcemetadata-2"><i class="fa fa-check"></i><b>4.3.1</b> Source/Metadata</a></li>
+<li class="chapter" data-level="4.3.2" data-path="data.html"><a href="data.html#wrangling-2"><i class="fa fa-check"></i><b>4.3.2</b> Wrangling</a></li>
+<li class="chapter" data-level="4.3.3" data-path="data.html"><a href="data.html#output-2"><i class="fa fa-check"></i><b>4.3.3</b> Output</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="primary.html"><a href="primary.html"><i class="fa fa-check"></i><b>5</b> Primary Analysis</a><ul>
+<li class="chapter" data-level="5.1" data-path="primary.html"><a href="primary.html#physician-demographics"><i class="fa fa-check"></i><b>5.1</b> Physician Demographics</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="primary.html"><a href="primary.html#exploratory"><i class="fa fa-check"></i><b>5.1.1</b> Exploratory</a></li>
+<li class="chapter" data-level="5.1.2" data-path="primary.html"><a href="primary.html#final-analysis"><i class="fa fa-check"></i><b>5.1.2</b> Final Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="primary.html"><a href="primary.html#hospital-demographics"><i class="fa fa-check"></i><b>5.2</b> Hospital Demographics</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="primary.html"><a href="primary.html#exploratory-1"><i class="fa fa-check"></i><b>5.2.1</b> Exploratory</a></li>
+<li class="chapter" data-level="5.2.2" data-path="primary.html"><a href="primary.html#final-analysis-1"><i class="fa fa-check"></i><b>5.2.2</b> Final Analysis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="secondary.html"><a href="secondary.html"><i class="fa fa-check"></i><b>6</b> Secondary Analysis</a><ul>
+<li class="chapter" data-level="6.1" data-path="secondary.html"><a href="secondary.html#by-geographical-regions"><i class="fa fa-check"></i><b>6.1</b> By Geographical Regions</a><ul>
+<li class="chapter" data-level="6.1.1" data-path="secondary.html"><a href="secondary.html#physician-demographics-1"><i class="fa fa-check"></i><b>6.1.1</b> Physician Demographics</a></li>
+<li class="chapter" data-level="6.1.2" data-path="secondary.html"><a href="secondary.html#hospital-demographics-1"><i class="fa fa-check"></i><b>6.1.2</b> Hospital Demographics</a></li>
+<li class="chapter" data-level="6.1.3" data-path="secondary.html"><a href="secondary.html#regional-conclusions"><i class="fa fa-check"></i><b>6.1.3</b> Regional Conclusions</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="secondary.html"><a href="secondary.html#by-ehr-vendors"><i class="fa fa-check"></i><b>6.2</b> By EHR Vendors</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="secondary.html"><a href="secondary.html#physician-demographics-2"><i class="fa fa-check"></i><b>6.2.1</b> Physician Demographics</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Electronic Health Records: Who Uses It?</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="primary" class="section level1">
+<h1><span class="header-section-number">Chapter 5</span> Primary Analysis</h1>
+<div id="physician-demographics" class="section level2">
+<h2><span class="header-section-number">5.1</span> Physician Demographics</h2>
+<p>Since practitioners who are affiliated with a hospital may not have a choice in using EHR or not, we will exclude these from our analysis population, which is now just the practitioners who enrolled in the Medicare Incentive Program who are not affiliated with any hospital, which come from the data set <code>EPs</code> that we cleaned in section <a href="https://euniceyeh.github.io/EHR-Project/data.html#eligible-professionals-eps">4.1</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EPs &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;./data/EPs.rds&quot;</span>)</code></pre></div>
+<p>We will use logistic regression because we have a dichotomous outcome (EHR used: Y/N) and want to explore the relationship between the outcome and other predictor/explanatory variables. The coefficients generated from logistic regression will give us a formula to predict a logit transformation of the probability of the outcome. The general formula will look like this:</p>
+<p><span class="math display">\[
+ln\left(\frac{p}{1-p}\right) = \beta_0 + \beta_1X_1 + \beta_2X_2 + ....+\beta_kX_k
+\]</span></p>
+<div id="exploratory" class="section level3">
+<h3><span class="header-section-number">5.1.1</span> Exploratory</h3>
+<p>Before fitting our model, we explored the relationships between our variables of interest using <a href="https://www.r-bloggers.com/association-rule-learning-and-the-apriori-algorithm/">Association Rule Learning</a>. We will use the R package called <code>arulesViz</code> to help us visualize this because we have mostly categorical variables with too many levels for simple correlation matrices to handle.</p>
+<p>Here, each “transaction” is a practitioner who adapted EHR as part of the Medicare EHR Incentive Program in the U.S.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;arulesViz&quot;</span>)</code></pre></div>
+<pre><code>## Loading required package: arules</code></pre>
+<pre><code>## Warning: package &#39;arules&#39; was built under R version 3.4.2</code></pre>
+<pre><code>## 
+## Attaching package: &#39;arules&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:car&#39;:
+## 
+##     recode</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     recode</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     abbreviate, write</code></pre>
+<pre><code>## Loading required package: grid</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># first need to keep certain associational variables of interest and discretize them</span>
+corr &lt;-<span class="st"> </span>EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(med_sch <span class="op">!=</span><span class="st"> &quot;OTHER&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">select</span>(gndr, grd_yr, pri_spec, st) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">grd_yr =</span> <span class="kw">as.factor</span>(grd_yr),
+         <span class="dt">st =</span> <span class="kw">as.factor</span>(st))
+
+<span class="co"># convert from a data frame to a transaction dataset</span>
+corrt &lt;-<span class="st"> </span><span class="kw">as</span>(corr, <span class="st">&quot;transactions&quot;</span>)
+
+<span class="co"># create rules using the apriori</span>
+rules &lt;-<span class="st"> </span><span class="kw">apriori</span>(corrt, <span class="dt">parameter=</span><span class="kw">list</span>(<span class="dt">support=</span><span class="fl">0.01</span>, <span class="dt">confidence=</span><span class="fl">0.5</span>))</code></pre></div>
+<pre><code>## Apriori
+## 
+## Parameter specification:
+##  confidence minval smax arem  aval originalSupport maxtime support minlen
+##         0.5    0.1    1 none FALSE            TRUE       5    0.01      1
+##  maxlen target   ext
+##      10  rules FALSE
+## 
+## Algorithmic control:
+##  filter tree heap memopt load sort verbose
+##     0.1 TRUE TRUE  FALSE TRUE    2    TRUE
+## 
+## Absolute minimum support count: 11 
+## 
+## set item appearances ...[0 item(s)] done [0.00s].
+## set transactions ...[163 item(s), 1187 transaction(s)] done [0.00s].
+## sorting and recoding items ... [75 item(s)] done [0.00s].
+## creating transaction tree ... done [0.00s].
+## checking subsets of size 1 2 3 done [0.00s].
+## writing ... [60 rule(s)] done [0.00s].
+## creating S4 object  ... done [0.00s].</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(rules)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>The result is a a set of ______________ association rules with generally high confidence and low support (proportion of transactions in the data set which contain the item set). Let’s first trim this down a bit to show only important rules (confidence &gt; 0.85). We’ll pick the top 30 rules so we have a smaller subset to find meaningful relationships.</p>
+<p>The top 30 rules are chosen with respect to the lift measure (a measure of rule strength) - the deviation of the support of the whole rule from the support expected under independence given the supports of both sides of the rule.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">subrules &lt;-<span class="st"> </span>rules[<span class="kw">quality</span>(rules)<span class="op">$</span>confidence <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.85</span>]
+<span class="kw">inspect</span>(<span class="kw">head</span>(<span class="kw">sort</span>(subrules, <span class="dt">by =</span><span class="st">&quot;lift&quot;</span>),<span class="dv">30</span>))</code></pre></div>
+<pre><code>##     lhs                                 rhs      support    confidence
+## [1] {pri_spec=OBSTETRICS/GYNECOLOGY} =&gt; {gndr=F} 0.03791070 0.8653846 
+## [2] {pri_spec=ORTHOPEDIC SURGERY}    =&gt; {gndr=M} 0.03117102 0.9250000 
+## [3] {pri_spec=PULMONARY DISEASE}     =&gt; {gndr=M} 0.01179444 0.8750000 
+## [4] {st=AZ}                          =&gt; {gndr=M} 0.01095198 0.8666667 
+##     lift     count
+## [1] 1.902244 45   
+## [2] 1.697025 37   
+## [3] 1.605294 14   
+## [4] 1.590005 13</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(subrules, <span class="dt">method=</span><span class="st">&quot;grouped&quot;</span>, <span class="dt">control=</span><span class="kw">list</span>(<span class="dt">k=</span><span class="dv">50</span>))</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p>We concluded the following:</p>
+<ul>
+<li>Practitioner graduation year is not very interesting</li>
+<li>Medical School, Primary Specialty, and Gender had the most meaningful associations
+<ul>
+<li>However, we would choose only one of medical school or primary specialty. They are likely highly correlated because there are specialty-specific schools such as chiropractic schools.</li>
+</ul></li>
+</ul>
+<p>Now we need to explore the relationships of our continuous independent variables</p>
+<ol style="list-style-type: decimal">
+<li>Years since graduation by gender using jittered violin plots</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">melt</span>(<span class="dt">id.vars=</span><span class="st">&quot;gndr&quot;</span>, <span class="dt">measure.vars=</span><span class="st">&quot;yrs_grd&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(gndr, value)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">alpha =</span> <span class="fl">0.1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_violin</span>(<span class="dt">alpha =</span> <span class="fl">0.75</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">facet_grid</span>(variable <span class="op">~</span><span class="st"> </span>.) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_y_sqrt</span>()</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>Gender seems to be pretty independent of the number of years since graduation so we should be able to add both to the model without influencing each other’s effects. The distribution of years since graduation is skewed, so we used a square root scale to make the kernel density curves look more symmetric in the plots than it otherwise would have been. The actual values of the years since graduation were left alone so we could intuitively interpret the results from our model.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Number of locations by gender using jittered violin plots</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">melt</span>(<span class="dt">id.vars=</span><span class="st">&quot;gndr&quot;</span>, <span class="dt">measure.vars=</span><span class="st">&quot;locations&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(gndr, value)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">alpha =</span> <span class="fl">0.1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_violin</span>(<span class="dt">alpha =</span> <span class="fl">0.75</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">facet_grid</span>(variable <span class="op">~</span><span class="st"> </span>.) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_y_log10</span>()</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p>While practice locations seem to be distributed evenly between males and females, note that the large majority of physicians in our data set have only one location. There are a few outliers who have over 300 unique zip codes associated with their practices.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>Years since graduation by credentials using bubble plots</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">cred =</span> <span class="kw">reorder</span>(cred, yrs_grd)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(cred, yrs_grd)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_sum</span>(<span class="kw">aes</span>(<span class="dt">size =</span> ..n.., <span class="dt">group =</span> <span class="dv">1</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_size_area</span>(<span class="dt">max_size =</span> <span class="dv">10</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p>Credentials (physician degrees) had one of the fewest number of levels, so we wanted to see if it was a good candidate for our model. The distribution of years since graduation looked pretty consistent across different credentials. Unfortunately, there were disproportionally high numbers of physicians with credentials listed as N/A (~75%), meaning their credential was unknown, so we could not use this variable in our model.</p>
+<ol start="4" style="list-style-type: decimal">
+<li>Gender, years since graduation, and number of locations by EHR use</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># scatter plot matrix of all three effects by EHR use</span>
+my_colors &lt;-<span class="st"> </span><span class="kw">brewer.pal</span>(<span class="kw">nlevels</span>(<span class="kw">as.factor</span>(EPs<span class="op">$</span>ehr)), <span class="st">&quot;Set1&quot;</span>)</code></pre></div>
+<pre><code>## Warning in brewer.pal(nlevels(as.factor(EPs$ehr)), &quot;Set1&quot;): minimal value for n is 3, returning requested palette with 3 different levels</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">gender =</span> <span class="kw">as.factor</span>(<span class="kw">as.integer</span>(gndr))) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scatterplotMatrix</span>(<span class="op">~</span>gender<span class="op">+</span>yrs_grd<span class="op">+</span>locations<span class="op">|</span>ehr, <span class="dt">data=</span>., 
+                    <span class="dt">col=</span>my_colors, <span class="dt">smoother.args=</span><span class="kw">list</span>(<span class="dt">col=</span><span class="st">&quot;grey&quot;</span>), 
+                    <span class="dt">cex=</span><span class="fl">1.5</span> , <span class="dt">pch=</span><span class="kw">c</span>(<span class="dv">15</span>,<span class="dv">16</span>), <span class="dt">legend.pos=</span><span class="st">&quot;center&quot;</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># bubble plot of years since graduation by EHR use</span>
+EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(ehr, yrs_grd)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_sum</span>(<span class="kw">aes</span>(<span class="dt">size =</span> ..n.., <span class="dt">group =</span> <span class="dv">1</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_size_area</span>(<span class="dt">max_size =</span> <span class="dv">10</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-22-2.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># jittered violin plot of years since graduation by EHR use</span>
+EPs <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">melt</span>(<span class="dt">id.vars=</span><span class="st">&quot;ehr&quot;</span>, <span class="dt">measure.vars=</span><span class="st">&quot;yrs_grd&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(ehr, value)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">alpha =</span> <span class="fl">0.1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_violin</span>(<span class="dt">alpha =</span> <span class="fl">0.75</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">facet_grid</span>(variable <span class="op">~</span><span class="st"> </span>.) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_y_sqrt</span>()</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-22-3.png" width="672" /></p>
+<ul>
+<li>Note that we forced gender, which is binary, into the scatter plot matrix so just ignore any noise between the values 1 and 2 on the scale for gender.</li>
+<li>Again, we can confirm that all three variables of interest (gender, years since graduation, and number of locations) are not strongly correlated with each other at all. We can safely add them into the final model without interaction terms.</li>
+<li>From the this scatter plot matrix, it is apparent that the distribution of gender and years since graduation differ by EHR use (as indicated by the red and blue colors, blinded here because we want to give you some suspense dun dun dun - but actually, we just couldn’t get the legend to not completely cover the density curves).</li>
+<li>A general observation from the bubble and violin plots is that there are proportionally more physicians in our data who have not used EHR. so we already have an imbalance in sample size between the two groups. But overall, our sample size is still large enough.</li>
+</ul>
+</div>
+<div id="final-analysis" class="section level3">
+<h3><span class="header-section-number">5.1.2</span> Final Analysis</h3>
+<div id="fit-the-logistic-model" class="section level4">
+<h4><span class="header-section-number">5.1.2.1</span> Fit the Logistic Model</h4>
+<p>Our final physician-level logistic regression model looked like this: <span class="math display">\[
+logit(EHR) = \beta_0 + \beta_1(gender) + \beta_2(years~since~grad) + \beta_3(location)
+\]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># fit the model</span>
+model &lt;-<span class="st"> </span><span class="kw">glm</span>(ehr <span class="op">~</span><span class="st"> </span>gndr <span class="op">+</span><span class="st"> </span>yrs_grd <span class="op">+</span><span class="st"> </span>locations, <span class="dt">data =</span> EPs, <span class="dt">family =</span> binomial)
+<span class="kw">summary</span>(model)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = ehr ~ gndr + yrs_grd + locations, family = binomial, 
+##     data = EPs)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.6933  -0.6341  -0.5039  -0.4287   2.2058  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -2.463747   0.103248 -23.862  &lt; 2e-16 ***
+## gndrM        0.602134   0.104207   5.778 7.55e-09 ***
+## yrs_grd      0.056861   0.005917   9.610  &lt; 2e-16 ***
+## locations    0.009260   0.025006   0.370    0.711    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 2651.1  on 2884  degrees of freedom
+## Residual deviance: 2498.1  on 2881  degrees of freedom
+## AIC: 2506.1
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#table of odds ratios with 95% CI</span>
+(ORtab &lt;-<span class="st"> </span><span class="kw">exp</span>(<span class="kw">cbind</span>(<span class="dt">OR =</span> <span class="kw">coef</span>(model), <span class="kw">confint</span>(model))))</code></pre></div>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<pre><code>##                     OR      2.5 %    97.5 %
+## (Intercept) 0.08511539 0.06936083 0.1040195
+## gndrM       1.82601079 1.48958252 2.2416066
+## yrs_grd     1.05850862 1.04633814 1.0709133
+## locations   1.00930291 0.95514705 1.0565821</code></pre>
+<p>Holding years since graduation and locations at a fixed value, the odds of adopting EHR for males is 1.83 the odds of adopting EHR for females. Holding gender (male) and locations at a fixed value, the odds of adopting EHR has a 5.85% increase for each additional year since graduation.</p>
+<p>We did not find a statistically significant effect in the number of practice locations on the use of EHR, so this makes me feel better about collapsing the records by unique physicians and losing the specific location information like city, state, and zip code. If owning practices in various different locations had an effect on EHR use, then we would have needed to consider fitting a mixed effects model that takes into account the random effects of the different locations these physicians practice in, or consider a repeated measures analysis on the non-collapsed data where a physician can have repeated records for each unique location of their practice, etc. But since we lack statistical evidence for the number of practice locations to show an effect on EHR use, we have no reason to seek a better model to fit.</p>
+</div>
+<div id="predicted-probabilities" class="section level4">
+<h4><span class="header-section-number">5.1.2.2</span> Predicted Probabilities</h4>
+<p>We can look at the effects of varying years since graduation by gender while holding the number of practice locations constant at its sample mean on the outcome of EHR use with a ribbon plot of the predicted probabilities.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create a table of predicted probabilities varying the value of years since graduation and gender</span>
+varyvals &lt;-<span class="st"> </span><span class="kw">with</span>(EPs, <span class="kw">data.frame</span>(<span class="dt">yrs_grd =</span> <span class="kw">rep</span>(<span class="kw">seq</span>(<span class="dt">from =</span> <span class="kw">min</span>(yrs_grd), <span class="dt">to =</span> <span class="kw">max</span>(yrs_grd), <span class="dt">length.out =</span> <span class="dv">100</span>),
+    <span class="dv">2</span>), <span class="dt">locations =</span> <span class="kw">mean</span>(locations), <span class="dt">gndr =</span> <span class="kw">factor</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&#39;M&#39;</span>,<span class="st">&#39;F&#39;</span>), <span class="dt">each =</span> <span class="dv">100</span>))))
+pred &lt;-<span class="st"> </span><span class="kw">cbind</span>(varyvals, <span class="kw">predict</span>(model, <span class="dt">newdata =</span> varyvals, <span class="dt">type =</span> <span class="st">&quot;link&quot;</span>,
+    <span class="dt">se =</span> <span class="ot">TRUE</span>))
+pred &lt;-<span class="st"> </span><span class="kw">within</span>(pred, {
+    PredictedProb &lt;-<span class="st"> </span><span class="kw">plogis</span>(fit)
+    LL &lt;-<span class="st"> </span><span class="kw">plogis</span>(fit <span class="op">-</span><span class="st"> </span>(<span class="fl">1.96</span> <span class="op">*</span><span class="st"> </span>se.fit))
+    UL &lt;-<span class="st"> </span><span class="kw">plogis</span>(fit <span class="op">+</span><span class="st"> </span>(<span class="fl">1.96</span> <span class="op">*</span><span class="st"> </span>se.fit))
+})
+
+<span class="co"># ribbon plot</span>
+<span class="kw">ggplot</span>(pred, <span class="kw">aes</span>(<span class="dt">x =</span> yrs_grd, <span class="dt">y =</span> PredictedProb)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_ribbon</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> LL, <span class="dt">ymax =</span> UL, <span class="dt">fill =</span> gndr), <span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">colour =</span> gndr), <span class="dt">size =</span> <span class="dv">1</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p>Well, how well does the model with these predictors fit compared to a null model? Let’s perform the likelihood ratio test using a chi-square test of <code>{r} with(model, null.deviance - deviance)</code> (the difference in deviance for the two models) with <code>{r} with(model, df.null - df.residual)</code> degrees of freedom on our observed data, which gives us the following p-value:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">with</span>(model, <span class="kw">pchisq</span>(null.deviance <span class="op">-</span><span class="st"> </span>deviance, df.null <span class="op">-</span><span class="st"> </span>df.residual, <span class="dt">lower.tail =</span> <span class="ot">FALSE</span>))</code></pre></div>
+<pre><code>## [1] 5.857494e-33</code></pre>
+<p>Looks like our model did pretty well!</p>
+</div>
+</div>
+</div>
+<div id="hospital-demographics" class="section level2">
+<h2><span class="header-section-number">5.2</span> Hospital Demographics</h2>
+<p>Now let’s focus on the other type of providers eligible for the Medicaid &amp; Medicare EHR Incentive Program: the hospitals. Recall that in this analysis population, we included only the physicians who are affiliated with any hospital and aggregated their demographics and EHR use at the hospital level. This is because the use of EHR would no longer depend on the physicians themselves, but rather the hospitals who decide to participate in the program. Since the aggregated physician demographics are not reliable demographic representations of the hospitals, as discussed in the <a href="https://euniceyeh.github.io/EHR-Project/data.html#eligible-hospitals-hosp">Data</a> chapter, we will only perform exploratory analysis on them and focus on the scraped hospital demographics (staffed beds, total discharges, patient days, gross patient revenue) for the final analysis.</p>
+<div id="exploratory-1" class="section level3">
+<h3><span class="header-section-number">5.2.1</span> Exploratory</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(hosps, <span class="kw">aes</span>(num_phys, <span class="dt">colour =</span> EHR_use)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_density</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">xlim</span>(<span class="dv">0</span>, <span class="dv">500</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p>Again, we wanted to show that our data on the physicians for each hospital are limited, and could affect our final analysis if we only subset to hospitals with sufficient physicians data in order to accurately include the aggregated physician demographics of the hospitals.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_colors &lt;-<span class="st"> </span><span class="kw">brewer.pal</span>(<span class="kw">nlevels</span>(<span class="kw">as.factor</span>(hosps<span class="op">$</span>EHR_use)), <span class="st">&quot;Set1&quot;</span>)
+<span class="co"># explore aggregated physician demographics</span>
+<span class="kw">scatterplotMatrix</span>(<span class="op">~</span>num_phys<span class="op">+</span>female_prop<span class="op">+</span>avg_grad_year<span class="op">+</span>n_specialty<span class="op">|</span>EHR_use, <span class="dt">data=</span>hosps, 
+                  <span class="dt">col=</span>my_colors , <span class="dt">smoother.args=</span><span class="kw">list</span>(<span class="dt">col=</span><span class="st">&quot;grey&quot;</span>) , <span class="dt">cex=</span><span class="fl">1.5</span> , <span class="dt">pch=</span><span class="kw">c</span>(<span class="dv">15</span>,<span class="dv">16</span>), <span class="dt">legend.plot=</span><span class="ot">FALSE</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># explore scraped hospital demographics</span>
+<span class="kw">scatterplotMatrix</span>(<span class="op">~</span>Staffed_beds<span class="op">+</span>Total_discharges<span class="op">+</span>Patient_days<span class="op">+</span>Gross_patient_revenue<span class="op">|</span>EHR_use, <span class="dt">data=</span>hosps, 
+                  <span class="dt">col=</span>my_colors , <span class="dt">smoother.args=</span><span class="kw">list</span>(<span class="dt">col=</span><span class="st">&quot;grey&quot;</span>) , <span class="dt">cex=</span><span class="fl">1.5</span> , <span class="dt">pch=</span><span class="kw">c</span>(<span class="dv">15</span>,<span class="dv">16</span>))</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-27-2.png" width="672" /></p>
+<p>The first correlation matrix of all the aggregated physician demographics at the hospital level is basically garbage. The second correlation matrix shows us that all four hospital demographics are strongly correlated with each other, which does make sense, and follow the same distributions by EHR use. We will also log-transform these demographics to help normalize their seemingly skewed distributions.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hosps &lt;-<span class="st"> </span>hosps <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">staffed_beds_log =</span> <span class="kw">round</span>(<span class="kw">log</span>(Staffed_beds),<span class="dv">2</span>),
+                          <span class="dt">total_discharges_log =</span> <span class="kw">round</span>(<span class="kw">log</span>(Total_discharges),<span class="dv">2</span>),
+                          <span class="dt">patient_days_log =</span> <span class="kw">round</span>(<span class="kw">log</span>(Patient_days),<span class="dv">2</span>),
+                          <span class="dt">gross_patient_rev_log =</span> <span class="kw">round</span>(<span class="kw">log</span>(Gross_patient_revenue),<span class="dv">2</span>)
+                          )
+<span class="co"># check for normality for one of them</span>
+<span class="kw">qqnorm</span>(hosps<span class="op">$</span>gross_patient_rev_log)
+<span class="kw">qqline</span>(hosps<span class="op">$</span>gross_patient_rev_log)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p>Let’s look at the correlation plots again with the log-transformed values.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">scatterplotMatrix</span>(<span class="op">~</span>staffed_beds_log<span class="op">+</span>total_discharges_log<span class="op">+</span>patient_days_log<span class="op">+</span>gross_patient_rev_log<span class="op">|</span>EHR_use, <span class="dt">data=</span>hosps, 
+                  <span class="dt">col=</span>my_colors , <span class="dt">smoother.args=</span><span class="kw">list</span>(<span class="dt">col=</span><span class="st">&quot;grey&quot;</span>) , <span class="dt">cex=</span><span class="fl">1.5</span> , <span class="dt">pch=</span><span class="kw">c</span>(<span class="dv">15</span>,<span class="dv">16</span>), <span class="dt">legend.pos=</span><span class="st">&quot;bottomleft&quot;</span>)</code></pre></div>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hosps <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(EHR_use, gross_patient_rev_log)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_sum</span>(<span class="kw">aes</span>(<span class="dt">size =</span> ..n.., <span class="dt">group =</span> <span class="dv">1</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_size_area</span>(<span class="dt">max_size =</span> <span class="dv">10</span>)</code></pre></div>
+<pre><code>## Warning: Removed 5 rows containing non-finite values (stat_sum).</code></pre>
+<p><img src="EHR-Project_files/figure-html/unnamed-chunk-29-2.png" width="672" /></p>
+<p>The difference in distributions is not as apparent by the use of EHR. We believed that the gross patient revenue, which may be implying overall hospital size, is a confounding factor that affects other predictor variables. We can also observe this in the strong correlation (above 0.8) between GPR and staffed beds, GPR and total discharge, and GPR and patient days. Thus, we will stratify on gross patient revenue. Let’s see if other predictor variables still have effect on EHR use proportion after stratifying on GPR.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hosps<span class="op">$</span>gpr_grp =<span class="st"> </span><span class="kw">cut</span>(hosps<span class="op">$</span>gross_patient_rev_log, 
+                    <span class="kw">quantile</span>(hosps<span class="op">$</span>gross_patient_rev_log, <span class="dt">prob =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, .<span class="dv">2</span>), <span class="dt">na.rm =</span> <span class="ot">TRUE</span>), <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>)
+filter_var =<span class="st"> &quot;total_discharges_log&quot;</span> <span class="co">#&quot;staffed_beds_log&quot; #&quot;patient_days_log&quot;</span>
+hosps <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(gpr_grp)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">group_by</span>(gpr_grp) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">do</span>(<span class="kw">tidy</span>(<span class="kw">glm</span>(EHR_use <span class="op">~</span><span class="st"> </span>staffed_beds_log <span class="op">+</span><span class="st"> </span>total_discharges_log <span class="op">+</span><span class="st"> </span>patient_days_log, 
+                <span class="dt">data =</span> ., <span class="dt">family=</span><span class="st">&quot;binomial&quot;</span>), <span class="dt">conf.int =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">filter</span>(term<span class="op">==</span>filter_var)</code></pre></div>
+<pre><code>## # A tibble: 5 x 8
+## # Groups:   gpr_grp [5]
+##       gpr_grp                 term   estimate std.error  statistic
+##        &lt;fctr&gt;                &lt;chr&gt;      &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1 [8.23,12.9] total_discharges_log  0.4995140  1.481251  0.3372244
+## 2 (12.9,13.5] total_discharges_log  1.1669966  1.405116  0.8305341
+## 3   (13.5,14] total_discharges_log  0.3595741  1.254598  0.2866050
+## 4   (14,14.5] total_discharges_log -0.7145513  1.587193 -0.4501983
+## 5 (14.5,16.5] total_discharges_log -4.2080280  1.622126 -2.5941441
+## # ... with 3 more variables: p.value &lt;dbl&gt;, conf.low &lt;dbl&gt;,
+## #   conf.high &lt;dbl&gt;</code></pre>
+<p>We are only showing the statistical results on total discharge because it is the only demographic that has a different significance in effect on EHR use across the stratification of gross patient revenue, as evident by the p-values. So in our final model, we will use total discharge and gross patient revenue and their interaction term.</p>
+</div>
+<div id="final-analysis-1" class="section level3">
+<h3><span class="header-section-number">5.2.2</span> Final Analysis</h3>
+<p>We are just running the models below to show you our process of choosing the best fitting model, by splitting our data into training and test sets.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Train &lt;-<span class="st"> </span><span class="kw">createDataPartition</span>(hosps<span class="op">$</span>EHR_use, <span class="dt">p=</span><span class="fl">0.6</span>, <span class="dt">list=</span><span class="ot">FALSE</span>)
+training &lt;-<span class="st"> </span>hosps[Train, ]
+testing &lt;-<span class="st"> </span>hosps[<span class="op">-</span>Train, ]
+
+<span class="co"># first model with all hosptial demographics</span>
+glm1 &lt;-<span class="st"> </span><span class="kw">glm</span>(EHR_use <span class="op">~</span><span class="st"> </span>gross_patient_rev_log <span class="op">+</span><span class="st"> </span>staffed_beds_log <span class="op">+</span><span class="st"> </span>total_discharges_log <span class="op">+</span><span class="st"> </span>patient_days_log <span class="op">+</span>staffed_beds_log<span class="op">:</span>gross_patient_rev_log <span class="op">+</span><span class="st"> </span>total_discharges_log<span class="op">:</span>patient_days_log, <span class="dt">data=</span>training, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>)
+<span class="kw">summary</span>(glm1)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = EHR_use ~ gross_patient_rev_log + staffed_beds_log + 
+##     total_discharges_log + patient_days_log + staffed_beds_log:gross_patient_rev_log + 
+##     total_discharges_log:patient_days_log, family = &quot;binomial&quot;, 
+##     data = training)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.1574  -1.2384   0.6808   0.8484   1.2222  
+## 
+## Coefficients:
+##                                        Estimate Std. Error z value
+## (Intercept)                             5.45726    8.59021   0.635
+## gross_patient_rev_log                  -0.78326    0.97251  -0.805
+## staffed_beds_log                       -0.30798    2.34463  -0.131
+## total_discharges_log                   -0.18658    1.10673  -0.169
+## patient_days_log                        1.29038    1.07852   1.196
+## gross_patient_rev_log:staffed_beds_log  0.04734    0.17406   0.272
+## total_discharges_log:patient_days_log  -0.07767    0.08894  -0.873
+##                                        Pr(&gt;|z|)
+## (Intercept)                               0.525
+## gross_patient_rev_log                     0.421
+## staffed_beds_log                          0.895
+## total_discharges_log                      0.866
+## patient_days_log                          0.232
+## gross_patient_rev_log:staffed_beds_log    0.786
+## total_discharges_log:patient_days_log     0.382
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 505.89  on 424  degrees of freedom
+## Residual deviance: 480.67  on 418  degrees of freedom
+##   (3 observations deleted due to missingness)
+## AIC: 494.67
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p_hat_logit &lt;-<span class="st"> </span><span class="kw">predict</span>(glm1, <span class="dt">newdata =</span> testing, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)
+y_hat_logit &lt;-<span class="st"> </span><span class="kw">ifelse</span>(p_hat_logit <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.5</span>, <span class="dv">1</span>,  <span class="dv">0</span>)
+<span class="kw">confusionMatrix</span>(<span class="dt">data =</span> y_hat_logit, <span class="dt">reference =</span> testing<span class="op">$</span>EHR_use)</code></pre></div>
+<pre><code>## Warning in confusionMatrix.default(data = y_hat_logit, reference = testing
+## $EHR_use): Levels are not in the same order for reference and data.
+## Refactoring data to match.</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   1   0
+##          1  70 202
+##          0   8   2
+##                                           
+##                Accuracy : 0.2553          
+##                  95% CI : (0.2055, 0.3104)
+##     No Information Rate : 0.7234          
+##     P-Value [Acc &gt; NIR] : 1               
+##                                           
+##                   Kappa : -0.0525         
+##  Mcnemar&#39;s Test P-Value : &lt;2e-16          
+##                                           
+##             Sensitivity : 0.897436        
+##             Specificity : 0.009804        
+##          Pos Pred Value : 0.257353        
+##          Neg Pred Value : 0.200000        
+##              Prevalence : 0.276596        
+##          Detection Rate : 0.248227        
+##    Detection Prevalence : 0.964539        
+##       Balanced Accuracy : 0.453620        
+##                                           
+##        &#39;Positive&#39; Class : 1               
+## </code></pre>
+<p>Because total discharge and patient days have very high correlation (0.99), pick out one out of the two - total discharge. Also, because we observed from correlation plots that staffed beds and the gross patient revenue are highly correlated, we add interaction variable to the model.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">glm2 &lt;-<span class="st"> </span><span class="kw">glm</span>(EHR_use <span class="op">~</span><span class="st"> </span>gross_patient_rev_log <span class="op">+</span><span class="st"> </span>staffed_beds_log  <span class="op">+</span><span class="st"> </span>gross_patient_rev_log<span class="op">*</span>staffed_beds_log <span class="op">+</span><span class="st"> </span>total_discharges_log, <span class="dt">data=</span>training, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>)
+<span class="kw">summary</span>(glm2)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = EHR_use ~ gross_patient_rev_log + staffed_beds_log + 
+##     gross_patient_rev_log * staffed_beds_log + total_discharges_log, 
+##     family = &quot;binomial&quot;, data = training)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.0853  -1.2692   0.6896   0.8413   1.2626  
+## 
+## Coefficients:
+##                                        Estimate Std. Error z value
+## (Intercept)                             4.04042    8.37531   0.482
+## gross_patient_rev_log                  -0.14549    0.69339  -0.210
+## staffed_beds_log                        1.36667    1.56543   0.873
+## total_discharges_log                   -0.34774    0.38894  -0.894
+## gross_patient_rev_log:staffed_beds_log -0.07081    0.11017  -0.643
+##                                        Pr(&gt;|z|)
+## (Intercept)                               0.630
+## gross_patient_rev_log                     0.834
+## staffed_beds_log                          0.383
+## total_discharges_log                      0.371
+## gross_patient_rev_log:staffed_beds_log    0.520
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 505.89  on 424  degrees of freedom
+## Residual deviance: 481.98  on 420  degrees of freedom
+##   (3 observations deleted due to missingness)
+## AIC: 491.98
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>This time, we will pick total discharge instead of the staffed beds. Then we will compare two models (glm2 vs. glm3) using chisquare test.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">glm3 &lt;-<span class="st"> </span><span class="kw">glm</span>(EHR_use <span class="op">~</span><span class="st"> </span>gross_patient_rev_log <span class="op">+</span><span class="st"> </span>total_discharges_log <span class="op">+</span><span class="st"> </span>gross_patient_rev_log<span class="op">*</span>total_discharges_log, <span class="dt">data=</span>training, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>)
+<span class="kw">summary</span>(glm3)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = EHR_use ~ gross_patient_rev_log + total_discharges_log + 
+##     gross_patient_rev_log * total_discharges_log, family = &quot;binomial&quot;, 
+##     data = training)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.1056  -1.2857   0.6885   0.8494   1.2304  
+## 
+## Coefficients:
+##                                            Estimate Std. Error z value
+## (Intercept)                                 5.58536   10.80023   0.517
+## gross_patient_rev_log                      -0.31752    0.87720  -0.362
+## total_discharges_log                        0.27181    1.11451   0.244
+## gross_patient_rev_log:total_discharges_log -0.02188    0.08553  -0.256
+##                                            Pr(&gt;|z|)
+## (Intercept)                                   0.605
+## gross_patient_rev_log                         0.717
+## total_discharges_log                          0.807
+## gross_patient_rev_log:total_discharges_log    0.798
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 505.89  on 424  degrees of freedom
+## Residual deviance: 483.47  on 421  degrees of freedom
+##   (3 observations deleted due to missingness)
+## AIC: 491.47
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p_hat_logit &lt;-<span class="st"> </span><span class="kw">predict</span>(glm3, <span class="dt">newdata =</span> testing, <span class="dt">type=</span><span class="st">&quot;response&quot;</span>)
+y_hat_logit &lt;-<span class="st"> </span><span class="kw">ifelse</span>(p_hat_logit <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>)
+<span class="kw">confusionMatrix</span>(<span class="dt">data =</span> y_hat_logit, <span class="dt">reference =</span> testing<span class="op">$</span>EHR_use)</code></pre></div>
+<pre><code>## Warning in confusionMatrix.default(data = y_hat_logit, reference = testing
+## $EHR_use): Levels are not in the same order for reference and data.
+## Refactoring data to match.</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   1   0
+##          1  73 202
+##          0   5   2
+##                                           
+##                Accuracy : 0.266           
+##                  95% CI : (0.2153, 0.3216)
+##     No Information Rate : 0.7234          
+##     P-Value [Acc &gt; NIR] : 1               
+##                                           
+##                   Kappa : -0.0305         
+##  Mcnemar&#39;s Test P-Value : &lt;2e-16          
+##                                           
+##             Sensitivity : 0.935897        
+##             Specificity : 0.009804        
+##          Pos Pred Value : 0.265455        
+##          Neg Pred Value : 0.285714        
+##              Prevalence : 0.276596        
+##          Detection Rate : 0.258865        
+##    Detection Prevalence : 0.975177        
+##       Balanced Accuracy : 0.472851        
+##                                           
+##        &#39;Positive&#39; Class : 1               
+## </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#chisquare test H0(null model): glm2, H1(alternative model):glm3</span>
+<span class="kw">anova</span>(glm3, glm2, <span class="dt">test=</span><span class="st">&quot;Chisq&quot;</span>)</code></pre></div>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: EHR_use ~ gross_patient_rev_log + total_discharges_log + gross_patient_rev_log * 
+##     total_discharges_log
+## Model 2: EHR_use ~ gross_patient_rev_log + staffed_beds_log + gross_patient_rev_log * 
+##     staffed_beds_log + total_discharges_log
+##   Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)
+## 1       421     483.47                     
+## 2       420     481.98  1   1.4899   0.2222</code></pre>
+<p>Because the anova test yields that glm3 is better, our final model is <code>glm3</code> with two variables: total staffed beds and gross patient revenue. Our final physician-level logistic regression model looked like this: <span class="math display">\[
+logit(EHR) = \beta_0 + \beta_1(staffed~beds) + \beta_2(gross~patient~revenue) + \beta_3(interaction)
+\]</span></p>
+<p>Here is a table of odds ratios with 95% CI.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">exp</span>(<span class="kw">cbind</span>(<span class="dt">OR =</span> <span class="kw">coef</span>(glm3), <span class="kw">confint</span>(glm3)))</code></pre></div>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<pre><code>##                                                     OR        2.5 %
+## (Intercept)                                266.4969331 2.965487e-06
+## gross_patient_rev_log                        0.7279509 1.051024e-01
+## total_discharges_log                         1.3123420 1.013715e-01
+## gross_patient_rev_log:total_discharges_log   0.9783602 8.449485e-01
+##                                                  97.5 %
+## (Intercept)                                1.339228e+13
+## gross_patient_rev_log                      3.455596e+00
+## total_discharges_log                       8.367947e+00
+## gross_patient_rev_log:total_discharges_log 1.186350e+00</code></pre>
+<p>Interpretation of the final model: If the total discharge is equal at 5000, with the 10% increase in the revenue, the odds of using EHR is 2.92 times higher. Similarly, if the gross patient revenue is equal at 5000 and the discharged increases by 10%, the odds of using EHR is 2.95 times higher.</p>
+<p>Mathematically, if revenue increases 10% and discharge is the same, the odds of using EHR is the higher by <span class="math inline">\(1.102\cdot \log(1.1)-0.04\cdot \log(1.1)\cdot \log(discharge)\)</span> times. If discharge increases by 10% while the revenue is the same, the odds of using EHR is higher by <span class="math inline">\(1.2411\cdot \log(1.1) - 0.046\cdot \log(1.1)\cdot \log(revenue)\)</span></p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="data.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="secondary.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/euniceyeh/EHR-Project/edit/master/04-Primary.Rmd",
+"text": "Edit"
+},
+"download": ["EHR-Project.pdf"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
