@@ -299,7 +299,6 @@ When it came to looking at patterns between primary specialty and states, it was
 ### Hospital Demographics
 
 
-**GET RID OF THIS IF HOSP DAT ALREADY CLEAN**
 
 ```{r}
 #load hosp_all data & add long state names
@@ -328,7 +327,7 @@ beds %>%
         panel.grid = element_blank(), 
         axis.title = element_blank(),
         legend.position = "bottom") +
-  ggtitle("Average hospital Beds per hospital")
+  ggtitle("Average Hospital Beds per hospital")
 ```
 
 Vermont and Rhode Island had the lowest number of average hospital beds per hospital, which makes sense since they are small states. Connecticut and Florida had the highest average, suggesting that hospitals in that state tend to be bigger on average.
