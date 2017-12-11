@@ -9,7 +9,7 @@
 Hope you enjoy our project!
 
 
-###EDIT
+### EDIT
 ------------
 
 Due to our issues with bookdown, we have restructured our repository.
