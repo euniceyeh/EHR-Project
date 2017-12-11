@@ -14,12 +14,13 @@ The CMS provides millions of openly accessible data that they have used to evalu
 + [Import](https://github.com/datasciencelabs/2017/blob/master/lectures/wrangling/data-import.Rmd) and [combine](https://github.com/datasciencelabs/2017/blob/master/lectures/wrangling/combining-tables.Rmd) different sets of data in order to analyze relationships that have not been done before.
 + [Scrape](https://github.com/datasciencelabs/2017/blob/master/lectures/wrangling/web-scraping.Rmd) data directly off of websites outside of those related to CMS in order to analyze more than what they already have.
 
-2. Visualizations
+2. Visualization
 
 + Apply the [principles of data visualizations](https://github.com/datasciencelabs/2017/blob/master/lectures/dataviz/dataviz-principles.Rmd) to accurately and meaningfully present our statistical findings.
 + Create super cool while informative [plots](https://github.com/datasciencelabs/2017/blob/master/lectures/dataviz/gapminder.Rmd) to help visualize our exploratory analyses.
 
-3. Statistical Inference
+3. Statistical Analysis
 
-+ Perform [regression analyses](https://github.com/datasciencelabs/2017/tree/master/lectures/regression) on the relationships between EHR use and provider demographics.
++ Perform [regression analysis](https://github.com/datasciencelabs/2017/tree/master/lectures/regression) on the relationship between EHR use and provider demographics.
++ Report and interpret [statistical inference](https://github.com/datasciencelabs/2017/tree/master/lectures/inference) from our results.
 

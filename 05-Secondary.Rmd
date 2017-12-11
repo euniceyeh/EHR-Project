@@ -456,8 +456,8 @@ EHR_EPs %>%
 #top vendors vs top specialty
 EHR_EPs %>% 
   filter((pri_spec %in% spec_list) & (Vendor_Name %in% vendors)) %>% 
-  ggplot(aes(pri_spec, Vendor_Name)) + 
-  geom_jitter(aes(alpha = 0.2), color = "steelblue4") +
+  ggplot(aes(x = pri_spec, y = Vendor_Name)) + 
+  geom_jitter(alpha = 0.2, color = "steelblue4") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "none",

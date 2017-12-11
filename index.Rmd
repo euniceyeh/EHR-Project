@@ -18,7 +18,7 @@ description: "This is the final project report for BST 260 on the relationships 
 
 ------
 
-![Motivation](data/Motivation.png)
+![](data/Motivation.png)
 
 
 
