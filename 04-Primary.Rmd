@@ -276,7 +276,13 @@ confusionMatrix(data = y_hat_logit, reference = testing$EHR_use)
 anova(glm3, glm2, test="Chisq")
 ```
 
-Because the anova test yields that glm3 is better, our final model is `glm3` with two variables: total staffed beds and gross patient revenue. Here is a table of odds ratios with 95% CI.
+Because the anova test yields that glm3 is better, our final model is `glm3` with two variables: total staffed beds and gross patient revenue. 
+Our final physician-level logistic regression model looked like this:
+$$
+logit(EHR) = \beta_0 + \beta_1(staffed~beds) + \beta_2(gross~patient~revenue) + \beta_3(interaction)
+$$
+
+Here is a table of odds ratios with 95% CI.
 ```{r}
 exp(cbind(OR = coef(glm3), confint(glm3)))
 ```
