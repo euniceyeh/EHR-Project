@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Physician Demographics
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, message=FALSE}
 library(readr)
 library(tidyverse)
 library(GGally)
@@ -40,7 +40,7 @@ EHR_EPs <- readRDS("~/Desktop/BST 260/EHR-Project/data/EHR_EPs.rds")
 ```
 
 
-```{r}
+```{r, message=FALSE}
 data("zipcode")
 data("fifty_states")
 states_map <- map_data("state")
@@ -435,7 +435,7 @@ The distribution of average discharges was not very interesting - it was similar
 
 ```{r}
 #avg revenue per discharge
-revenue <- hosp_all %>%  filter(!is.na(Gross_patient_revenue) & !is.na(Total_discharges)) %>% 
+revenue <- hosp_all %>%  filter((Gross_patient_revenue != 0) & (Total_discharges != 0)) %>% 
   mutate(per = Gross_patient_revenue/Total_discharges) %>% 
   group_by(State) %>%
   summarize(rev = mean(per))
